@@ -44,6 +44,8 @@ gantt
 > Status: **Not Started** | Completion: 0%
 >
 > The project is freshly initialized. Development has not yet started. The Flutter project exists with default `pubspec.yaml` only. No dependencies have been added.
+>
+> See [`.state/CURRENT_PHASE.md`](../.state/CURRENT_PHASE.md) for live phase state.
 
 ---
 
@@ -131,8 +133,9 @@ gantt
 | [`CODEBASE_GUIDE.md`](CODEBASE_GUIDE.md) | Directory structure and conventions |
 | [`FEATURES_AND_FLOWS.md`](FEATURES_AND_FLOWS.md) | Screen specs and user flows |
 | [`DEVELOPMENT_WORKFLOW.md`](DEVELOPMENT_WORKFLOW.md) | Development phases and AI agent guidelines |
-| [`AI_PROGRESS_RULES.md`](AI_PROGRESS_RULES.md) | **Mandatory rules for all AI agents** |
 | [`phases/`](phases/) | Detailed per-phase task tracking |
+| [`.agents/`](../.agents) | Agent rules and workflows |
+| [`.state/`](../.state) | Live project state (phase, status, issues, decisions) |
 
 ---
 
