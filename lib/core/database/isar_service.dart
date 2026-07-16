@@ -1,0 +1,2 @@
+export 'isar_service_stub.dart'
+    if (dart.library.io) 'isar_service_native.dart';

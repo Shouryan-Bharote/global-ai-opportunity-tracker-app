@@ -43,11 +43,12 @@
 
 ## Completed Work
 
-> No work has been completed in this phase yet.
-
 | Date | Completed | Files Modified | Notes |
 |------|-----------|----------------|-------|
-| — | — | — | — |
+| 2026-07-16 | Refactored Profile feature to match final UI design requirements: interests chip gradients, avatar selector, removed "My Tickets", dynamically calculated stats. | [`lib/features/profile/screens/profile_screen.dart`](../../lib/features/profile/screens/profile_screen.dart), [`lib/features/profile/presentation/widgets/profile_header.dart`](../../lib/features/profile/presentation/widgets/profile_header.dart), [`lib/features/profile/providers/profile_provider.dart`](../../lib/features/profile/providers/profile_provider.dart) | Closed layout feedback loops. Switched mock metrics to active interests count, saved events, and commitment hours. Added bottom sheet to upload custom/preset profile avatar images. |
+| 2026-07-16 | Migrated AppHeader to AppShell, simplifying sub-screens and pinning it at the top of the viewport globally. Added native share support and local device image picker. Resolved Windows Kotlin daemon cross-drive compilation lock issue and upgraded compileSdk to version 36. | [`lib/core/widgets/app_shell.dart`](../../lib/core/widgets/app_shell.dart), [`lib/features/home/screens/home_screen.dart`](../../lib/features/home/screens/home_screen.dart), [`lib/features/explore/screens/explore_screen.dart`](../../lib/features/explore/screens/explore_screen.dart), [`lib/features/schedule/screens/schedule_screen.dart`](../../lib/features/schedule/screens/schedule_screen.dart), [`lib/features/profile/screens/profile_screen.dart`](../../lib/features/profile/screens/profile_screen.dart), [`android/gradle.properties`](../../android/gradle.properties), [`android/app/build.gradle.kts`](../../android/app/build.gradle.kts), [`android/build.gradle.kts`](../../android/build.gradle.kts) | Unified AppHeader in shell, reducing layout code duplication and ensuring dynamic updates via riverpod provider. Set kotlin.incremental=false and compileSdk=36 to fix Windows Android builds. |
+| 2026-07-16 | Standardized codebase folder structure by removing intermediate presentation folders in profile and events features and sorting imports. | [`lib/features/profile/widgets/profile_header.dart`](../../lib/features/profile/widgets/profile_header.dart), [`lib/features/events/screens/event_details_screen.dart`](../../lib/features/events/screens/event_details_screen.dart), [`lib/features/profile/screens/profile_screen.dart`](../../lib/features/profile/screens/profile_screen.dart), [`lib/core/router/app_router.dart`](../../lib/core/router/app_router.dart) | Aligned all features to the same simplified structure: models, providers, screens, and widgets folders directly under the feature directory. |
+| 2026-07-16 | Replaced vector graphics placeholder in ScheduleEventCard with network image loading, using widget.event.imageUrl or random fallback. | [`lib/features/schedule/widgets/schedule_event_card.dart`](../../lib/features/schedule/widgets/schedule_event_card.dart) | Display active event image cover or placeholder with loader/error indicators. Resolved all remaining lints. |
 
 ---
 
@@ -123,6 +124,99 @@ All tasks remain. The **critical path** is:
 - The backend returns errors in a consistent format (e.g., `{ "error": "message" }`).
 - JWT tokens have an expiration time. The auth interceptor handles 401 by clearing the token and redirecting.
 - Pagination is cursor or page-based. Check with Member 2 for the exact approach.
+
+### Repository Pattern — Already Set Up (Read This First!)
+
+> **CRITICAL**: The repository pattern has already been fully implemented during Phase 5.
+> The frontend is 100% decoupled from any data source. **You do NOT need to refactor any UI code.**
+> You only need to create real repository implementations and change ONE provider.
+
+#### Architecture Diagram
+
+```
+UI Screens (Home, Explore, Schedule)
+    │  watch
+    ▼
+Feature Providers (home_provider, explore_provider)
+    │  derive from
+    ▼
+eventsProvider (AsyncNotifier)  ← Single source of truth
+    │  calls
+    ▼
+EventRepository (abstract interface)  ← THE SWAP POINT
+    │
+    ├── MockEventRepository  ← Current (mock data)
+    └── HttpEventRepository  ← What you will create
+```
+
+#### The Interface You Must Implement
+
+File: `lib/features/events/repositories/event_repository.dart`
+
+```dart
+abstract class EventRepository {
+  Future<List<EventModel>> getEvents();
+  Future<EventModel?> getEventById(String id);
+  Future<void> toggleBookmark(String eventId);
+  Future<List<EventModel>> searchEvents(String query);
+  Future<List<EventModel>> getEventsByFilter({
+    String? category,
+    String? city,
+    bool? isOnline,
+    List<String>? tags,
+  });
+}
+```
+
+#### Step-by-Step Integration
+
+**Step 1**: Create `lib/features/events/repositories/http_event_repository.dart`:
+```dart
+class HttpEventRepository implements EventRepository {
+  final Dio _dio;
+  HttpEventRepository(this._dio);
+
+  @override
+  Future<List<EventModel>> getEvents() async {
+    final response = await _dio.get('/events');
+    return (response.data as List)
+        .map((j) => EventModel.fromJson(j))
+        .toList();
+  }
+  // ... implement all other methods mapping to API endpoints
+}
+```
+
+**Step 2**: Change ONE line in `lib/core/providers/repository_providers.dart`:
+```diff
+- return MockEventRepository();
++ return HttpEventRepository(ref.read(dioProvider));
+```
+
+**That's it.** No UI files, no provider files, no widget files need to change.
+
+#### Key Files Reference
+
+| File | Purpose |
+|------|---------|
+| `lib/features/events/repositories/event_repository.dart` | Abstract interface (contract) |
+| `lib/features/events/repositories/mock_event_repository.dart` | Current mock implementation (reference for behavior) |
+| `lib/core/providers/repository_providers.dart` | **THE ONE FILE TO CHANGE** when swapping |
+| `lib/features/events/providers/events_provider.dart` | Global AsyncNotifier — DO NOT MODIFY |
+| `lib/features/events/models/event_model.dart` | Freezed model with `fromJson`/`toJson` — may need updates if API schema differs |
+
+#### What the UI Already Handles
+
+- ✅ Loading states (CircularProgressIndicator while data loads)
+- ✅ Error states (error messages displayed)
+- ✅ Optimistic bookmark updates (instant UI response, reverts on failure)
+- ✅ Single source of truth (bookmark on any page syncs everywhere)
+
+#### Warnings
+
+- Check if the API returns `snake_case` keys — the `EventModel.fromJson` currently expects `camelCase`. You may need to add `@JsonKey(name: 'start_date')` annotations or configure a `FieldRename`.
+- The mock repository simulates delays (800ms). Remove `Future.delayed` in the real one — the network itself provides the delay.
+- Keep `MockEventRepository` available as a fallback during testing. Only delete it in task 15.
 
 ### Useful Context
 - See [`PROJECT_OVERVIEW.md`](../PROJECT_OVERVIEW.md) for the expected API contract and Event model schema.

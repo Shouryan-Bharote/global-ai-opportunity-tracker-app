@@ -1,6 +1,6 @@
 # Phase 02 — Core Infrastructure
 
-> **Status**: Not Started | **Completion**: 0% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
+> **Status**: Completed | **Completion**: 100% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
 
 ---
 
@@ -22,34 +22,34 @@
 
 | # | Status | Task | Module | Priority | Dependencies |
 |---|:------:|------|:------:|:--------:|:------------:|
-| 1 | Not Started | Create `lib/core/network/dio_client.dart` — configured Dio instance with base URL, timeouts, and logging interceptor | Mobile | High | Phase 01 |
-| 2 | Not Started | Create `lib/core/network/auth_interceptor.dart` — attaches Bearer token from SecureStorage to all requests, handles 401 → redirect to auth | Mobile | High | 1 |
-| 3 | Not Started | Create `lib/core/network/api_client.dart` — base API client with typed error handling (Result type) | Mobile | High | 1, 2 |
-| 4 | Not Started | Create `lib/core/storage/secure_storage.dart` — wrapper around flutter_secure_storage (get/set/delete token) | Mobile | High | Phase 01 |
-| 5 | Not Started | Create `lib/core/database/isar_service.dart` — Isar initialization singleton with all collections registered | Mobile | High | Phase 01 |
-| 6 | Not Started | Create `lib/core/database/collections/event_collection.dart` — Isar collection definition for Event model | Mobile | High | 5 |
-| 7 | Not Started | Create `lib/core/router/app_router.dart` — GoRouter with all routes defined, auth redirect logic, ShellRoute for bottom nav | Mobile | High | Phase 01 |
-| 8 | Not Started | Create `lib/core/providers/providers.dart` — global Riverpod providers for Dio, Isar, SecureStorage | Mobile | High | 1, 4, 5 |
-| 9 | Not Started | Create `lib/core/mock/mock_events.dart` — 10+ realistic mock Event objects | Mobile | Medium | Phase 01 |
-| 10 | Not Started | Create `lib/core/mock/mock_user.dart` — mock User object for auth | Mobile | Medium | Phase 01 |
-| 11 | Not Started | Create `lib/features/auth/models/user_model.dart` — Freezed User model with json_serializable | Mobile | High | Phase 01 |
-| 12 | Not Started | Create `lib/features/events/models/event_model.dart` — Freezed Event model with json_serializable | Mobile | High | Phase 01 |
-| 13 | Not Started | Create mock repository implementations for Events and Auth (return mock data with simulated delay) | Mobile | High | 9, 10, 11, 12 |
-| 14 | Not Started | Update `lib/main.dart` — initialize Isar, configure ProviderScope, set up app entry point | Mobile | High | 5, 8 |
-| 15 | Not Started | Create `lib/app.dart` — MaterialApp.router with GoRouter and theme injection | Mobile | High | 7, 14 |
-| 16 | Not Started | Create placeholder `SplashScreen` widget (simple, no logic yet) | Mobile | Medium | 15 |
-| 17 | Not Started | Create placeholder `AuthScreen` widget (simple, no logic yet) | Mobile | Medium | 15 |
-| 18 | Not Started | Verify full app boots to splash screen with no errors | Mobile | High | All above |
+| 1 | Completed | Create `lib/core/network/dio_client.dart` — configured Dio instance with base URL, timeouts, and logging interceptor | Mobile | High | Phase 01 |
+| 2 | Completed | Create `lib/core/network/auth_interceptor.dart` — attaches Bearer token from SecureStorage to all requests, handles 401 → redirect to auth | Mobile | High | 1 |
+| 3 | Completed | Create `lib/core/network/api_client.dart` — base API client with typed error handling (Result type) | Mobile | High | 1, 2 |
+| 4 | Completed | Create `lib/core/storage/secure_storage.dart` — wrapper around flutter_secure_storage (get/set/delete token) | Mobile | High | Phase 01 |
+| 5 | Completed | Create `lib/core/database/isar_service.dart` — Isar initialization singleton with all collections registered | Mobile | High | Phase 01 |
+| 6 | Completed | Create `lib/core/database/collections/event_collection.dart` — Isar collection definition for Event model | Mobile | High | 5 |
+| 7 | Completed | Create `lib/core/router/app_router.dart` — GoRouter with all routes defined, auth redirect logic, ShellRoute for bottom nav | Mobile | High | Phase 01 |
+| 8 | Completed | Create `lib/core/providers/providers.dart` — global Riverpod providers for Dio, Isar, SecureStorage | Mobile | High | 1, 4, 5 |
+| 9 | Completed | Create `lib/core/mock/mock_events.dart` — 10+ realistic mock Event objects | Mobile | Medium | Phase 01 |
+| 10 | Completed | Create `lib/core/mock/mock_user.dart` — mock User object for auth | Mobile | Medium | Phase 01 |
+| 11 | Completed | Create `lib/features/auth/models/user_model.dart` — Freezed User model with json_serializable | Mobile | High | Phase 01 |
+| 12 | Completed | Create `lib/features/events/models/event_model.dart` — Freezed Event model with json_serializable | Mobile | High | Phase 01 |
+| 13 | Completed | Create mock repository implementations for Events and Auth (return mock data with simulated delay) | Mobile | High | 9, 10, 11, 12 |
+| 14 | Completed | Update `lib/main.dart` — initialize Isar, configure ProviderScope, set up app entry point | Mobile | High | 5, 8 |
+| 15 | Completed | Create `lib/app.dart` — MaterialApp.router with GoRouter and theme injection | Mobile | High | 7, 14 |
+| 16 | Completed | Create placeholder `SplashScreen` widget (simple, no logic yet) | Mobile | Medium | 15 |
+| 17 | Completed | Create placeholder `AuthScreen` widget (simple, no logic yet) | Mobile | Medium | 15 |
+| 18 | Completed | Verify full app boots to splash screen with no errors | Mobile | High | All above |
 
 ---
 
 ## Completed Work
 
-> No work has been completed in this phase yet.
+> Created core infrastructure files and models.
 
 | Date | Completed | Files Modified | Notes |
 |------|-----------|----------------|-------|
-| — | — | — | — |
+| 2026-07-13 | All Tasks | `lib/core/network/*`, `lib/core/database/*`, `lib/core/router/*`, `lib/core/mock/*`, `lib/features/*`, `lib/main.dart`, `lib/app.dart` | Completed all structural setup for Phase 2. Run build_runner to generate code. |
 
 ---
 
@@ -100,19 +100,17 @@ All tasks remain. The **critical path** is:
 - This phase builds the **infrastructure layer** — no visual screens beyond simple placeholders.
 
 ### What Was Done
-- Nothing yet.
+- Created Freezed models for User and Event.
+- Created Network layer (Dio client, API client, Auth interceptor).
+- Created Storage layer (SecureStorage) and Database layer (Isar).
+- Configured GoRouter and Providers.
+- Wired `main.dart` with `ProviderScope`.
 
 ### What Remains
-- All 18 tasks. See checklist above.
+- Phase 2 is complete. Proceed to Phase 03.
 
 ### Suggested Next Steps
-1. Create the Freezed models first (User, Event) — they're needed by everything else.
-2. Run `dart run build_runner build` to generate model code.
-3. Build the network layer (Dio + interceptors).
-4. Build storage and database layers.
-5. Set up GoRouter with auth redirect.
-6. Create mock data and repositories.
-7. Wire everything in main.dart and app.dart.
+- Transition to Phase 03 in `ROADMAP.md`.
 
 ### Warnings
 - Isar initialization must happen **before** `runApp()` — typically in `main()`.

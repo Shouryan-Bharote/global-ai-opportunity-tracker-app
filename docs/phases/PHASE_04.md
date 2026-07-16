@@ -1,6 +1,6 @@
 # Phase 04 — Navigation Shell
 
-> **Status**: Not Started | **Completion**: 0% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
+> **Status**: Completed | **Completion**: 100% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
 
 ---
 
@@ -22,24 +22,26 @@
 
 | # | Status | Task | Module | Priority | Dependencies |
 |---|:------:|------|:------:|:--------:|:------------:|
-| 1 | Not Started | Create `lib/core/widgets/app_shell.dart` — Scaffold with bottom navigation bar (4 tabs: Home, Explore, Schedule, Profile) | Mobile | High | Phase 03 |
-| 2 | Not Started | Create `lib/features/home/presentation/screens/home_screen.dart` — placeholder with "Home" title and mock event list | Mobile | High | 1 |
-| 3 | Not Started | Create `lib/features/explore/presentation/screens/explore_screen.dart` — placeholder with "Explore" title and mock search bar | Mobile | High | 1 |
-| 4 | Not Started | Create `lib/features/schedule/presentation/screens/schedule_screen.dart` — placeholder with "Schedule" title and mock calendar/list | Mobile | High | 1 |
-| 5 | Not Started | Create `lib/features/profile/presentation/screens/profile_screen.dart` — placeholder with user name, avatar placeholder, menu items | Mobile | High | 1 |
-| 6 | Not Started | Create `lib/features/events/presentation/screens/event_details_screen.dart` — full Event Details screen populated with mock data (banner, title, date, mode, description, tags, action buttons) | Mobile | High | Phase 02 |
-| 7 | Not Started | Create `lib/core/widgets/event_card.dart` — reusable event card widget used in all lists (Home, Explore, Schedule, Notifications) | Mobile | High | Phase 02 |
-| 8 | Not Started | Update `lib/core/router/app_router.dart` — wire ShellRoute to AppShell, add all tab routes, add `/events/:id` route, remove placeholder screens | Mobile | High | 1, 2, 3, 4, 5, 6 |
-| 9 | Not Started | Wire `event_card.dart` tap to navigate to `/events/:id` | Mobile | Medium | 6, 7, 8 |
-| 10 | Not Started | Verify navigation: all tabs switch correctly, back stack works, event details opens from any tab, back button returns correctly | Mobile | High | All above |
-| 11 | Not Started | Ensure navigation state is preserved when switching tabs (scroll position, form input, etc.) | Mobile | Medium | 8 |
-| 12 | Not Started | Create `lib/features/settings/presentation/screens/settings_screen.dart` — placeholder settings page | Mobile | Low | 5 |
+| 1 | Completed | Create `lib/core/widgets/app_shell.dart` — Scaffold with bottom navigation bar (4 tabs: Home, Explore, Schedule, Profile) | Mobile | High | Phase 03 |
+| 2 | Completed | Create `lib/features/home/presentation/screens/home_screen.dart` — placeholder with "Home" title and mock event list | Mobile | High | 1 |
+| 3 | Completed | Create `lib/features/explore/presentation/screens/explore_screen.dart` — placeholder with "Explore" title and mock search bar | Mobile | High | 1 |
+| 4 | Completed | Create `lib/features/schedule/presentation/screens/schedule_screen.dart` — placeholder with "Schedule" title and mock calendar/list | Mobile | High | 1 |
+| 5 | Completed | Create `lib/features/profile/presentation/screens/profile_screen.dart` — placeholder with user name, avatar placeholder, menu items | Mobile | High | 1 |
+| 6 | Completed | Create `lib/features/events/presentation/screens/event_details_screen.dart` — full Event Details screen populated with mock data (banner, title, date, mode, description, tags, action buttons) | Mobile | High | Phase 02 |
+| 7 | Completed | Create `lib/core/widgets/event_card.dart` — reusable event card widget used in all lists (Home, Explore, Schedule, Notifications) | Mobile | High | Phase 02 |
+| 8 | Completed | Update `lib/core/router/app_router.dart` — wire ShellRoute to AppShell, add all tab routes, add `/events/:id` route, remove placeholder screens | Mobile | High | 1, 2, 3, 4, 5, 6 |
+| 9 | Completed | Wire `event_card.dart` tap to navigate to `/events/:id` | Mobile | Medium | 6, 7, 8 |
+| 10 | Completed | Verify navigation: all tabs switch correctly, back stack works, event details opens from any tab, back button returns correctly | Mobile | High | All above |
+| 11 | Completed | Ensure navigation state is preserved when switching tabs (scroll position, form input, etc.) | Mobile | Medium | 8 |
+| 12 | Completed | Create `lib/features/settings/presentation/screens/settings_screen.dart` — placeholder settings page | Mobile | Low | 5 |
 
 ---
 
-## Completed Work
+> All tasks completed successfully.
 
-> No work has been completed in this phase yet.
+| Date | Completed | Files Modified | Notes |
+|------|-----------|----------------|-------|
+| 2026-07-15 | All 12 Tasks | `app_shell.dart`, `app_router.dart`, various placeholders | Navigation shell working perfectly with dummy data. |
 
 | Date | Completed | Files Modified | Notes |
 |------|-----------|----------------|-------|
@@ -53,14 +55,7 @@
 
 ---
 
-## Remaining Work
-
-All tasks remain. The **critical path** is:
-
-1. AppShell widget (task 1) → all 4 placeholder tab screens (tasks 2–5)
-2. EventCard reusable widget (task 7) + Event Details screen (task 6)
-3. Update GoRouter (task 8) → wire card taps to navigation (task 9)
-4. Verify navigation works end-to-end (tasks 10–11)
+> All work is complete. Transitioning to Phase 05.
 
 ---
 
