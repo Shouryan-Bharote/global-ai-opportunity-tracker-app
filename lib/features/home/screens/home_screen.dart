@@ -1,14 +1,13 @@
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
-
+import 'package:ai_nexus/features/events/providers/events_provider.dart';
+import 'package:ai_nexus/features/home/providers/home_provider.dart';
 import 'package:ai_nexus/features/home/widgets/category_chips.dart';
 import 'package:ai_nexus/features/home/widgets/explore_category_card.dart';
 import 'package:ai_nexus/features/home/widgets/featured_event_card.dart';
 import 'package:ai_nexus/features/home/widgets/recommended_event_card.dart';
 import 'package:ai_nexus/features/home/widgets/section_title.dart';
 import 'package:ai_nexus/features/home/widgets/upcoming_event_tile.dart';
-import 'package:ai_nexus/features/home/providers/home_provider.dart';
-import 'package:ai_nexus/features/events/providers/events_provider.dart';
 import 'package:ai_nexus/features/profile/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,10 +22,10 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  String selectedCategory = 'Today\'s Events';
+  String selectedCategory = "Today's Events";
 
   final List<CategoryChipData> categories = const [
-    CategoryChipData(label: 'Today\'s Events', icon: Icons.local_fire_department),
+    CategoryChipData(label: "Today's Events", icon: Icons.local_fire_department),
     CategoryChipData(label: 'Meetings', icon: Icons.stars_rounded),
     CategoryChipData(label: 'Hackathons', icon: Icons.hourglass_bottom),
     CategoryChipData(label: 'Online', icon: Icons.public),

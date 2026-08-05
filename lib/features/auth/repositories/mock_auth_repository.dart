@@ -4,7 +4,7 @@ import 'package:ai_nexus/features/auth/models/user_model.dart';
 
 class MockAuthRepository {
   Future<Result<UserModel, Exception>> login(String email, String password) async {
-    await Future.delayed(const Duration(seconds: 1)); // Simulate network
+    await Future<void>.delayed(const Duration(seconds: 1)); // Simulate network
     
     if (email == 'test@example.com' && password == 'password') {
       return const Result.success(MockUser.currentUser);
@@ -14,12 +14,12 @@ class MockAuthRepository {
   }
 
   Future<Result<UserModel, Exception>> register(String name, String email, String password) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future<void>.delayed(const Duration(seconds: 1));
     return Result.success(MockUser.currentUser.copyWith(name: name, email: email));
   }
 
   Future<Result<void, Exception>> logout() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     return const Result.success(null);
   }
 }

@@ -22,7 +22,7 @@ class CustomNavBar extends StatelessWidget {
 }
 
 class _NavBarItem extends StatelessWidget {
-  const _NavBarItem({required this.icon, required this.label, required this.selected, required this.onTap, super.key});
+  const _NavBarItem({required this.icon, required this.label, required this.selected, required this.onTap});
   final IconData icon;
   final String label;
   final bool selected;
@@ -32,7 +32,7 @@ class _NavBarItem extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(28),
         child: SizedBox(width: 56, child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          AnimatedContainer(duration: const Duration(milliseconds: 180), padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: selected ? const Color(0xFF258CF1) : Colors.transparent, shape: BoxShape.circle, boxShadow: selected ? [BoxShadow(color: AppColors.primary.withOpacity(.32), blurRadius: 12, spreadRadius: 5)] : null), child: Icon(icon, color: selected ? Colors.white : Colors.white54, size: 25)),
+          AnimatedContainer(duration: const Duration(milliseconds: 180), padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: selected ? const Color(0xFF258CF1) : Colors.transparent, shape: BoxShape.circle, boxShadow: selected ? [BoxShadow(color: AppColors.primary.withValues(alpha: .32), blurRadius: 12, spreadRadius: 5)] : null), child: Icon(icon, color: selected ? Colors.white : Colors.white54, size: 25)),
           const SizedBox(height: 2),
           Text(label, style: TextStyle(fontSize: 10, color: selected ? const Color(0xFF258CF1) : Colors.white70, fontWeight: selected ? FontWeight.w500 : FontWeight.w400)),
         ])),

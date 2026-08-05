@@ -6,7 +6,7 @@ class EventsNotifier extends AsyncNotifier<List<EventModel>> {
   @override
   Future<List<EventModel>> build() async {
     final repository = ref.watch(eventRepositoryProvider);
-    return await repository.getEvents();
+    return repository.getEvents();
   }
 
   Future<void> toggleBookmark(String eventId) async {
@@ -24,7 +24,7 @@ class EventsNotifier extends AsyncNotifier<List<EventModel>> {
 
     try {
       await repository.toggleBookmark(eventId);
-    } catch (e) {
+    } on Exception catch (_) {
       // Revert on failure by refreshing
       ref.invalidateSelf();
     }

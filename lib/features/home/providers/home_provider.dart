@@ -3,7 +3,7 @@ import 'package:ai_nexus/features/events/providers/events_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // StateProvider for the selected category filter
-final selectedCategoryProvider = StateProvider<String>((ref) => 'Today\'s Events');
+final selectedCategoryProvider = StateProvider<String>((ref) => "Today's Events");
 
 // Derived provider that reads from the global eventsProvider (single source of truth).
 // Previously this was a standalone FutureProvider hitting MockEvents directly.
@@ -21,7 +21,7 @@ final filteredEventsProvider = Provider<List<EventModel>>((ref) {
   final allEvents = eventsAsyncValue.valueOrNull ?? [];
 
   return allEvents.where((event) {
-    if (category == 'Today\'s Events') {
+    if (category == "Today's Events") {
       // Check if start date is today
       final now = DateTime.now();
       return event.startDate.year == now.year &&

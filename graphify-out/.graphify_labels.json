@@ -79,9 +79,12 @@
   "77": "event_card.dart",
   "78": "category_chips.dart",
   "79": "Result",
+  "80": "custom_text_field.dart",
+  "81": "splash_screen.dart",
   "82": "env_config.dart",
   "83": "Development Status",
   "84": "Task Queue",
+  "85": "main.dart",
   "86": "app_shadows.dart",
   "87": "validators.dart",
   "88": "Known Issues",
@@ -98,5 +101,11 @@
   "99": "String?",
   "100": "AI Nexus Flutter Project",
   "101": "Flutter Framework",
-  "102": "CURRENT_CONTEXT.md"
+  "102": "CURRENT_CONTEXT.md",
+  "103": "dio_client.dart",
+  "104": "auth_interceptor.dart",
+  "105": "mock_event_repository.dart",
+  "106": "package:ai_nexus/features/events/models/event_model.dart",
+  "107": "step_indicator.dart",
+  "108": "build"
 }

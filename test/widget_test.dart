@@ -10,15 +10,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('App boots and shows SplashScreen', (WidgetTester tester) async {
+  testWidgets('App boots and shows SplashScreen', (tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(
       const ProviderScope(
         child: App(),
       ),
     );
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Verify that the splash screen shows 'AI'.
     expect(find.text('AI'), findsOneWidget);
+
+    // Advance timer to complete splash screen navigation delay
+    await tester.pump(const Duration(seconds: 2));
   });
 }

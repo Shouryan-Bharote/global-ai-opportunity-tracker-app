@@ -4,7 +4,6 @@ part 'event_model.freezed.dart';
 
 @freezed
 class EventModel with _$EventModel {
-  const EventModel._();
   const factory EventModel({
     required String id,
     required String title,
@@ -19,6 +18,7 @@ class EventModel with _$EventModel {
     String? imageUrl,
     @Default(false) bool isBookmarked,
   }) = _EventModel;
+  const EventModel._();
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(

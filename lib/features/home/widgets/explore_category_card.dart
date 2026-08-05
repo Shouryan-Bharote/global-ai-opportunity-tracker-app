@@ -1,5 +1,4 @@
 import 'package:ai_nexus/core/theme/app_colors.dart';
-import 'package:ai_nexus/core/theme/app_radius.dart';
 import 'package:flutter/material.dart';
 
 class ExploreCategoryCard extends StatefulWidget {
@@ -36,7 +35,7 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.92).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.92).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -82,13 +81,12 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
                     color: (widget.isSelected || isPressed)
-                        ? AppColors.primary.withOpacity(0.45)
-                        : AppColors.border.withOpacity(0.6),
+                        ? AppColors.primary.withValues(alpha: 0.45)
+                        : AppColors.border.withValues(alpha: 0.6),
                     width: 1.5,
                   ),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
@@ -126,7 +124,7 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                       widget.subtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: widget.isSelected
-                                ? AppColors.primary.withOpacity(0.7)
+                                ? AppColors.primary.withValues(alpha: 0.7)
                                 : AppColors.textSecondary,
                             fontSize: 13,
                           ),

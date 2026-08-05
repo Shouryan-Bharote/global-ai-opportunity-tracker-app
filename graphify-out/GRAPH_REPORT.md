@@ -1,16 +1,16 @@
-# Graph Report - global-ai-opportunity-tracker-app  (2026-07-16)
+# Graph Report - global-ai-opportunity-tracker-app  (2026-08-05)
 
 ## Corpus Check
-- 130 files · ~56,154 words
+- 130 files · ~56,462 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1498 nodes · 1875 edges · 100 communities (83 shown, 17 thin omitted)
+- 1506 nodes · 1893 edges · 109 communities (91 shown, 18 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3d194944`
+- Built from commit: `eb02c788`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -91,9 +91,12 @@
 - [[_COMMUNITY_event_card.dart|event_card.dart]]
 - [[_COMMUNITY_category_chips.dart|category_chips.dart]]
 - [[_COMMUNITY_Result|Result]]
+- [[_COMMUNITY_custom_text_field.dart|custom_text_field.dart]]
+- [[_COMMUNITY_splash_screen.dart|splash_screen.dart]]
 - [[_COMMUNITY_env_config.dart|env_config.dart]]
 - [[_COMMUNITY_Development Status|Development Status]]
 - [[_COMMUNITY_Task Queue|Task Queue]]
+- [[_COMMUNITY_main.dart|main.dart]]
 - [[_COMMUNITY_app_shadows.dart|app_shadows.dart]]
 - [[_COMMUNITY_validators.dart|validators.dart]]
 - [[_COMMUNITY_Known Issues|Known Issues]]
@@ -110,6 +113,12 @@
 - [[_COMMUNITY_String|String?]]
 - [[_COMMUNITY_AI Nexus Flutter Project|AI Nexus Flutter Project]]
 - [[_COMMUNITY_Flutter Framework|Flutter Framework]]
+- [[_COMMUNITY_dio_client.dart|dio_client.dart]]
+- [[_COMMUNITY_auth_interceptor.dart|auth_interceptor.dart]]
+- [[_COMMUNITY_mock_event_repository.dart|mock_event_repository.dart]]
+- [[_COMMUNITY_packageai_nexusfeatureseventsmodelsevent_model.dart|package:ai_nexus/features/events/models/event_model.dart]]
+- [[_COMMUNITY_step_indicator.dart|step_indicator.dart]]
+- [[_COMMUNITY_build|build]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Mobile App Architecture` - 13 edges
@@ -120,8 +129,8 @@
 6. `_HomeScreenState` - 10 edges
 7. `Feature Specifications` - 10 edges
 8. `AI Event Tracker — Project Overview` - 10 edges
-9. `Phase 01 — Research & Design System` - 9 edges
-10. `Phase 02 — Core Infrastructure` - 9 edges
+9. `authProvider` - 9 edges
+10. `Phase 01 — Research & Design System` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Linux Build System` --semantically_similar_to--> `Windows Build System`  [INFERRED] [semantically similar]
@@ -142,7 +151,7 @@
 - **Multi-Platform Build Systems** — linux_cmakelists_linux_build, windows_cmakelists_windows_build, web_index_web_entry [INFERRED 0.75]
 - **App Branding Assets** — app_icon_android, app_icon_ios, app_icon_macos, web_favicon, web_pwa_icon [INFERRED 0.85]
 
-## Communities (100 total, 17 thin omitted)
+## Communities (109 total, 18 thin omitted)
 
 ### Community 0 - "Windows Platform Runner"
 Cohesion: 0.01
@@ -157,12 +166,12 @@ Cohesion: 0.09
 Nodes (17): Any, Bool, Flutter, FlutterAppDelegate, FlutterImplicitEngineBridge, FlutterImplicitEngineDelegate, FlutterSceneDelegate, AppDelegate (+9 more)
 
 ### Community 3 - "Flutter App Core"
-Cohesion: 0.05
-Nodes (38): Dio, Dio get, Interceptor, IsarService, ApiClient, _dioClient, AuthInterceptor, onError (+30 more)
+Cohesion: 0.14
+Nodes (14): IsarService, ApiClient, _dioClient, DioClient, apiClientProvider, authInterceptor, authInterceptorProvider, dioClient (+6 more)
 
 ### Community 4 - "Windows Flutter Window"
-Cohesion: 0.13
-Nodes (18): profileProvider, build, _buildMenuItem, _buildStatItem, _buildVerticalDivider, createState, initState, _interests (+10 more)
+Cohesion: 0.12
+Nodes (19): profileProvider, build, _buildMenuItem, _buildStatItem, _buildVerticalDivider, createState, initState, _interests (+11 more)
 
 ### Community 5 - "iOS App Delegate"
 Cohesion: 0.13
@@ -209,8 +218,8 @@ Cohesion: 0.07
 Nodes (27): 1. Point to a Single Feature, 2. Provide Context Files, 3. Follow Feature Isolation, 4. Testing Convention, AI Agent Guidelines, Checklist: Phase Completion, Commands Reference, Development Setup (+19 more)
 
 ### Community 24 - "macOS Swift Plugin Stub"
-Cohesion: 0.05
-Nodes (42): GlobalKey, GoRouter, App, build, isDarkModeProvider, authState, _rootNavigatorKey, routerProvider (+34 more)
+Cohesion: 0.08
+Nodes (25): GlobalKey, GoRouter, App, build, authState, _rootNavigatorKey, routerProvider, state (+17 more)
 
 ### Community 25 - "app_colors.dart"
 Cohesion: 0.08
@@ -229,8 +238,8 @@ Cohesion: 0.09
 Nodes (23): Architecture Diagram, Assumptions, Blockers, Completed Work, Context, Current Work, Decisions Made, Key Files Reference (+15 more)
 
 ### Community 29 - "package:flutter_riverpod/flutter_riverpod.dart"
-Cohesion: 0.24
-Nodes (9): AsyncNotifier, eventRepositoryProvider, build, EventsNotifier, toggleBookmark, package:ai_nexus/core/providers/repository_providers.dart, package:ai_nexus/features/events/repositories/event_repository.dart, package:ai_nexus/features/events/repositories/mock_event_repository.dart (+1 more)
+Cohesion: 0.21
+Nodes (10): AsyncNotifier, eventRepositoryProvider, build, EventsNotifier, toggleBookmark, List, package:ai_nexus/core/providers/repository_providers.dart, package:ai_nexus/features/events/repositories/event_repository.dart (+2 more)
 
 ### Community 30 - "event_model.dart"
 Cohesion: 0.09
@@ -241,12 +250,12 @@ Cohesion: 0.10
 Nodes (20): 1. Before Starting Work, 1. Update PHASE_XX.md, 2. During Development, 2. Update ROADMAP.md (Only If Phase Status Changed), 3. After Completing Work, 3. Update .state/ Files (If Changed), Add Newly Discovered Tasks, Mark Completed Items (+12 more)
 
 ### Community 32 - "auth_screen.dart"
-Cohesion: 0.09
-Nodes (30): HookConsumerWidget, authProvider, AuthState, AuthScreen, build, build, ForgotPasswordScreen, build (+22 more)
+Cohesion: 0.22
+Nodes (16): AuthState, build, WelcomeScreen, package:ai_nexus/core/theme/app_colors.dart, package:ai_nexus/core/theme/app_spacing.dart, package:ai_nexus/features/auth/providers/auth_provider.dart, package:ai_nexus/features/auth/widgets/custom_text_field.dart, package:ai_nexus/features/auth/widgets/otp_input_field.dart (+8 more)
 
 ### Community 33 - "package:flutter/material.dart"
-Cohesion: 0.40
-Nodes (4): build, currentStep, totalSteps, package:ai_nexus/core/theme/app_spacing.dart
+Cohesion: 0.07
+Nodes (30): HookConsumerWidget, isDarkModeProvider, AppShell, _AppShellState, build, _calculateSelectedIndex, child, createState (+22 more)
 
 ### Community 34 - "Feature Specifications"
 Cohesion: 0.11
@@ -269,16 +278,16 @@ Cohesion: 0.12
 Nodes (15): GetEventEntityCollection, dynamic get, Isar, db, init, _instance, IsarService, db (+7 more)
 
 ### Community 39 - "SingleTickerProviderStateMixin"
-Cohesion: 0.21
-Nodes (17): Bounceable, _BounceableState, _CategoryCardItem, _CategoryCardItemState, _FilterChipItem, _FilterChipItemState, _ResultCardItem, _ResultCardItemState (+9 more)
+Cohesion: 0.17
+Nodes (19): SplashScreen, _SplashScreenState, _CategoryCardItem, _CategoryCardItemState, _FilterChipItem, _FilterChipItemState, _ResultCardItem, _ResultCardItemState (+11 more)
 
 ### Community 40 - "recommended_event_card.dart"
 Cohesion: 0.12
 Nodes (16): build, _controller, createState, date, dispose, gradientColors, imageUrl, initState (+8 more)
 
 ### Community 41 - "explore_search_bar.dart"
-Cohesion: 0.11
-Nodes (17): HookWidget, AppHeader, build, isDarkMode, onThemeToggle, pageTitle, subtitle, build (+9 more)
+Cohesion: 0.15
+Nodes (11): AppHeader, build, isDarkMode, onThemeToggle, pageTitle, subtitle, build, HomeHeader (+3 more)
 
 ### Community 42 - "Phase 01 — Research & Design System"
 Cohesion: 0.12
@@ -329,8 +338,8 @@ Cohesion: 0.14
 Nodes (14): exploreCityProvider, build, city, _controller, createState, dispose, initState, isSelected (+6 more)
 
 ### Community 54 - "explore_filter_chips.dart"
-Cohesion: 0.13
-Nodes (15): AnimationController, exploreFilterProvider, build, _controller, createState, dispose, ExploreFilterChips, initState (+7 more)
+Cohesion: 0.14
+Nodes (14): exploreFilterProvider, build, _controller, createState, dispose, ExploreFilterChips, initState, isSelected (+6 more)
 
 ### Community 55 - "result.dart"
 Cohesion: 0.14
@@ -353,8 +362,8 @@ Cohesion: 0.18
 Nodes (11): FocusNode, exploreSearchQueryProvider, build, createState, dispose, _focusNode, _hasText, initState (+3 more)
 
 ### Community 60 - "explore_results.dart"
-Cohesion: 0.12
-Nodes (17): exploreFilteredEventsProvider, exploreResultsExpandedProvider, build, _controller, createState, day, dispose, ExploreResults (+9 more)
+Cohesion: 0.14
+Nodes (13): _controller, createState, day, dispose, initState, month, onTap, _onTapCancel (+5 more)
 
 ### Community 61 - "home_provider.dart"
 Cohesion: 0.23
@@ -365,48 +374,48 @@ Cohesion: 0.15
 Nodes (12): categories, createState, _getGreeting, selectedCategory, package:ai_nexus/features/home/providers/home_provider.dart, package:ai_nexus/features/home/widgets/category_chips.dart, package:ai_nexus/features/home/widgets/explore_category_card.dart, package:ai_nexus/features/home/widgets/featured_event_card.dart (+4 more)
 
 ### Community 63 - "upcoming_event_tile.dart"
-Cohesion: 0.15
-Nodes (13): build, createState, day, _isPressed, month, onTap, _onTapCancel, _onTapDown (+5 more)
+Cohesion: 0.17
+Nodes (11): build, createState, day, _isPressed, month, onTap, _onTapCancel, _onTapDown (+3 more)
 
 ### Community 64 - "bounceable.dart"
 Cohesion: 0.14
-Nodes (13): Animation, build, child, _controller, createState, dispose, initState, onTap (+5 more)
+Nodes (14): Bounceable, _BounceableState, build, child, _controller, createState, dispose, initState (+6 more)
 
 ### Community 65 - "Rules: Agent Progress & Documentation"
 Cohesion: 0.17
 Nodes (11): Documentation Priority, File Reference, Handoff checklist before ending:, Handoff Requirements, Inconsistency Detection, Phase Status Definitions, Prohibited Actions, Rule: Documentation truth > Code truth (+3 more)
 
 ### Community 66 - "schedule_event_card.dart"
-Cohesion: 0.18
-Nodes (10): _controller, createState, dispose, event, initState, _onTapCancel, _onTapDown, _onTapUp (+2 more)
+Cohesion: 0.13
+Nodes (16): eventsProvider, _buildBottomBar, _findEvent, build, build, _controller, createState, dispose (+8 more)
 
 ### Community 67 - "explore_provider.dart"
-Cohesion: 0.25
-Nodes (7): AsyncValue, activeCategory, activeCity, activeFilter, eventsAsyncValue, searchQuery, whenData
+Cohesion: 0.20
+Nodes (11): AsyncValue, activeCategory, activeCity, activeFilter, eventsAsyncValue, exploreFilteredEventsProvider, exploreResultsExpandedProvider, searchQuery (+3 more)
 
 ### Community 68 - "featured_event_card.dart"
 Cohesion: 0.17
 Nodes (11): build, date, heroTag, imageUrl, isBookmarked, location, onBookmark, onRegister (+3 more)
 
 ### Community 69 - "package:ai_nexus/features/events/models/event_model.dart"
-Cohesion: 0.10
-Nodes (19): events, MockEvents, EventRepository, getEventById, getEvents, getEventsByFilter, searchEvents, toggleBookmark (+11 more)
+Cohesion: 0.25
+Nodes (7): EventRepository, getEventById, getEvents, getEventsByFilter, searchEvents, toggleBookmark, MockEventRepository
 
 ### Community 70 - "app_shell.dart"
-Cohesion: 0.20
-Nodes (9): dart:async, _buildEmptyState, _buildEventList, createState, dispose, initState, _tabController, package:ai_nexus/features/schedule/widgets/schedule_event_card.dart (+1 more)
+Cohesion: 0.18
+Nodes (11): dart:async, _buildEmptyState, _buildEventList, createState, dispose, initState, ScheduleScreen, _ScheduleScreenState (+3 more)
 
 ### Community 71 - "schedule_screen.dart"
-Cohesion: 0.17
-Nodes (16): ConsumerState, ConsumerStatefulWidget, eventsProvider, _buildBottomBar, EventDetailsScreen, _EventDetailsScreenState, _findEvent, ExploreSearchBar (+8 more)
+Cohesion: 0.33
+Nodes (7): ConsumerState, ConsumerStatefulWidget, EventDetailsScreen, _EventDetailsScreenState, ExploreSearchBar, _ExploreSearchBarState, HomeScreen
 
 ### Community 72 - "Decision Categories"
 Cohesion: 0.18
 Nodes (10): Active Decisions, Architecture, Backend (Context Only), Data Layer, Decision Categories, Decisions, Development Process, Notes (+2 more)
 
 ### Community 73 - "VoidCallback"
-Cohesion: 0.12
-Nodes (16): AppTheme, build, controller, CustomTextField, hintText, keyboardType, prefixIcon, build (+8 more)
+Cohesion: 0.11
+Nodes (17): HookWidget, AppTheme, build, controller, CustomTextField, hintText, keyboardType, prefixIcon (+9 more)
 
 ### Community 74 - "QueryBuilder"
 Cohesion: 0.20
@@ -421,8 +430,8 @@ Cohesion: 0.25
 Nodes (7): build, ExploreScreen, package:ai_nexus/features/explore/widgets/explore_categories.dart, package:ai_nexus/features/explore/widgets/explore_filter_chips.dart, package:ai_nexus/features/explore/widgets/explore_results.dart, package:ai_nexus/features/explore/widgets/explore_search_bar.dart, package:ai_nexus/features/explore/widgets/popular_cities.dart
 
 ### Community 77 - "event_card.dart"
-Cohesion: 0.12
-Nodes (14): build, date, EventCard, host, id, imageUrl, onTap, title (+6 more)
+Cohesion: 0.22
+Nodes (8): build, date, EventCard, host, id, imageUrl, onTap, title
 
 ### Community 78 - "category_chips.dart"
 Cohesion: 0.20
@@ -431,6 +440,14 @@ Nodes (9): IconData, build, categories, CategoryChipData, CategoryChips, icon, l
 ### Community 79 - "Result"
 Cohesion: 0.29
 Nodes (8): @freezed, EventModel, _Failure, _Success, Result, UserModel, EventModel, _EventModel
+
+### Community 80 - "custom_text_field.dart"
+Cohesion: 0.15
+Nodes (11): build, isLoading, onPressed, PrimaryButton, text, actionText, build, onActionTap (+3 more)
+
+### Community 81 - "splash_screen.dart"
+Cohesion: 0.20
+Nodes (9): Animation, AnimationController, build, _controller, createState, dispose, _fadeAnimation, initState (+1 more)
 
 ### Community 82 - "env_config.dart"
 Cohesion: 0.33
@@ -444,9 +461,13 @@ Nodes (5): Development Status, Milestone Status, Overall Status, Phase Summary, 
 Cohesion: 0.33
 Nodes (5): Currently Active Tasks, Notes, Task Discovery Log, Task Queue, Upcoming Tasks (Next Phase)
 
+### Community 85 - "main.dart"
+Cohesion: 0.20
+Nodes (8): load, main, package:ai_nexus/app.dart, package:ai_nexus/core/config/env_config.dart, package:ai_nexus/core/database/isar_service.dart, package:flutter/foundation.dart, package:flutter_test/flutter_test.dart, main
+
 ### Community 86 - "app_shadows.dart"
-Cohesion: 0.25
-Nodes (6): AppShadows, card, floatingButton, build, package:flutter/material.dart, static const List
+Cohesion: 0.40
+Nodes (4): AppShadows, card, floatingButton, static const List
 
 ### Community 87 - "validators.dart"
 Cohesion: 0.50
@@ -456,25 +477,45 @@ Nodes (3): email, required, Validators
 Cohesion: 0.50
 Nodes (3): Active Blockers, Known Issues, Resolved Issues
 
+### Community 103 - "dio_client.dart"
+Cohesion: 0.22
+Nodes (8): Dio, Dio get, _dio, _logger, Logger, package:ai_nexus/core/constants/api_constants.dart, package:ai_nexus/core/network/auth_interceptor.dart, package:logger/logger.dart
+
+### Community 104 - "auth_interceptor.dart"
+Cohesion: 0.22
+Nodes (8): Interceptor, AuthInterceptor, onError, onRequest, _secureStorage, SecureStorage, package:ai_nexus/core/storage/secure_storage.dart, package:dio/dio.dart
+
+### Community 105 - "mock_event_repository.dart"
+Cohesion: 0.25
+Nodes (7): _events, getEventById, getEvents, getEventsByFilter, searchEvents, toggleBookmark, package:ai_nexus/core/mock/mock_events.dart
+
+### Community 106 - "package:ai_nexus/features/events/models/event_model.dart"
+Cohesion: 0.40
+Nodes (4): events, MockEvents, package:ai_nexus/features/events/models/event_model.dart, static final List
+
+### Community 107 - "step_indicator.dart"
+Cohesion: 0.40
+Nodes (4): build, currentStep, StepIndicator, totalSteps
+
 ## Knowledge Gaps
-- **957 isolated node(s):** `PackageDescription`, `flutter_export_environment.sh script`, `XCTest`, `+registerWithRegistry`, `EnvConfig` (+952 more)
+- **963 isolated node(s):** `PackageDescription`, `flutter_export_environment.sh script`, `XCTest`, `+registerWithRegistry`, `EnvConfig` (+958 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Phase 08 — Offline Mode` connect `Phase 08 — Offline Mode` to `iOS App Delegate`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Why does `Phase 01 — Research & Design System` connect `Phase 01 — Research & Design System` to `iOS App Delegate`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **Why does `Phase 06 — Event Details` connect `Phase 06 — Event Details` to `iOS App Delegate`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **Why does `Development Workflow & AI Agent Guide` connect `macOS Build Environment` to `iOS App Delegate`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects `PackageDescription`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `flutter_export_environment.sh script` to the rest of the system?**
-  _958 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _964 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Windows Platform Runner` be split into smaller, more focused modules?**
   _Cohesion score 0.009259259259259259 - nodes in this community are weakly interconnected._
 - **Should `Linux Platform Runner` be split into smaller, more focused modules?**
   _Cohesion score 0.05176470588235294 - nodes in this community are weakly interconnected._
 - **Should `iOS Plugin Registration` be split into smaller, more focused modules?**
   _Cohesion score 0.08615384615384615 - nodes in this community are weakly interconnected._
-- **Should `Flutter App Core` be split into smaller, more focused modules?**
-  _Cohesion score 0.052854122621564484 - nodes in this community are weakly interconnected._

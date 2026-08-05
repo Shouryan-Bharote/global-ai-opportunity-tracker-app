@@ -1,12 +1,12 @@
 import 'dart:async';
+
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/widgets/bounceable.dart';
-
 import 'package:ai_nexus/features/auth/providers/auth_provider.dart';
 import 'package:ai_nexus/features/events/providers/events_provider.dart';
-import 'package:ai_nexus/features/profile/widgets/profile_header.dart';
 import 'package:ai_nexus/features/profile/providers/profile_provider.dart';
+import 'package:ai_nexus/features/profile/widgets/profile_header.dart';
 import 'package:ai_nexus/features/schedule/providers/schedule_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -59,7 +59,7 @@ class _FilterChipItemState extends State<_FilterChipItem> with SingleTickerProvi
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -107,8 +107,8 @@ class _FilterChipItemState extends State<_FilterChipItem> with SingleTickerProvi
                     color: widget.isSelected 
                         ? Colors.transparent 
                         : isPressed 
-                            ? AppColors.primary.withOpacity(0.45) 
-                            : Colors.grey.withOpacity(0.3),
+                            ? AppColors.primary.withValues(alpha: 0.45) 
+                            : Colors.grey.withValues(alpha: 0.3),
                     width: 1.5,
                   ),
                 ),

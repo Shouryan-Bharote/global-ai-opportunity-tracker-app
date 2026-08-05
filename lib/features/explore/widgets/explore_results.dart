@@ -153,7 +153,7 @@ class _ResultCardItemState extends State<_ResultCardItem> with SingleTickerProvi
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -192,8 +192,8 @@ class _ResultCardItemState extends State<_ResultCardItem> with SingleTickerProvi
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isPressed 
-                      ? AppColors.primary.withOpacity(0.45) 
-                      : Colors.grey.withOpacity(0.3),
+                      ? AppColors.primary.withValues(alpha: 0.45) 
+                      : Colors.grey.withValues(alpha: 0.3),
                   width: 1.5,
                 ),
               ),
@@ -202,7 +202,7 @@ class _ResultCardItemState extends State<_ResultCardItem> with SingleTickerProvi
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.purple.shade100.withOpacity(0.5),
+                      color: Colors.purple.shade100.withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.purple.shade200),
                     ),

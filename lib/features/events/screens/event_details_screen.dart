@@ -37,11 +37,9 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
   EventModel? _findEvent() {
     final eventsAsync = ref.watch(eventsProvider);
     final events = eventsAsync.valueOrNull ?? [];
-    try {
-      return events.firstWhere((e) => e.id == widget.eventId);
-    } catch (_) {
-      return null;
-    }
+    final index = events.indexWhere((e) => e.id == widget.eventId);
+    if (index == -1) return null;
+    return events[index];
   }
 
   @override
@@ -66,7 +64,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              expandedHeight: 440.0,
+              expandedHeight: 440,
               pinned: true,
               backgroundColor: Colors.black,
               elevation: 0,
@@ -101,8 +99,8 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                     Image.network(
                       widget.imageUrl ?? 'https://picsum.photos/800/600?random=${widget.eventId.hashCode}',
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: AppColors.accentPurple.withOpacity(0.3),
+                      errorBuilder: (context, error, stackTrace) => ColoredBox(
+                        color: AppColors.accentPurple.withValues(alpha: 0.3),
                         child: const Icon(Icons.event, size: 80, color: Colors.white54),
                       ),
                     ),
@@ -113,8 +111,8 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.black.withOpacity(0.4),
-                            Colors.black.withOpacity(0.7),
+                            Colors.black.withValues(alpha: 0.4),
+                            Colors.black.withValues(alpha: 0.7),
                             Colors.black,
                           ],
                           stops: const [0.0, 0.5, 1.0],
@@ -136,7 +134,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                             children: event.tags.take(3).map((tag) => Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.15),
+                                color: Colors.white.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(color: Colors.white24),
                               ),
@@ -169,13 +167,13 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                           ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
+                              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                               child: Container(
                                 padding: const EdgeInsets.all(AppSpacing.s20),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.1),
+                                  color: Colors.white.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.white.withOpacity(0.2)),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                                 ),
                                 child: Column(
                                   children: [
@@ -220,8 +218,8 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                           decoration: BoxDecoration(
                                             color: isLive
-                                                ? Colors.greenAccent.withOpacity(0.2)
-                                                : AppColors.primary.withOpacity(0.2),
+                                                ? Colors.greenAccent.withValues(alpha: 0.2)
+                                                : AppColors.primary.withValues(alpha: 0.2),
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                           child: Row(
@@ -341,7 +339,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border.withOpacity(0.6)),
+            border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,11 +367,11 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
           children: event.tags.map((tag) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              color: AppColors.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
             ),
-            child: Text(tag, style: TextStyle(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.w600)),
+            child: Text(tag, style: const TextStyle(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.w600)),
           )).toList(),
         ),
       ],
@@ -406,7 +404,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
     final hours = duration.inHours;
     
     final scheduleItems = <Map<String, String>>[];
-    var currentTime = event.startDate;
+    final currentTime = event.startDate;
     
     if (hours <= 4) {
       scheduleItems.addAll([
@@ -521,9 +519,9 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.4),
+              color: Colors.white.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.5)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
             ),
             child: Row(
               children: [
@@ -558,7 +556,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                 const SizedBox(width: AppSpacing.s12),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: IconButton(

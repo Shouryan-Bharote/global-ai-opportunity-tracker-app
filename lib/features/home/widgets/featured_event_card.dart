@@ -41,14 +41,14 @@ class FeaturedEventCard extends StatelessWidget {
                 image: NetworkImage(imageUrl!),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.6), // Dark overlay for text readability
+                  Colors.black.withValues(alpha: 0.6), // Dark overlay for text readability
                   BlendMode.darken,
                 ),
               )
             : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),

@@ -25,7 +25,7 @@ class ProfileNotifier extends AsyncNotifier<UserModel?> {
     try {
       final repo = ref.read(profileRepositoryProvider);
       await repo.updateUserProfile(updated);
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       // Revert if error
       state = AsyncValue.error(e, st);
     }
@@ -43,7 +43,7 @@ class ProfileNotifier extends AsyncNotifier<UserModel?> {
     try {
       final repo = ref.read(profileRepositoryProvider);
       await repo.updateUserProfile(updated);
-    } catch (e, st) {
+    } on Exception catch (e, st) {
       // Revert if error
       state = AsyncValue.error(e, st);
     }

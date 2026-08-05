@@ -55,14 +55,14 @@ class _ExploreSearchBarState extends ConsumerState<ExploreSearchBar> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: _isFocused ? AppColors.primary.withOpacity(0.5) : Colors.transparent,
+          color: _isFocused ? AppColors.primary.withValues(alpha: 0.5) : Colors.transparent,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
             color: _isFocused 
-                ? AppColors.primary.withOpacity(0.15) 
-                : Colors.black.withOpacity(0.06),
+                ? AppColors.primary.withValues(alpha: 0.15) 
+                : Colors.black.withValues(alpha: 0.06),
             blurRadius: _isFocused ? 20 : 12,
             offset: Offset(0, _isFocused ? 6 : 4),
             spreadRadius: _isFocused ? 1 : 0,
@@ -143,7 +143,7 @@ class _ExploreSearchBarState extends ConsumerState<ExploreSearchBar> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ) : null,
-              color: _isFocused ? null : AppColors.primary.withOpacity(0.1),
+              color: _isFocused ? null : AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(

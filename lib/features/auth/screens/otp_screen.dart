@@ -25,7 +25,6 @@ class OtpScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: AppSpacing.s24),
               const StepIndicator(totalSteps: 3, currentStep: 2),
@@ -79,10 +78,9 @@ class OtpScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.s24),
               
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    'Didn\'t get OTP? ',
+                    "Didn't get OTP? ",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.textPrimary,
                     ),

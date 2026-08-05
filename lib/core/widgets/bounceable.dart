@@ -27,7 +27,7 @@ class _BounceableState extends State<Bounceable> with SingleTickerProviderStateM
       vsync: this,
       duration: const Duration(milliseconds: 100),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: widget.scaleFactor).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: widget.scaleFactor).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }

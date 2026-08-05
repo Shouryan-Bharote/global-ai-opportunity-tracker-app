@@ -14,23 +14,21 @@ class MockEventRepository implements EventRepository {
   @override
   Future<List<EventModel>> getEvents() async {
     // Simulate network delay to test loading states
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future<void>.delayed(const Duration(milliseconds: 800));
     return List.unmodifiable(_events);
   }
 
   @override
   Future<EventModel?> getEventById(String id) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    try {
-      return _events.firstWhere((event) => event.id == id);
-    } catch (e) {
-      return null;
-    }
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    final index = _events.indexWhere((event) => event.id == id);
+    if (index == -1) return null;
+    return _events[index];
   }
 
   @override
   Future<void> toggleBookmark(String eventId) async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future<void>.delayed(const Duration(milliseconds: 200));
     final index = _events.indexWhere((event) => event.id == eventId);
     if (index != -1) {
       final currentEvent = _events[index];
@@ -40,7 +38,7 @@ class MockEventRepository implements EventRepository {
 
   @override
   Future<List<EventModel>> searchEvents(String query) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 400));
     if (query.isEmpty) return List.unmodifiable(_events);
 
     final lowerQuery = query.toLowerCase();
@@ -58,7 +56,7 @@ class MockEventRepository implements EventRepository {
     bool? isOnline,
     List<String>? tags,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 400));
 
     return _events.where((event) {
       // Filter by category (matches tag)

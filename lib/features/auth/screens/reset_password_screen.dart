@@ -25,7 +25,6 @@ class ResetPasswordScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: AppSpacing.s24),
               const StepIndicator(totalSteps: 3, currentStep: 3),

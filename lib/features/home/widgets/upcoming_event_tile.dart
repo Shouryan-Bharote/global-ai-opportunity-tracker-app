@@ -52,8 +52,8 @@ class _UpcomingEventTileState extends State<UpcomingEventTile> {
           borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(
             color: _isPressed
-                ? AppColors.primary.withOpacity(0.45)
-                : AppColors.border.withOpacity(0.6),
+                ? AppColors.primary.withValues(alpha: 0.45)
+                : AppColors.border.withValues(alpha: 0.6),
             width: 1.5,
           ),
         ),
@@ -67,7 +67,7 @@ class _UpcomingEventTileState extends State<UpcomingEventTile> {
                 color: const Color(0xFFF3E8FF),
                 borderRadius: BorderRadius.circular(12),
                 border:
-                    Border.all(color: AppColors.accentPink.withOpacity(0.3)),
+                    Border.all(color: AppColors.accentPink.withValues(alpha: 0.3)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -12,15 +12,15 @@ class ApiClient {
     T Function(dynamic data)? parser,
   }) async {
     try {
-      final response = await _dioClient.dio.get(
+      final response = await _dioClient.dio.get<dynamic>(
         path,
         queryParameters: queryParameters,
       );
       
       final data = parser != null ? parser(response.data) : response.data as T;
       return Result.success(data);
-    } catch (e) {
-      return Result.failure(Exception(e.toString()));
+    } on Exception catch (e) {
+      return Result.failure(e);
     }
   }
 
