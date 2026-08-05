@@ -9,12 +9,15 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
+    // IMPORTANT: use ref.read — GoRouter must be created ONCE.
+    // Using ref.watch would rebuild App (and reset routerConfig) every
+    // time auth state changes, tearing down the entire navigation stack.
+    final router = ref.read(routerProvider);
 
     return MaterialApp.router(
       title: AppConstants.appName,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.lightTheme, // Using light theme as default for now based on Figma
+      darkTheme: AppTheme.lightTheme,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );

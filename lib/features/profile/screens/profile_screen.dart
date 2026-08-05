@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
@@ -36,8 +35,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Load profile on build
-    unawaited(Future.microtask(() => ref.read(profileProvider.notifier).build()));
+    // profileProvider is auto-initialized by Riverpod — no manual .build() call needed.
   }
 
   Future<void> _showEditProfileSheet(String currentName, String? currentAvatarUrl) async {
