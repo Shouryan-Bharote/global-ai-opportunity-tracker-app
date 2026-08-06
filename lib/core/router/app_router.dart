@@ -16,8 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'root',
+);
 
 /// A [ChangeNotifier] that listens to auth state and notifies GoRouter
 /// to re-evaluate its redirect logic whenever auth state changes.
@@ -47,6 +48,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     // refreshListenable re-evaluates redirect WITHOUT recreating the router.
     refreshListenable: notifier,
     redirect: (context, state) {
+      // final isAuthenticated = notifier.isAuthenticated;
       final isAuthenticated = notifier.isAuthenticated;
 
       final isUnauthenticatedRoute =
@@ -60,7 +62,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // If not authenticated, stay on unauthenticated routes or force to /auth
       if (!isAuthenticated && !isUnauthenticatedRoute) {
-        return '/auth';
+        // return '/auth';
+        return '/home';
       }
 
       // If authenticated, leave splash/auth routes and go to home
@@ -107,19 +110,23 @@ final routerProvider = Provider<GoRouter>((ref) {
           return CustomTransitionPage(
             key: state.pageKey,
             child: EventDetailsScreen(eventId: eventId, imageUrl: imageUrl),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              final offsetAnimation = Tween<Offset>(
-                begin: const Offset(1, 0),
-                end: Offset.zero,
-              ).animate(CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutCubic,
-              ));
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            },
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  final offsetAnimation =
+                      Tween<Offset>(
+                        begin: const Offset(1, 0),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeOutCubic,
+                        ),
+                      );
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
           );
         },
       ),
