@@ -18,7 +18,9 @@ lib/
 │   │   └── env_config.dart           # Reads .env via flutter_dotenv
 │   │
 │   ├── database/
-│   │   ├── isar_service.dart         # Isar initialization & singleton
+│   │   ├── isar_service.dart         # Isar service entry point (conditional export)
+│   │   ├── isar_service_native.dart  # Native Isar database implementation
+│   │   ├── isar_service_stub.dart    # Web Isar stub to prevent JS compilation errors
 │   │   └── collections/              # Isar collection definitions
 │   │       └── event_collection.dart
 │   │
@@ -27,12 +29,7 @@ lib/
 │   │   ├── date_extensions.dart
 │   │   └── build_context_extensions.dart
 │   │
-│   ├── network/
-│   │   ├── dio_client.dart            # Configured Dio instance
-│   │   ├── auth_interceptor.dart      # Attaches JWT to requests
-│   │   └── api_client.dart            # Base API client with error handling
-│   │
-│   ├── router/
+│   ├── mock/\n│   │   ├── mock_events.dart         # Mock event data (used by MockEventRepository)\n│   │   └── mock_user.dart           # Mock user data\n│   │\n│   ├── network/\n│   │   ├── dio_client.dart            # Configured Dio instance\n│   │   ├── auth_interceptor.dart      # Attaches JWT to requests\n│   │   └── api_client.dart            # Base API client with error handling\n│   │\n│   ├── providers/\n│   │   └── repository_providers.dart  # DI: swap MockEventRepository → HttpEventRepository here\n│   │\n│   ├── router/
 │   │   └── app_router.dart            # GoRouter configuration
 │   │
 │   ├── storage/
@@ -78,14 +75,13 @@ lib/
 │   │           └── social_login_button.dart
 │   │
 │   ├── events/
-│   │   ├── data/
-│   │   │   ├── events_repository.dart
-│   │   │   └── events_api_service.dart
 │   │   ├── models/
 │   │   │   └── event_model.dart       # Freezed model
+│   │   ├── repositories/             # ← Repository pattern (abstract + implementations)
+│   │   │   ├── event_repository.dart  #   Abstract interface (contract)
+│   │   │   └── mock_event_repository.dart  # Mock implementation
 │   │   ├── providers/
-│   │   │   ├── events_provider.dart
-│   │   │   └── event_detail_provider.dart
+│   │   │   └── events_provider.dart   # AsyncNotifier — single source of truth
 │   │   └── presentation/
 │   │       ├── screens/
 │   │       │   └── event_details_screen.dart   # Reusable across features

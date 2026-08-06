@@ -12,7 +12,12 @@
 
 | # | Phase | Task | Status | Priority |
 |---|:-----:|------|:------:|:--------:|
-| — | — | No tasks active. Phase 01 has not started. | — | — |
+| 1 | 07 | Verify backend API is deployed and accessible | Not Started | High |
+| 2 | 07 | Update `.env` with backend URL | Not Started | High |
+| 3 | 07 | Implement auth API services & repository | Not Started | High |
+| 4 | 07 | Implement events API services & repository | Not Started | High |
+| 5 | 07 | Implement real bookmark CRUD & sync | Not Started | High |
+| 6 | 07 | Implement real profile management endpoints | Not Started | High |
 
 ---
 
@@ -22,7 +27,10 @@
 
 | # | Phase | Task | Priority |
 |---|:-----:|------|:--------:|
-| — | 02 | Core Infrastructure tasks will appear here once Phase 01 is complete. | — |
+| 1 | 08 | Implement Isar caching for events after fetch | High |
+| 2 | 08 | Implement offline banner status check | Medium |
+| 3 | 08 | Display cached events when disconnected | High |
+| 4 | 08 | Queue bookmark mutations for background sync | High |
 
 ---
 

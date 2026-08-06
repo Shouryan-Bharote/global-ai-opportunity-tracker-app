@@ -304,55 +304,55 @@ This spec is enough for an AI agent to implement the feature independently.
 
 ### Phase 1 — Research ✅
 
-- [ ] Flutter project created and running
-- [ ] Design system defined (`core/theme/`)
-- [ ] Color palette established (light + dark)
-- [ ] Typography scale defined
-- [ ] Spacing and radius constants set
+- [x] Flutter project created and running
+- [x] Design system defined (`core/theme/`)
+- [x] Color palette established (light + dark)
+- [x] Typography scale defined
+- [x] Spacing and radius constants set
 
 ### Phase 2 — Core Infrastructure ✅
 
-- [ ] Dio client configured with interceptors
-- [ ] Riverpod setup with `ProviderContainer`
-- [ ] GoRouter configured with auth redirect
-- [ ] Isar database initialized
-- [ ] `SecureStorage` wrapper ready
-- [ ] Mock data layer in place
-- [ ] `Result` type for error handling
+- [x] Dio client configured with interceptors
+- [x] Riverpod setup with `ProviderContainer`
+- [x] GoRouter configured with auth redirect
+- [x] Isar database initialized
+- [x] `SecureStorage` wrapper ready
+- [x] Mock data layer in place
+- [x] `Result` type for error handling
 
 ### Phase 3 — Authentication ✅
 
-- [ ] Sign In screen with form validation
-- [ ] Sign Up screen with form validation
-- [ ] Mock auth provider (stores token locally)
-- [ ] Auth state persists across app restarts
-- [ ] Token stored in SecureStorage
-- [ ] Redirect to `/auth` when not authenticated
+- [x] Sign In screen with form validation
+- [x] Sign Up screen with form validation
+- [x] Mock auth provider (stores token locally)
+- [x] Auth state persists across app restarts
+- [x] Token stored in SecureStorage
+- [x] Redirect to `/auth` when not authenticated
 
 ### Phase 4 — Navigation Shell ✅
 
-- [ ] AppShell with bottom navigation
-- [ ] All 4 tab routes working
-- [ ] Placeholder screens for all tabs
-- [ ] Navigation state preserved on tab switch
-- [ ] Event details route accessible from all tabs
+- [x] AppShell with bottom navigation
+- [x] All 4 tab routes working
+- [x] Placeholder screens for all tabs
+- [x] Navigation state preserved on tab switch
+- [x] Event details route accessible from all tabs
 
-### Phase 5 — Feature Development ✅
+### Phase 5 — Feature Development ⏳
 
-- [ ] Explore: search + filters working with mock data
-- [ ] Schedule: calendar view + bookmarked events
+- [x] Explore: search + filters working with mock data
+- [x] Schedule: calendar view + bookmarked events
 - [ ] Profile: user info display + menu items
 - [ ] Each feature independently testable
 
 ### Phase 6 — Event Details ✅
 
-- [ ] Reusable event details screen
-- [ ] Bookmark toggle functional
-- [ ] Share action works
-- [ ] Registration link opens in browser
-- [ ] Accessible from all entry points
+- [x] Reusable event details screen
+- [x] Bookmark toggle functional
+- [x] Share action works
+- [x] Registration link opens in browser
+- [x] Accessible from all entry points
 
-### Phase 7 — Backend Integration ✅
+### Phase 7 — Backend Integration 🔲
 
 - [ ] All mock repositories replaced with API versions
 - [ ] Auth uses real JWT from backend
@@ -360,14 +360,14 @@ This spec is enough for an AI agent to implement the feature independently.
 - [ ] Bookmarks synced with backend
 - [ ] Error handling for network failures
 
-### Phase 8 — Offline Mode ✅
+### Phase 8 — Offline Mode 🔲
 
 - [ ] Events cached in Isar after fetch
 - [ ] Offline banner shown when disconnected
 - [ ] Cached data displayed when offline
 - [ ] Bookmarks queued for sync
 
-### Phase 9 — Notifications ✅
+### Phase 9 — Notifications 🔲
 
 - [ ] FCM device token registered on login
 - [ ] Push notifications received in foreground
@@ -375,7 +375,7 @@ This spec is enough for an AI agent to implement the feature independently.
 - [ ] Tap notification → event details
 - [ ] Unread badge count on bell icon
 
-### Phase 10 — Polish ✅
+### Phase 10 — Polish 🔲
 
 - [ ] Dark mode fully implemented
 - [ ] Page transition animations

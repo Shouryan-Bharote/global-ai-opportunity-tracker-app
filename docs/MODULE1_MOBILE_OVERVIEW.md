@@ -209,16 +209,16 @@ lib/
 
 | Phase | Focus | Backend? | Status |
 |:-----:|-------|:---:|:------:|
-| 1 | Research + Design System | ❌ | 🔲 Todo |
-| 2 | Core Infrastructure (Dio, Riverpod, Router, Isar) | ❌ | 🔲 Todo |
-| 3 | Authentication (mock) | ❌ | 🔲 Todo |
-| 4 | Navigation Shell (all screens, dummy data) | ❌ | 🔲 Todo |
-| 5 | Feature Development (Explore, Schedule, Profile) | ❌ | 🔲 Todo |
-| 6 | Event Details (reusable screen) | ❌ | 🔲 Todo |
-| 7 | Backend Integration (swap mock → real API) | ✅ | 🔲 Todo |
-| 8 | Offline Mode (Isar caching) | ✅ | 🔲 Todo |
-| 9 | Notifications (FCM) | ✅ | 🔲 Todo |
-| 10 | Polish (dark mode, animations, testing) | ✅ | 🔲 Todo |
+| 1 | Research + Design System | ❌ | 🟢 Completed |
+| 2 | Core Infrastructure (Dio, Riverpod, Router, Isar) | ❌ | 🟢 Completed |
+| 3 | Authentication (mock) | ❌ | 🟢 Completed |
+| 4 | Navigation Shell (all screens, dummy data) | ❌ | 🟢 Completed |
+| 5 | Feature Development (Explore, Schedule, Profile) | ❌ | 🔵 In Progress |
+| 6 | Event Details (reusable screen) | ❌ | 🟢 Completed |
+| 7 | Backend Integration (swap mock → real API) | ✅ | ⚪ Not Started |
+| 8 | Offline Mode (Isar caching) | ✅ | ⚪ Not Started |
+| 9 | Notifications (FCM) | ✅ | ⚪ Not Started |
+| 10 | Polish (dark mode, animations, testing) | ✅ | ⚪ Not Started |
 
 > **Phases 1–6 are fully independent of the backend.** The entire UI can be built with mock data.
 
@@ -260,4 +260,4 @@ cat pubspec.yaml              # See dependencies
 ls lib/                       # See current structure
 ```
 
-> **Current Status**: The project is a freshly created Flutter project with only `main.dart` and the default `pubspec.yaml`. No dependencies beyond `cupertino_icons` and `flutter_lints` have been added. Development has not yet started.
+> **Current Status**: Core infrastructure, authentication shell, and navigation shell are fully complete. Feature development (Phase 5) is in progress (Explore and Schedule features are fully implemented and visually polished; Profile remains). The database-agnostic Repository Pattern has been fully migrated.

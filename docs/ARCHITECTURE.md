@@ -166,38 +166,80 @@ final goRouter = GoRouter(
 
 ## Data Layer Architecture
 
-### Repository Pattern
+### Repository Pattern (Implemented — Decision D11)
 
-Every feature that accesses data has a **repository**. The repository abstracts the data source (network vs. local cache).
+Every feature that accesses data has a **repository**. The repository uses an **abstract interface** so that implementations can be swapped without changing any UI code.
 
 ```mermaid
-graph LR
-    subgraph Repository
-        R[EventsRepository]
-        R -->|cache miss| API[EventsApiService → Dio]
-        R -->|cache hit| DB[Isar Events Collection]
-        R -->|save| DB
-    end
+graph TD
+    UI["UI Screens"] -->|watch| P["Feature Providers"]
+    P -->|derive from| EN["eventsProvider (AsyncNotifier)"]
+    EN -->|calls methods on| R["EventRepository (abstract)"]
+    R -->|currently| M["MockEventRepository"]
+    R -->|future| H["HttpEventRepository"]
+    R -->|future| F["FirebaseEventRepository"]
+    
+    M -->|reads| MD["MockEvents (in-memory)"]
+    H -->|calls| API["REST API via Dio"]
+    F -->|calls| FB["Firebase Firestore"]
 ```
 
-### Example Repository
+**Swap point:** `lib/core/providers/repository_providers.dart` — change ONE line to switch implementations.
+
+### Abstract Interface
 
 ```dart
-// lib/features/events/data/events_repository.dart
+// lib/features/events/repositories/event_repository.dart
 
-class EventsRepository {
-  final EventsApiService _api;
-  final Isar _isar;
+abstract class EventRepository {
+  Future<List<EventModel>> getEvents();
+  Future<EventModel?> getEventById(String id);
+  Future<void> toggleBookmark(String eventId);
+  Future<List<EventModel>> searchEvents(String query);
+  Future<List<EventModel>> getEventsByFilter({
+    String? category,
+    String? city,
+    bool? isOnline,
+    List<String>? tags,
+  });
+}
+```
 
-  Future<List<Event>> getEvents({bool forceRefresh = false}) async {
-    if (!forceRefresh) {
-      final cached = await _isar.events.where().findAll();
-      if (cached.isNotEmpty) return cached;
+### Dependency Injection
+
+```dart
+// lib/core/providers/repository_providers.dart
+
+final eventRepositoryProvider = Provider<EventRepository>((ref) {
+  return MockEventRepository();  // ← Change this ONE line for real backend
+  // return HttpEventRepository(ref.read(dioProvider));
+});
+```
+
+### Global State (AsyncNotifier)
+
+```dart
+// lib/features/events/providers/events_provider.dart
+
+class EventsNotifier extends AsyncNotifier<List<EventModel>> {
+  @override
+  Future<List<EventModel>> build() async {
+    final repository = ref.watch(eventRepositoryProvider);
+    return await repository.getEvents();
+  }
+
+  Future<void> toggleBookmark(String eventId) async {
+    // Optimistic update for snappy UI
+    state = state.whenData((events) => events.map((e) {
+      if (e.id == eventId) return e.copyWith(isBookmarked: !e.isBookmarked);
+      return e;
+    }).toList());
+
+    try {
+      await ref.read(eventRepositoryProvider).toggleBookmark(eventId);
+    } catch (e) {
+      ref.invalidateSelf(); // Revert on failure
     }
-
-    final remote = await _api.fetchEvents();
-    await _isar.writeTxn(() => _isar.events.putAll(remote));
-    return remote;
   }
 }
 ```

@@ -20,6 +20,13 @@
 | D08 | JWT tokens stored in flutter_secure_storage | Secure storage for auth tokens. Auth interceptor attaches token to all requests. | 2026-07-06 | — | Phase 02, 03 |
 | D09 | Cached Hybrid scraping approach (backend team) | 99% of scrapes use cached selectors; LLM only invoked for repair. | 2026-07-06 | — | Backend (context) |
 | D10 | very_good_analysis for linting | Strict, consistent code quality rules across the codebase. | 2026-07-06 | — | All phases |
+| D11 | Repository pattern with abstract `EventRepository` interface | All data access goes through `EventRepository`. Swapping mock for real backend requires changing only `repository_providers.dart`. UI code never touches data sources directly. | 2026-07-16 | 05 | Phase 05–10 |
+| D12 | Conditional Isar compilation for Web compatibility | Auto-generated Isar code has large 64-bit integer values that fail JavaScript representation on web targets. Use conditional exports to stub IsarService on Web, allowing compilation. | 2026-07-16 | 05 | All phases |
+| D13 | Profile metric shift & My Tickets removal | Removed the confusing "My Tickets" barcode/passes layout and changed the "Attended" metric to "Interests" count. The app aggregates third-party listings where tickets are not issued internally. | 2026-07-16 | 07 | Phase 07 |
+| D14 | Pinned AppHeader inside AppShell viewport | Migrated AppHeader into AppShell so that it is fixed globally at the top of the viewport. Sub-screen layouts can scroll underneath without duplicating headers. | 2026-07-16 | 07 | Phase 07 |
+| D15 | Native image picker and system share sheet integration | Integrated `image_picker` for custom avatar selection and `share_plus` to invoke Android/iOS system-level share dialogs with dynamic event info. | 2026-07-16 | 07 | Phase 07 |
+| D16 | Disable Kotlin incremental compilation & upgrade compileSdk | Set `kotlin.incremental=false` to fix Windows relative path cross-drive conflicts, and set `compileSdk=36` to satisfy package dependencies. | 2026-07-16 | 07 | All phases |
+
 
 ---
 
@@ -37,18 +44,24 @@
 - D01 — Feature-first module structure
 - D02 — Riverpod state management
 - D03 — GoRouter navigation
+- D14 — Pinned AppHeader inside AppShell viewport
 
 ### Data Layer
 - D04 — Freezed models
 - D05 — Isar local cache
 - D08 — Secure token storage
+- D11 — Repository pattern (abstract interface + DI swap)
+- D12 — Conditional compilation for Isar stub on Web
 
 ### Development Process
 - D06 — Mock data before backend
 - D10 — Strict linting
+- D16 — Disable Kotlin incremental compilation & upgrade compileSdk to 36
 
 ### UI
 - D07 — Reusable event details screen
+- D13 — Profile metric shift & My Tickets removal
+- D15 — Native image picker and system share sheet integration
 
 ### Backend (Context Only)
 - D09 — Cached hybrid scraping

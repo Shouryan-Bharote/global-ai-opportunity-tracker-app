@@ -1,6 +1,6 @@
 # Phase 06 — Event Details
 
-> **Status**: Not Started | **Completion**: 0% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
+> **Status**: Completed | **Completion**: 100% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
 
 ---
 
@@ -22,28 +22,28 @@
 
 | # | Status | Task | Module | Priority | Dependencies |
 |---|:------:|------|:------:|:--------:|:------------:|
-| 1 | Not Started | Create `lib/features/events/providers/event_detail_provider.dart` — `FutureProvider` that loads a single event by ID from the (mock) repository | Mobile | High | Phase 05 |
-| 2 | Not Started | Create `lib/features/events/presentation/widgets/event_info_tile.dart` — reusable info row widget (icon + label + value) used for date, prize, team size | Mobile | Medium | Phase 05 |
-| 3 | Not Started | Create `lib/features/events/presentation/widgets/bookmark_button.dart` — toggleable bookmark icon button (filled/outline), updates local state | Mobile | High | 1 |
-| 4 | Not Started | Build Event Details screen layout: banner image (with placeholder fallback), title, platform badge, mode badge, date/time display, description, tags chips | Mobile | High | 1, 2 |
-| 5 | Not Started | Add prize and team size sections (conditionally shown only when data exists) | Mobile | Medium | 4 |
-| 6 | Not Started | Add registration deadline with countdown text ("X days left to register") | Mobile | Medium | 4 |
-| 7 | Not Started | Add bookmark action button — toggles bookmark state, shows snackbar confirmation | Mobile | High | 3, 4 |
-| 8 | Not Started | Add share action button — uses `share_plus` or system share sheet to share event title + platform URL | Mobile | Medium | 4 |
-| 9 | Not Started | Add register action button — opens `platform_url` in external browser via `url_launcher` | Mobile | High | 4 |
-| 10 | Not Started | Add UI states: loading shimmer, success (full details), not found ("Event not found" + back button), error (message + retry) | Mobile | High | 4 |
-| 11 | Not Started | Verify Event Details opens correctly from all entry points: Home event card, Explore search result, Schedule bookmark, (future Notifications tap) | Mobile | High | All above |
-| 12 | Not Started | Add `url_launcher` and `share_plus` dependencies to `pubspec.yaml` if not already present | Mobile | High | 8, 9 |
+| 1 | Completed | Create `lib/features/events/providers/event_detail_provider.dart` — `FutureProvider` that loads a single event by ID from the (mock) repository | Mobile | High | Phase 05 |
+| 2 | Completed | Create `lib/features/events/presentation/widgets/event_info_tile.dart` — reusable info row widget (icon + label + value) used for date, prize, team size | Mobile | Medium | Phase 05 |
+| 3 | Completed | Create `lib/features/events/presentation/widgets/bookmark_button.dart` — toggleable bookmark icon button (filled/outline), updates local state | Mobile | High | 1 |
+| 4 | Completed | Build Event Details screen layout: banner image (with placeholder fallback), title, platform badge, mode badge, date/time display, description, tags chips | Mobile | High | 1, 2 |
+| 5 | Completed | Add prize and team size sections (conditionally shown only when data exists) | Mobile | Medium | 4 |
+| 6 | Completed | Add registration deadline with countdown text ("X days left to register") | Mobile | Medium | 4 |
+| 7 | Completed | Add bookmark action button — toggles bookmark state, shows snackbar confirmation | Mobile | High | 3, 4 |
+| 8 | Completed | Add share action button — uses `share_plus` or system share sheet to share event title + platform URL | Mobile | Medium | 4 |
+| 9 | Completed | Add register action button — opens `platform_url` in external browser via `url_launcher` | Mobile | High | 4 |
+| 10 | Completed | Add UI states: loading shimmer, success (full details), not found ("Event not found" + back button), error (message + retry) | Mobile | High | 4 |
+| 11 | Completed | Verify Event Details opens correctly from all entry points: Home event card, Explore search result, Schedule bookmark, (future Notifications tap) | Mobile | High | All above |
+| 12 | Completed | Add `url_launcher` and `share_plus` dependencies to `pubspec.yaml` if not already present | Mobile | High | 8, 9 |
 
 ---
 
 ## Completed Work
 
-> No work has been completed in this phase yet.
+> The reusable Event Details screen is fully complete.
 
 | Date | Completed | Files Modified | Notes |
 |------|-----------|----------------|-------|
-| — | — | — | — |
+| 2026-07-15 | All tasks | `event_details_screen.dart` | Fully built reusable event details with about, speaker, schedule tabs. |
 
 ---
 
