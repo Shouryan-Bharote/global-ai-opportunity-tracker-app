@@ -49,7 +49,6 @@ class _ExploreSearchBarState extends ConsumerState<ExploreSearchBar>
     });
   }
 
-
   @override
   void dispose() {
     _focusNode.dispose();
@@ -186,7 +185,9 @@ class _ExploreSearchBarState extends ConsumerState<ExploreSearchBar>
                           end: Alignment.bottomRight,
                         )
                       : null,
-                  color: _isFocused ? null : AppColors.primary.withValues(alpha: 0.1),
+                  color: _isFocused
+                      ? null
+                      : AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: _isFocused
                       ? [
