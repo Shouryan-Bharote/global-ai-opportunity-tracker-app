@@ -6,31 +6,63 @@ class EventsNotifier extends AsyncNotifier<List<EventModel>> {
   @override
   Future<List<EventModel>> build() async {
     final repository = ref.watch(eventRepositoryProvider);
+
     return repository.getEvents();
   }
 
+  // ============================================================
+  // TOGGLE BOOKMARK
+  // ============================================================
+
   Future<void> toggleBookmark(String eventId) async {
     final repository = ref.read(eventRepositoryProvider);
-    
-    // Optimistic update for snappy UI
-    state = state.whenData((events) {
-      return events.map((e) {
-        if (e.id == eventId) {
-          return e.copyWith(isBookmarked: !e.isBookmarked);
-        }
-        return e;
-      }).toList();
-    });
+
+    // Save the current state in case we need to restore it.
+    final previousState = state;
+
+    // ==========================================================
+    // OPTIMISTIC UPDATE
+    // ==========================================================
+    // Update the UI immediately without waiting for the
+    // repository/database operation.
+
+    state = state.whenData(
+      (events) {
+        return events.map(
+          (event) {
+            if (event.id == eventId) {
+              return event.copyWith(
+                isBookmarked: !event.isBookmarked,
+              );
+            }
+
+            return event;
+          },
+        ).toList();
+      },
+    );
+
+    // ==========================================================
+    // SAVE TO REPOSITORY
+    // ==========================================================
 
     try {
       await repository.toggleBookmark(eventId);
-    } on Exception catch (_) {
-      // Revert on failure by refreshing
-      ref.invalidateSelf();
+    } catch (error) {
+      // ========================================================
+      // ROLLBACK
+      // ========================================================
+      // If saving fails, restore the previous UI state.
+
+      state = previousState;
     }
   }
 }
 
-final eventsProvider = AsyncNotifierProvider<EventsNotifier, List<EventModel>>(() {
-  return EventsNotifier();
-});
+// ============================================================
+// EVENTS PROVIDER
+// ============================================================
+
+final eventsProvider = AsyncNotifierProvider<EventsNotifier, List<EventModel>>(
+  EventsNotifier.new,
+);

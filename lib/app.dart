@@ -1,4 +1,5 @@
 import 'package:ai_nexus/core/constants/app_constants.dart';
+import 'package:ai_nexus/core/providers/theme_provider.dart';
 import 'package:ai_nexus/core/router/app_router.dart';
 import 'package:ai_nexus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +10,27 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // IMPORTANT: use ref.read — GoRouter must be created ONCE.
-    // Using ref.watch would rebuild App (and reset routerConfig) every
-    // time auth state changes, tearing down the entire navigation stack.
+    // Get current dark/light mode
+    final isDarkMode = ref.watch(isDarkModeProvider);
+
+    // Get router
     final router = ref.read(routerProvider);
 
     return MaterialApp.router(
       title: AppConstants.appName,
+
+      // Light theme
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.lightTheme,
+
+      // Dark theme
+      darkTheme: AppTheme.darkTheme,
+
+      // IMPORTANT:
+      // This tells Flutter which theme to display.
+      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+
       routerConfig: router,
+
       debugShowCheckedModeBanner: false,
     );
   }

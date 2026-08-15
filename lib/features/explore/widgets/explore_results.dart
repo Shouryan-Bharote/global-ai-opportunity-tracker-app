@@ -15,55 +15,111 @@ class ExploreResults extends ConsumerWidget {
     final isExpanded = ref.watch(exploreResultsExpandedProvider);
 
     return filteredEventsAsync.when(
+      // ============================================================
+      // LOADING
+      // ============================================================
       loading: () => const Padding(
         padding: EdgeInsets.all(40),
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
-      error: (e, st) => Center(child: Text('Error: $e')),
+
+      // ============================================================
+      // ERROR
+      // ============================================================
+      error: (e, st) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'Error: $e',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ),
+      ),
+
+      // ============================================================
+      // DATA
+      // ============================================================
       data: (filteredEvents) {
-        // Limit to 2 events if not expanded
-        final displayEvents = isExpanded || filteredEvents.length <= 2 
-            ? filteredEvents 
+        final displayEvents = isExpanded || filteredEvents.length <= 2
+            ? filteredEvents
             : filteredEvents.take(2).toList();
 
         return Column(
           children: [
+            // ========================================================
+            // RESULT HEADER
+            // ========================================================
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s24,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Result',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
+
                   Row(
                     children: [
+                      // ==================================================
+                      // MAP BUTTON
+                      // ==================================================
                       IconButton(
                         onPressed: () {
+                          final isDark =
+                              Theme.of(context).brightness == Brightness.dark;
+
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Map View is coming soon!'),
+                            SnackBar(
+                              content: Text(
+                                'Map View is coming soon!',
+                                style: TextStyle(
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
                               behavior: SnackBarBehavior.floating,
+                              backgroundColor: isDark
+                                  ? const Color(0xFF2A2A2A)
+                                  : Colors.white,
                             ),
                           );
                         },
-                        icon: const Icon(Icons.map_outlined, color: Colors.blue),
+                        icon: const Icon(
+                          Icons.map_outlined,
+                          color: Colors.blue,
+                        ),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                         style: IconButton.styleFrom(
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
+
                       const SizedBox(width: 12),
+
+                      // ==================================================
+                      // SEE ALL / SHOW LESS
+                      // ==================================================
                       if (filteredEvents.length > 2)
                         TextButton(
                           onPressed: () {
-                            ref.read(exploreResultsExpandedProvider.notifier).state = !isExpanded;
+                            ref
+                                    .read(
+                                      exploreResultsExpandedProvider.notifier,
+                                    )
+                                    .state =
+                                !isExpanded;
                           },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
@@ -73,7 +129,7 @@ class ExploreResults extends ConsumerWidget {
                           child: Text(
                             isExpanded ? 'Show less' : 'See all',
                             style: const TextStyle(
-                              color: Colors.blue, // Blue link color from design
+                              color: Colors.blue,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -83,36 +139,61 @@ class ExploreResults extends ConsumerWidget {
                 ],
               ),
             ),
+
             const SizedBox(height: AppSpacing.s16),
+
+            // ========================================================
+            // RESULTS LIST
+            // ========================================================
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s24,
+              ),
               child: filteredEvents.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Center(
                         child: Text(
                           'No events found for these filters',
-                          style: TextStyle(color: Colors.grey.shade500),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.55),
+                          ),
                         ),
                       ),
                     )
                   : Column(
                       children: [
-                        ...displayEvents.map((event) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _ResultCardItem(
-                              day: DateFormat('dd').format(event.startDate),
-                              month: DateFormat('MMM').format(event.startDate).toUpperCase(),
-                              title: event.title,
-                              subtitle: '${DateFormat('EEE').format(event.startDate)} . ${event.isOnline ? 'Online' : 'Offline'} . ${event.location}',
-                              onTap: () {
-                                context.push('/events/${event.id}');
-                              },
-                            ),
-                          );
-                        }),
-                        const SizedBox(height: 120), // Bottom padding for navbar
+                        ...displayEvents.map(
+                          (event) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 12,
+                              ),
+                              child: _ResultCardItem(
+                                day: DateFormat('dd').format(event.startDate),
+                                month: DateFormat(
+                                  'MMM',
+                                ).format(event.startDate).toUpperCase(),
+                                title: event.title,
+                                subtitle:
+                                    '${DateFormat('EEE').format(event.startDate)} • '
+                                    '${event.isOnline ? 'Online' : 'Offline'} • '
+                                    '${event.location}',
+                                onTap: () {
+                                  context.push(
+                                    '/events/${event.id}',
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+
+                        // Bottom navigation spacing
+                        const SizedBox(height: 120),
                       ],
                     ),
             ),
@@ -122,6 +203,10 @@ class ExploreResults extends ConsumerWidget {
     );
   }
 }
+
+// ====================================================================
+// RESULT CARD
+// ====================================================================
 
 class _ResultCardItem extends StatefulWidget {
   const _ResultCardItem({
@@ -142,20 +227,30 @@ class _ResultCardItem extends StatefulWidget {
   State<_ResultCardItem> createState() => _ResultCardItemState();
 }
 
-class _ResultCardItemState extends State<_ResultCardItem> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+class _ResultCardItemState extends State<_ResultCardItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+
+    _scaleAnimation =
+        Tween<double>(
+          begin: 1.0,
+          end: 0.95,
+        ).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Curves.easeInOut,
+          ),
+        );
   }
 
   @override
@@ -164,17 +259,31 @@ class _ResultCardItemState extends State<_ResultCardItem> with SingleTickerProvi
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) => _controller.forward();
-  
+  // ================================================================
+  // PRESS ANIMATION
+  // ================================================================
+
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
     widget.onTap();
   }
-  
-  void _onTapCancel() => _controller.reverse();
+
+  void _onTapCancel() {
+    _controller.reverse();
+  }
+
+  // ================================================================
+  // BUILD CARD
+  // ================================================================
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
@@ -183,43 +292,87 @@ class _ResultCardItemState extends State<_ResultCardItem> with SingleTickerProvi
         animation: _controller,
         builder: (context, child) {
           final isPressed = _controller.value > 0.3;
+
           return Transform.scale(
             scale: _scaleAnimation.value,
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.all(16),
+
+              // ======================================================
+              // CARD DECORATION
+              // ======================================================
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+
                 borderRadius: BorderRadius.circular(16),
+
                 border: Border.all(
-                  color: isPressed 
-                      ? AppColors.primary.withValues(alpha: 0.45) 
+                  color: isPressed
+                      ? AppColors.primary.withValues(alpha: 0.45)
+                      : isDark
+                      ? const Color(0xFF444444)
                       : Colors.grey.withValues(alpha: 0.3),
                   width: 1.5,
                 ),
+
+                boxShadow: isDark
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
               ),
+
+              // ======================================================
+              // CARD CONTENT
+              // ======================================================
               child: Row(
                 children: [
+                  // ====================================================
+                  // DATE BOX
+                  // ====================================================
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.purple.shade100.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.purple.shade200),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
                     ),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF30243D)
+                          : Colors.purple.shade100.withValues(alpha: 0.5),
+
+                      borderRadius: BorderRadius.circular(12),
+
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.deepPurple.shade300.withValues(alpha: 0.5)
+                            : Colors.purple.shade200,
+                      ),
+                    ),
+
                     child: Column(
                       children: [
                         Text(
                           widget.day,
-                          style: const TextStyle(
-                            color: Colors.deepPurple,
+                          style: TextStyle(
+                            color: isDark
+                                ? Colors.purple.shade200
+                                : Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
                           ),
                         ),
+
                         Text(
                           widget.month,
-                          style: const TextStyle(
-                            color: Colors.deepPurple,
+                          style: TextStyle(
+                            color: isDark
+                                ? Colors.purple.shade200
+                                : Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
@@ -227,33 +380,52 @@ class _ResultCardItemState extends State<_ResultCardItem> with SingleTickerProvi
                       ],
                     ),
                   ),
+
                   const SizedBox(width: 16),
+
+                  // ====================================================
+                  // EVENT INFORMATION
+                  // ====================================================
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           widget.title,
-                          style: const TextStyle(
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: Colors.black,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
+
                         const SizedBox(height: 4),
+
                         Text(
                           widget.subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Colors.grey.shade500,
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.6)
+                                : Colors.grey.shade500,
                             fontSize: 13,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(
+
+                  const SizedBox(width: 8),
+
+                  // ====================================================
+                  // ARROW
+                  // ====================================================
+                  Icon(
                     Icons.chevron_right,
-                    color: Colors.grey,
+                    color: isDark ? Colors.white54 : Colors.grey,
                   ),
                 ],
               ),

@@ -18,18 +18,22 @@ class AuthScreen extends HookConsumerWidget {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
-    
+
     final authState = ref.watch(authProvider);
 
-    // Listen for auth success/error
+    // Listen for authentication success/error
     ref.listen<AuthState>(authProvider, (previous, next) {
       if (next.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error!), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text(next.error!),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
+
       if (next.isAuthenticated) {
-        context.go('/home'); // Redirect to placeholder home
+        context.go('/home');
       }
     });
 
@@ -43,40 +47,57 @@ class AuthScreen extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: AppSpacing.s40),
+
                 Text(
                   'Welcome Back!',
                   style: AppTypography.textTheme.headlineLarge,
                 ),
+
                 const SizedBox(height: AppSpacing.s8),
+
                 Text(
                   'Sign in to continue',
                   style: AppTypography.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
+
                 const SizedBox(height: AppSpacing.s40),
-                
+
                 CustomTextField(
                   controller: emailController,
                   hintText: 'Email Address',
                   keyboardType: TextInputType.emailAddress,
                   prefixIcon: Icons.email_outlined,
-                  validator: (val) => val == null || val.isEmpty ? 'Please enter your email' : null,
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
                 ),
+
                 const SizedBox(height: AppSpacing.s16),
-                
+
                 PasswordField(
                   controller: passwordController,
                   hintText: 'Password',
-                  validator: (val) => val == null || val.isEmpty ? 'Please enter your password' : null,
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
                 ),
+
                 const SizedBox(height: AppSpacing.s12),
-                
+
+                // FORGOT PASSWORD
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // Forgot password logic
+                      context.push('/forgot-password');
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.primary,
@@ -87,22 +108,28 @@ class AuthScreen extends HookConsumerWidget {
                     child: const Text('Forgot Password?'),
                   ),
                 ),
+
                 const SizedBox(height: AppSpacing.s32),
-                
+
+                // SIGN IN
                 PrimaryButton(
                   text: 'Sign In',
                   isLoading: authState.isLoading,
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      ref.read(authProvider.notifier).login(
-                        emailController.text,
-                        passwordController.text,
-                      );
+                      ref
+                          .read(authProvider.notifier)
+                          .login(
+                            emailController.text,
+                            passwordController.text,
+                          );
                     }
                   },
                 ),
+
                 const SizedBox(height: AppSpacing.s24),
-                
+
+                // SIGN UP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
