@@ -9,17 +9,28 @@ class ExploreFilterChips extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filters = ['All', 'This Week', 'Free', 'Paid', 'Offline', 'Online'];
+    final filters = [
+      'All',
+      'This Week',
+      'Free',
+      'Paid',
+      'Offline',
+      'Online',
+    ];
+
     final selectedFilter = ref.watch(exploreFilterProvider);
 
     return SizedBox(
       height: 48,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s24,
+        ),
         itemCount: filters.length,
         itemBuilder: (context, index) {
           final isSelected = filters[index] == selectedFilter;
+
           return _FilterChipItem(
             label: filters[index],
             isSelected: isSelected,
@@ -48,20 +59,30 @@ class _FilterChipItem extends StatefulWidget {
   State<_FilterChipItem> createState() => _FilterChipItemState();
 }
 
-class _FilterChipItemState extends State<_FilterChipItem> with SingleTickerProviderStateMixin {
+class _FilterChipItemState extends State<_FilterChipItem>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+
+    _scaleAnimation =
+        Tween<double>(
+          begin: 1,
+          end: 0.95,
+        ).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Curves.easeInOut,
+          ),
+        );
   }
 
   @override
@@ -70,17 +91,35 @@ class _FilterChipItemState extends State<_FilterChipItem> with SingleTickerProvi
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) => _controller.forward();
-  
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
     widget.onTap();
   }
-  
-  void _onTapCancel() => _controller.reverse();
+
+  void _onTapCancel() {
+    _controller.reverse();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Check whether the app is currently in dark mode.
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    // Colors for the unselected chip.
+    final unselectedBackground = isDarkMode
+        ? const Color(0xFF2A2A2A)
+        : Colors.white;
+
+    final unselectedText = isDarkMode ? Colors.white : Colors.black87;
+
+    final unselectedBorder = isDarkMode
+        ? const Color(0xFF444444)
+        : Colors.grey.withValues(alpha: 0.3);
+
     return Padding(
       padding: const EdgeInsets.only(right: 12),
       child: GestureDetector(
@@ -91,33 +130,55 @@ class _FilterChipItemState extends State<_FilterChipItem> with SingleTickerProvi
           animation: _controller,
           builder: (context, child) {
             final isPressed = _controller.value > 0.3;
+
             return Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
-                  gradient: widget.isSelected ? const LinearGradient(
-                    colors: [Colors.blue, Colors.lightBlueAccent],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ) : null,
-                  color: widget.isSelected ? null : Colors.white,
+                  // Selected chip stays blue in both modes.
+                  gradient: widget.isSelected
+                      ? const LinearGradient(
+                          colors: [
+                            Colors.blue,
+                            Colors.lightBlueAccent,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+
+                  // Unselected chip changes with dark mode.
+                  color: widget.isSelected ? null : unselectedBackground,
+
                   borderRadius: BorderRadius.circular(24),
+
                   border: Border.all(
-                    color: widget.isSelected 
-                        ? Colors.transparent 
-                        : isPressed 
-                            ? AppColors.primary.withValues(alpha: 0.45) 
-                            : Colors.grey.withValues(alpha: 0.3),
+                    color: widget.isSelected
+                        ? Colors.transparent
+                        : isPressed
+                        ? AppColors.primary.withValues(
+                            alpha: 0.45,
+                          )
+                        : unselectedBorder,
                     width: 1.5,
                   ),
                 ),
+
                 child: Center(
                   child: Text(
                     widget.label,
                     style: TextStyle(
-                      color: widget.isSelected ? Colors.white : Colors.black87,
-                      fontWeight: widget.isSelected ? FontWeight.bold : FontWeight.w500,
+                      // Text changes with dark mode.
+                      color: widget.isSelected ? Colors.white : unselectedText,
+
+                      fontWeight: widget.isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+
                       fontSize: 16,
                     ),
                   ),

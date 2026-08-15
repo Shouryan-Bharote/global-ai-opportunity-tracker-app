@@ -9,40 +9,57 @@ class PopularCities extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cities = ['San Francisco', 'Toronto', 'Singapore', 'India', 'New York'];
+    final cities = [
+      'San Francisco',
+      'Toronto',
+      'Singapore',
+      'India',
+      'New York',
+    ];
+
     final selectedCity = ref.watch(exploreCityProvider);
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.s24),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s24,
+          ),
           child: Text(
             'Popular Cities',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: isDark ? Colors.white : const Color(0xFF1D273F),
             ),
           ),
         ),
+
         const SizedBox(height: AppSpacing.s16),
+
         SizedBox(
           height: 48,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s24,
+            ),
             itemCount: cities.length,
             itemBuilder: (context, index) {
-              final isSelected = cities[index] == selectedCity;
+              final city = cities[index];
+              final isSelected = city == selectedCity;
+
               return _CityChipItem(
-                city: cities[index],
+                city: city,
                 isSelected: isSelected,
                 onTap: () {
-                  if (selectedCity == cities[index]) {
-                    ref.read(exploreCityProvider.notifier).state = null; // deselect
+                  if (selectedCity == city) {
+                    ref.read(exploreCityProvider.notifier).state = null;
                   } else {
-                    ref.read(exploreCityProvider.notifier).state = cities[index];
+                    ref.read(exploreCityProvider.notifier).state = city;
                   }
                 },
               );
@@ -69,20 +86,30 @@ class _CityChipItem extends StatefulWidget {
   State<_CityChipItem> createState() => _CityChipItemState();
 }
 
-class _CityChipItemState extends State<_CityChipItem> with SingleTickerProviderStateMixin {
+class _CityChipItemState extends State<_CityChipItem>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 120),
     );
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+
+    _scaleAnimation =
+        Tween<double>(
+          begin: 1,
+          end: 0.95,
+        ).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Curves.easeInOut,
+          ),
+        );
   }
 
   @override
@@ -91,17 +118,23 @@ class _CityChipItemState extends State<_CityChipItem> with SingleTickerProviderS
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) => _controller.forward();
-  
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
     widget.onTap();
   }
-  
-  void _onTapCancel() => _controller.reverse();
+
+  void _onTapCancel() {
+    _controller.reverse();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.only(right: 12),
       child: GestureDetector(
@@ -112,33 +145,70 @@ class _CityChipItemState extends State<_CityChipItem> with SingleTickerProviderS
           animation: _controller,
           builder: (context, child) {
             final isPressed = _controller.value > 0.3;
+
             return Transform.scale(
               scale: _scaleAnimation.value,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
-                  gradient: widget.isSelected ? const LinearGradient(
-                    colors: [Colors.blue, Colors.lightBlueAccent],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ) : null,
-                  color: widget.isSelected ? null : Colors.white,
+                  gradient: widget.isSelected
+                      ? const LinearGradient(
+                          colors: [
+                            Colors.blue,
+                            Colors.lightBlueAccent,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+
+                  // Normal chip background
+                  color: widget.isSelected
+                      ? null
+                      : isDark
+                      ? const Color(0xFF2A2A2A)
+                      : Colors.white,
+
                   borderRadius: BorderRadius.circular(24),
+
                   border: Border.all(
-                    color: widget.isSelected 
-                        ? Colors.transparent 
-                        : isPressed 
-                            ? AppColors.primary.withValues(alpha: 0.45) 
-                            : Colors.grey.withValues(alpha: 0.3),
+                    color: widget.isSelected
+                        ? Colors.transparent
+                        : isPressed
+                        ? AppColors.primary.withValues(alpha: 0.45)
+                        : isDark
+                        ? const Color(0xFF444444)
+                        : Colors.grey.withValues(alpha: 0.3),
                     width: 1.5,
                   ),
+
+                  boxShadow: widget.isSelected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.25),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]
+                      : null,
                 ),
+
                 child: Center(
                   child: Text(
                     widget.city,
                     style: TextStyle(
-                      color: widget.isSelected ? Colors.white : Colors.black87,
-                      fontWeight: widget.isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: widget.isSelected
+                          ? Colors.white
+                          : isDark
+                          ? Colors.white
+                          : Colors.black87,
+                      fontWeight: widget.isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
                       fontSize: 16,
                     ),
                   ),

@@ -1,4 +1,3 @@
-import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/widgets/explore_categories.dart';
 import 'package:ai_nexus/features/explore/widgets/explore_filter_chips.dart';
@@ -12,32 +11,68 @@ class ExploreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 120),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar
-            ExploreSearchBar(),
-            SizedBox(height: AppSpacing.s24),
-            
-            // Filter Chips
-            ExploreFilterChips(),
-            SizedBox(height: AppSpacing.s32),
-            
-            // Categories
-            ExploreCategories(),
-            SizedBox(height: AppSpacing.s32),
-            
-            // Popular Cities
-            PopularCities(),
-            SizedBox(height: AppSpacing.s32),
-            
-            // Result list
-            ExploreResults(),
-          ],
+    // Get the current app theme.
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      // IMPORTANT:
+      // This automatically changes between light and dark mode.
+      backgroundColor: theme.scaffoldBackgroundColor,
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(
+            bottom: 120,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ==========================================
+              // SEARCH BAR
+              // ==========================================
+              const ExploreSearchBar(),
+
+              const SizedBox(
+                height: AppSpacing.s24,
+              ),
+
+              // ==========================================
+              // FILTER CHIPS
+              // ==========================================
+              const ExploreFilterChips(),
+
+              const SizedBox(
+                height: AppSpacing.s32,
+              ),
+
+              // ==========================================
+              // CATEGORIES
+              // ==========================================
+              const ExploreCategories(),
+
+              const SizedBox(
+                height: AppSpacing.s32,
+              ),
+
+              // ==========================================
+              // POPULAR CITIES
+              // ==========================================
+              const PopularCities(),
+
+              const SizedBox(
+                height: AppSpacing.s32,
+              ),
+
+              // ==========================================
+              // SEARCH RESULTS
+              // ==========================================
+              const ExploreResults(),
+
+              const SizedBox(
+                height: AppSpacing.s24,
+              ),
+            ],
+          ),
         ),
       ),
     );

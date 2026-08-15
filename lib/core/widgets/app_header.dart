@@ -125,9 +125,7 @@ class AppHeader extends StatelessWidget {
                         ],
                       ),
                       child: Icon(
-                        isDarkMode
-                            ? Icons.nightlight_round
-                            : Icons.wb_sunny,
+                        isDarkMode ? Icons.nightlight_round : Icons.wb_sunny,
                         color: isDarkMode ? Colors.indigo : Colors.orange,
                         size: 16,
                       ),
