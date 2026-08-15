@@ -83,9 +83,7 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.large),
                   border: Border.all(
-                    color: isPressed
-                        ? AppColors.primary.withValues(alpha: 0.45)
-                        : AppColors.border.withValues(alpha: 0.6),
+                    color: isPressed ? AppColors.primary.withValues(alpha: 0.45) : AppColors.border.withValues(alpha: 0.6),
                     width: 1.5,
                   ),
                   boxShadow: [
@@ -125,9 +123,7 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                       alignment: Alignment.topLeft,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
+                            horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -135,9 +131,7 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                         child: Text(
                           widget.tag,
                           style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontSize: 10, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -149,42 +143,34 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                           Text(
                             widget.title,
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                              fontSize: 18,
-                            ),
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                  fontSize: 18,
+                                ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: AppSpacing.s8),
                           Row(
                             children: [
-                              const Icon(
-                                Icons.calendar_today,
-                                size: 16,
-                                color: AppColors.textSecondary,
-                              ),
+                              const Icon(Icons.calendar_today,
+                                  size: 16, color: AppColors.textSecondary),
                               const SizedBox(width: AppSpacing.s4),
                               Text(
                                 widget.date,
                                 style: const TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.textSecondary,
-                                ),
+                                    fontSize: 13,
+                                    color: AppColors.textSecondary),
                               ),
                               const SizedBox(width: AppSpacing.s8),
-                              const Icon(
-                                Icons.location_on,
-                                size: 16,
-                                color: AppColors.textSecondary,
-                              ),
+                              const Icon(Icons.location_on,
+                                  size: 16, color: AppColors.textSecondary),
                               const SizedBox(width: AppSpacing.s4),
                               Text(
                                 widget.location,
                                 style: const TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.textSecondary,
-                                ),
+                                    fontSize: 13,
+                                    color: AppColors.textSecondary),
                               ),
                             ],
                           ),
