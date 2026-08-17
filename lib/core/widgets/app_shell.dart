@@ -1,14 +1,22 @@
 import 'package:ai_nexus/core/providers/theme_provider.dart';
 import 'package:ai_nexus/core/widgets/app_header.dart';
 import 'package:ai_nexus/core/widgets/custom_nav_bar.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class AppShell extends ConsumerWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({required this.child, super.key});
 
   final Widget child;
+
+  @override
+  ConsumerState<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends ConsumerState<AppShell> {
+  int _previousIndex = 0;
 
   int _selectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
@@ -29,13 +37,23 @@ class AppShell extends ConsumerWidget {
         context.go('/schedule');
       case 3:
         context.go('/profile');
+      default:
+        break;
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final currentIndex = _selectedIndex(context);
     final isDarkMode = ref.watch(isDarkModeProvider);
+
+    // Calculate direction dynamically:
+    // If moving to a smaller index (e.g. from Schedule/Profile back to Home), reverse is true (slide left-to-right).
+    // If moving to a larger/equal index, reverse is false (slide right-to-left).
+    final isReverse = currentIndex < _previousIndex;
+
+    // Synchronize previous index for subsequent route changes
+    _previousIndex = currentIndex;
 
     final pageTitle = switch (currentIndex) {
       0 => 'AI Nexus',
@@ -55,7 +73,6 @@ class AppShell extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        bottom: false,
         child: Column(
           children: [
             AppHeader(
@@ -68,15 +85,24 @@ class AppShell extends ConsumerWidget {
             Expanded(
               child: Stack(
                 children: [
-                  // Page body — lightweight fade between tabs
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 180),
-                    child: KeyedSubtree(
-                      key: ValueKey(currentIndex),
+                  PageTransitionSwitcher(
+                    duration: const Duration(milliseconds: 150),
+                    reverse: isReverse,
+                    transitionBuilder: (
+                      child,
+                      animation,
+                      secondaryAnimation,
+                    ) => SharedAxisTransition(
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      transitionType: SharedAxisTransitionType.horizontal,
                       child: child,
                     ),
+                    child: KeyedSubtree(
+                      key: ValueKey<int>(currentIndex),
+                      child: widget.child,
+                    ),
                   ),
-                  // Floating nav bar pinned at the bottom
                   Positioned(
                     bottom: 0,
                     left: 0,

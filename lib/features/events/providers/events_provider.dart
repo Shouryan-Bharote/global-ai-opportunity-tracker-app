@@ -60,7 +60,7 @@ class EventsNotifier extends AsyncNotifier<List<EventModel>> {
 
     try {
       await repository.toggleBookmark(eventId);
-    } catch (error) {
+    } on Object catch (_) {
       // ========================================================
       // ROLLBACK
       // ========================================================

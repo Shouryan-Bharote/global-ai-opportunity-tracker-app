@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
@@ -8,17 +7,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ExploreFilterChips extends ConsumerWidget {
   const ExploreFilterChips({super.key});
 
+  static const List<String> _filters = [
+    'All',
+    'This Week',
+    'Free',
+    'Paid',
+    'Offline',
+    'Online',
+  ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filters = [
-      'All',
-      'This Week',
-      'Free',
-      'Paid',
-      'Offline',
-      'Online',
-    ];
-
     final selectedFilter = ref.watch(exploreFilterProvider);
 
     return SizedBox(
@@ -28,15 +27,16 @@ class ExploreFilterChips extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.s24,
         ),
-        itemCount: filters.length,
+        itemCount: _filters.length,
         itemBuilder: (context, index) {
-          final isSelected = filters[index] == selectedFilter;
+          final filter = _filters[index];
+          final isSelected = filter == selectedFilter;
 
           return _FilterChipItem(
-            label: filters[index],
+            label: filter,
             isSelected: isSelected,
             onTap: () {
-              ref.read(exploreFilterProvider.notifier).state = filters[index];
+              ref.read(exploreFilterProvider.notifier).state = filter;
             },
           );
         },
@@ -62,8 +62,8 @@ class _FilterChipItem extends StatefulWidget {
 
 class _FilterChipItemState extends State<_FilterChipItem>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -74,16 +74,15 @@ class _FilterChipItemState extends State<_FilterChipItem>
       duration: const Duration(milliseconds: 120),
     );
 
-    _scaleAnimation =
-        Tween<double>(
-          begin: 1,
-          end: 0.95,
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeInOut,
-          ),
-        );
+    _scaleAnimation = Tween<double>(
+      begin: 1,
+      end: 0.95,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   @override
@@ -93,16 +92,16 @@ class _FilterChipItemState extends State<_FilterChipItem>
   }
 
   void _onTapDown(TapDownDetails details) {
-    unawaited(_controller.forward());
+    _controller.forward();
   }
 
   void _onTapUp(TapUpDetails details) {
-    unawaited(_controller.reverse());
+    _controller.reverse();
     widget.onTap();
   }
 
   void _onTapCancel() {
-    unawaited(_controller.reverse());
+    _controller.reverse();
   }
 
   @override

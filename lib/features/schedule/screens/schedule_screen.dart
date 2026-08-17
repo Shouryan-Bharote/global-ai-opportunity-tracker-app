@@ -188,16 +188,11 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
       const Duration(days: 1),
     );
 
-    final todayEvents = events.where((event) {
+    return events.where((event) {
       return !event.startDate.isBefore(startOfToday) &&
           event.startDate.isBefore(startOfTomorrow);
-    }).toList();
-
-    todayEvents.sort(
-      (a, b) => a.startDate.compareTo(b.startDate),
-    );
-
-    return todayEvents;
+    }).toList()
+      ..sort((a, b) => a.startDate.compareTo(b.startDate));
   }
 
   // ============================================================
@@ -209,15 +204,10 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
   ) {
     final now = DateTime.now();
 
-    final upcomingEvents = events.where((event) {
+    return events.where((event) {
       return event.startDate.isAfter(now);
-    }).toList();
-
-    upcomingEvents.sort(
-      (a, b) => a.startDate.compareTo(b.startDate),
-    );
-
-    return upcomingEvents;
+    }).toList()
+      ..sort((a, b) => a.startDate.compareTo(b.startDate));
   }
 
   // ============================================================

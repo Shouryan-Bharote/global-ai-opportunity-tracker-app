@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/storage/secure_storage.dart';
 import 'package:dio/dio.dart';
 
@@ -21,7 +22,7 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
       // Handle unauthorized (e.g. clear token, trigger logout)
-      _secureStorage.deleteToken();
+      unawaited(_secureStorage.deleteToken());
     }
     
     return handler.next(err);

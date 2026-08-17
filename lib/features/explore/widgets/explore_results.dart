@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
@@ -183,8 +184,10 @@ class ExploreResults extends ConsumerWidget {
                                     '${event.isOnline ? 'Online' : 'Offline'} • '
                                     '${event.location}',
                                 onTap: () {
-                                  context.push(
-                                    '/events/${event.id}',
+                                  unawaited(
+                                    context.push(
+                                      '/events/${event.id}',
+                                    ),
                                   );
                                 },
                               ),

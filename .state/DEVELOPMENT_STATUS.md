@@ -14,7 +14,7 @@
 | **Current Phase** | 07 — Backend Integration |
 | **Phases Completed** | 6 / 10 |
 | **Phases Blocked** | 0 |
-| **Last Updated** | 2026-08-05 |
+| **Last Updated** | 2026-08-18 |
 
 ---
 
@@ -56,6 +56,7 @@
 
 | Date | Change |
 |------|--------|
+| 2026-08-18 | Implemented dynamic directional tab slide-in/slide-out animations in `AppShell` with 150ms transition duration. Integrated dynamic dark mode across `About` and `Sign Out` dialogs in `ProfileScreen`. Resolved `geolocator` package dependencies and updated knowledge graph with `graphify update .`. |
 | 2026-08-05 | Upgraded `SplashScreen` from a static widget to an animated `ConsumerStatefulWidget` with a 2-second navigation timer that routes unauthenticated users to `/auth` and authenticated users to `/home`. All widget tests pass 100%. |
 | 2026-08-05 | Fixed initial route GoRouter redirect bug for `/splash`, added missing `path_provider` dependency in `pubspec.yaml`, fixed test suite (`flutter test` passes 100%), applied 88 automated lint/deprecation fixes, and re-indexed Knowledge Graph with AST parser. |
 | 2026-07-16 | Phase 05 fully completed. Implemented Profile screen feature: ProfileHeader, statistics derived from global events, edit profile name inline dialog, and secure Sign Out confirmations (clearing local token & database cache). |

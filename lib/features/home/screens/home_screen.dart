@@ -48,12 +48,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       final count = scheduleEvents.take(3).length;
       if (count <= 1) return;
 
-      final currentPosition = _featuredPageController.page?.round() ?? _kInitialPage;
-      unawaited(_featuredPageController.animateToPage(
+      final currentPosition =
+          _featuredPageController.page?.round() ?? _kInitialPage;
+      _featuredPageController.animateToPage(
         currentPosition + 1,
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeInOutCubic,
-      ));
+      );
     });
   }
 
@@ -75,7 +76,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool _showAllUpcoming = false;
 
   final categories = const [
-    CategoryChipData(label: "Today's Events", icon: Icons.local_fire_department),
+    CategoryChipData(
+      label: "Today's Events",
+      icon: Icons.local_fire_department,
+    ),
     CategoryChipData(label: 'Meetings', icon: Icons.stars_rounded),
     CategoryChipData(label: 'Hackathons', icon: Icons.hourglass_bottom),
     CategoryChipData(label: 'Online', icon: Icons.public),
@@ -131,8 +135,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     final top3FeaturedEvents = scheduleEvents.take(3).toList();
 
-    final badgeBg = isDarkMode ? const Color(0xFF292929) : const Color(0xFFF0EEF5);
-    final badgeTextColor = isDarkMode ? Colors.grey.shade400 : const Color(0xFF7A869A);
+    final badgeBg = isDarkMode
+        ? const Color(0xFF292929)
+        : const Color(0xFFF0EEF5);
+    final badgeTextColor = isDarkMode
+        ? Colors.grey.shade400
+        : const Color(0xFF7A869A);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -220,8 +228,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   locationAsync.isLoading
                                       ? 'Locating...'
                                       : (hasLocation
-                                          ? 'Near You'
-                                          : 'Location Off (Tap to Enable)'),
+                                            ? 'Near You'
+                                            : 'Location Off (Tap to Enable)'),
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
@@ -300,7 +308,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 ),
                               ),
                               TextSpan(
-                                text: 'Tap to turn on & discover events near you.',
+                                text:
+                                    'Tap to turn on & discover events near you.',
                                 style: TextStyle(
                                   color: isDarkMode
                                       ? Colors.grey.shade400
@@ -368,18 +377,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             child: FeaturedEventCard(
                               title: event.title,
                               subtitle: event.description,
-                              date: DateFormat('MMM d')
-                                  .format(event.startDate),
+                              date: DateFormat('MMM d').format(event.startDate),
                               location: event.location,
-                              imageUrl: event.imageUrl ??
+                              imageUrl:
+                                  event.imageUrl ??
                                   'https://h2svision.github.io/publicAssets2/bah2026/why_participate.webp',
                               heroTag: 'featured_event_${event.id}_image',
                               onRegister: () {
-                                unawaited(context.push(
-                                  '/events/${event.id}',
-                                  extra: event.imageUrl ??
-                                      'https://h2svision.github.io/publicAssets2/bah2026/why_participate.webp',
-                                ));
+                                unawaited(
+                                  context.push(
+                                    '/events/${event.id}',
+                                    extra:
+                                        event.imageUrl ??
+                                        'https://h2svision.github.io/publicAssets2/bah2026/why_participate.webp',
+                                  ),
+                                );
                               },
                               isBookmarked: event.isBookmarked,
                               onBookmark: () {
@@ -398,7 +410,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     // PAGE INDICATOR DOTS
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(top3FeaturedEvents.length, (index) {
+                      children: List.generate(top3FeaturedEvents.length, (
+                        index,
+                      ) {
                         final isActive = index == _currentFeaturedPage;
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
@@ -410,8 +424,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             color: isActive
                                 ? AppColors.primary
                                 : (isDarkMode
-                                    ? Colors.white.withValues(alpha: 0.2)
-                                    : AppColors.primary.withValues(alpha: 0.2)),
+                                      ? Colors.white.withValues(alpha: 0.2)
+                                      : AppColors.primary.withValues(
+                                          alpha: 0.2,
+                                        )),
                             borderRadius: BorderRadius.circular(3),
                           ),
                         );
@@ -436,7 +452,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ? ListView.builder(
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.s24),
+                          horizontal: AppSpacing.s24,
+                        ),
                         itemCount: 3,
                         itemBuilder: (context, index) => const Padding(
                           padding: EdgeInsets.only(right: 16),
@@ -444,44 +461,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         ),
                       )
                     : filteredEvents.isEmpty
-                        ? Center(
-                            child: Text(
-                              'No events found for this category',
-                              style: TextStyle(
-                                color:
-                                    colorScheme.onSurface.withValues(alpha: 0.6),
-                              ),
-                            ),
-                          )
-                        : ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.s24,
-                            ),
-                            itemCount: filteredEvents.length,
-                            itemBuilder: (context, index) {
-                              final event = filteredEvents[index];
-                              return RecommendedEventCard(
-                                title: event.title,
-                                tag: event.tags.isNotEmpty
-                                    ? event.tags.first
-                                    : 'Event',
-                                date: DateFormat('MMM d')
-                                    .format(event.startDate),
-                                location: event.location,
-                                imageUrl: event.imageUrl ??
-                                    'https://picsum.photos/400/200?random=$index',
-                                gradientColors: const [
-                                  Color(0xFF8A4DFF),
-                                  Color(0xFF3E63F5),
-                                ],
-                                onTap: () {
-                                  unawaited(
-                                      context.push('/events/${event.id}'));
-                                },
-                              );
-                            },
+                    ? Center(
+                        child: Text(
+                          'No events found for this category',
+                          style: TextStyle(
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
+                        ),
+                      )
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.s24,
+                        ),
+                        itemCount: filteredEvents.length,
+                        itemBuilder: (context, index) {
+                          final event = filteredEvents[index];
+                          return RecommendedEventCard(
+                            title: event.title,
+                            tag: event.tags.isNotEmpty
+                                ? event.tags.first
+                                : 'Event',
+                            date: DateFormat('MMM d').format(event.startDate),
+                            location: event.location,
+                            imageUrl:
+                                event.imageUrl ??
+                                'https://picsum.photos/400/200?random=$index',
+                            gradientColors: const [
+                              Color(0xFF8A4DFF),
+                              Color(0xFF3E63F5),
+                            ],
+                            onTap: () {
+                              unawaited(context.push('/events/${event.id}'));
+                            },
+                          );
+                        },
+                      ),
               ),
 
               const SizedBox(height: AppSpacing.s16),
@@ -502,43 +517,76 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     horizontal: AppSpacing.s24,
                   ),
                   children: [
-                    _buildExploreCard('AI', '126 events',
-                        Icons.lightbulb_outline, Colors.white, isDarkMode,
-                        selectedExploreCategory),
-                    _buildExploreCard('Data Science', '84 events',
-                        Icons.analytics_outlined, AppColors.background, isDarkMode,
-                        selectedExploreCategory),
-                    _buildExploreCard('Cybersecurity', '52 events',
-                        Icons.security_outlined, Colors.white, isDarkMode,
-                        selectedExploreCategory),
-                    _buildExploreCard('Robotics', '91 events',
-                        Icons.smart_toy_outlined,
-                        isDarkMode
-                            ? const Color(0xFF392A33)
-                            : const Color(0xFFFFE5F0),
-                        isDarkMode, selectedExploreCategory),
-                    _buildExploreCard('Cloud', '112 events',
-                        Icons.cloud_outlined, Colors.white, isDarkMode,
-                        selectedExploreCategory),
                     _buildExploreCard(
-                        'Web3',
-                        '45 events',
-                        Icons.currency_bitcoin_outlined,
-                        isDarkMode
-                            ? const Color(0xFF293342)
-                            : const Color(0xFFE5F0FF),
-                        isDarkMode, selectedExploreCategory),
-                    _buildExploreCard('Design', '78 events',
-                        Icons.design_services_outlined, Colors.white, isDarkMode,
-                        selectedExploreCategory),
+                      'AI',
+                      '126 events',
+                      Icons.lightbulb_outline,
+                      Colors.white,
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
                     _buildExploreCard(
-                        'Marketing',
-                        '63 events',
-                        Icons.campaign_outlined,
-                        isDarkMode
-                            ? const Color(0xFF293329)
-                            : const Color(0xFFE5FFE5),
-                        isDarkMode, selectedExploreCategory),
+                      'Data Science',
+                      '84 events',
+                      Icons.analytics_outlined,
+                      AppColors.background,
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
+                    _buildExploreCard(
+                      'Cybersecurity',
+                      '52 events',
+                      Icons.security_outlined,
+                      Colors.white,
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
+                    _buildExploreCard(
+                      'Robotics',
+                      '91 events',
+                      Icons.smart_toy_outlined,
+                      isDarkMode
+                          ? const Color(0xFF392A33)
+                          : const Color(0xFFFFE5F0),
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
+                    _buildExploreCard(
+                      'Cloud',
+                      '112 events',
+                      Icons.cloud_outlined,
+                      Colors.white,
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
+                    _buildExploreCard(
+                      'Web3',
+                      '45 events',
+                      Icons.currency_bitcoin_outlined,
+                      isDarkMode
+                          ? const Color(0xFF293342)
+                          : const Color(0xFFE5F0FF),
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
+                    _buildExploreCard(
+                      'Design',
+                      '78 events',
+                      Icons.design_services_outlined,
+                      Colors.white,
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
+                    _buildExploreCard(
+                      'Marketing',
+                      '63 events',
+                      Icons.campaign_outlined,
+                      isDarkMode
+                          ? const Color(0xFF293329)
+                          : const Color(0xFFE5FFE5),
+                      isDarkMode,
+                      selectedExploreCategory,
+                    ),
                   ],
                 ),
               ),
@@ -550,7 +598,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               // ============================================================
               SectionTitle(
                 title: 'Upcoming this week',
-                actionText: _showAllUpcoming ? 'Show less' : 'Show more',
+                actionText: _showAllUpcoming ? 'Show less' : 'Show  all',
                 onActionTap: hasMoreUpcoming
                     ? () {
                         setState(() {
@@ -575,32 +623,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         ),
                       )
                     : displayedUpcomingEvents.isEmpty
-                        ? Center(
-                            child: Text(
-                              'No upcoming events',
-                              style: TextStyle(
-                                color: colorScheme.onSurface
-                                    .withValues(alpha: 0.6),
-                              ),
-                            ),
-                          )
-                        : Column(
-                            children: displayedUpcomingEvents.map((event) {
-                              final d = DateFormat('d').format(event.startDate);
-                              final m = DateFormat('MMM').format(event.startDate);
-                              return UpcomingEventTile(
-                                day: d,
-                                month: m,
-                                title: event.title,
-                                subtitle:
-                                    event.isOnline ? 'Online' : event.location,
-                                onTap: () {
-                                  unawaited(
-                                      context.push('/events/${event.id}'));
-                                },
-                              );
-                            }).toList(),
+                    ? Center(
+                        child: Text(
+                          'No upcoming events',
+                          style: TextStyle(
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
+                        ),
+                      )
+                    : Column(
+                        children: displayedUpcomingEvents.map((event) {
+                          final d = DateFormat('d').format(event.startDate);
+                          final m = DateFormat('MMM').format(event.startDate);
+                          return UpcomingEventTile(
+                            day: d,
+                            month: m,
+                            title: event.title,
+                            subtitle: event.isOnline
+                                ? 'Online'
+                                : event.location,
+                            onTap: () {
+                              unawaited(context.push('/events/${event.id}'));
+                            },
+                          );
+                        }).toList(),
+                      ),
               ),
 
               const SizedBox(height: 16),

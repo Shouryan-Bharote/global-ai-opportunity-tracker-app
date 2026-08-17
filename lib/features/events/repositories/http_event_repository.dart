@@ -5,11 +5,13 @@ import 'package:dio/dio.dart';
 class HttpEventRepository implements EventRepository {
   HttpEventRepository(this._dio);
 
+  // Reserved for future API implementation calls.
+  // ignore: unused_field
   final Dio _dio;
 
   @override
   Future<List<EventModel>> getEvents({double? latitude, double? longitude}) async {
-    // TODO: Connect to real backend
+    // TODO(backend): Connect to real backend
     // final response = await _dio.get('/events', queryParameters: {
     //   if (latitude != null) 'lat': latitude,
     //   if (longitude != null) 'lng': longitude,

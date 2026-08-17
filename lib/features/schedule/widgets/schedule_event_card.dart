@@ -61,10 +61,12 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
   }
 
   void _onTapUp(TapUpDetails details) {
-    unawaited(_controller.reverse());
+    _controller.reverse();
 
-    context.push(
-      '/events/${widget.event.id}',
+    unawaited(
+      context.push(
+        '/events/${widget.event.id}',
+      ),
     );
   }
 

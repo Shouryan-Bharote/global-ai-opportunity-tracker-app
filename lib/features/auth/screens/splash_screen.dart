@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/features/auth/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
 
     _controller.forward();
-    _navigateToNext();
+    unawaited(_navigateToNext());
   }
 
   @override

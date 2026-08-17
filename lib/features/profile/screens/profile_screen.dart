@@ -234,30 +234,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _showAboutDialog() async {
+    final isDarkMode = ref.read(isDarkModeProvider);
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: isDarkMode ? const Color(0xFF16152B) : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('About AI Opportunity Tracker'),
-        content: const Column(
+        title: Text(
+          'About AI Opportunity Tracker',
+          style: TextStyle(
+            color: isDarkMode ? Colors.white : const Color(0xFF1D273F),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Version 1.0.0',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xFFFF5274),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Centralized catalog for technical workshops, hackathons, and webinars from Unstop, Hack2Skill, Devfolio, MLH, and more.',
+              style: TextStyle(
+                color: isDarkMode ? Colors.white70 : const Color(0xFF4A5568),
+              ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               'Developed by Member 1 (Mobile), Member 2 (Backend), and Member 3 (Scraper).',
-              style: TextStyle(fontSize: 12, color: Colors.black54),
+              style: TextStyle(
+                fontSize: 12,
+                color: isDarkMode ? Colors.white54 : Colors.black54,
+              ),
             ),
           ],
         ),
@@ -272,13 +286,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _showSignOutDialog() async {
+    final isDarkMode = ref.read(isDarkModeProvider);
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: isDarkMode ? const Color(0xFF16152B) : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Sign Out'),
-        content: const Text(
+        title: Text(
+          'Sign Out',
+          style: TextStyle(
+            color: isDarkMode ? Colors.white : const Color(0xFF1D273F),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
           'Are you sure you want to sign out? Your session details will be cleared.',
+          style: TextStyle(
+            color: isDarkMode ? Colors.white70 : const Color(0xFF4A5568),
+          ),
         ),
         actions: [
           ElevatedButton(

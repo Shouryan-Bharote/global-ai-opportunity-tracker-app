@@ -1,18 +1,69 @@
-import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+class _CategoryData {
+  const _CategoryData({
+    required this.title,
+    required this.events,
+    required this.icon,
+    required this.iconBgColor,
+    required this.iconColor,
+  });
+
+  final String title;
+  final String events;
+  final IconData icon;
+  final Color iconBgColor;
+  final Color iconColor;
+}
+
 class ExploreCategories extends ConsumerWidget {
   const ExploreCategories({super.key});
+
+  static const List<_CategoryData> _categories = [
+    _CategoryData(
+      title: 'Conferences',
+      events: '315 Events',
+      icon: Icons.groups_outlined,
+      iconBgColor: Color(0xFFFCE4EC), // Colors.pink.shade100
+      iconColor: Colors.pink,
+    ),
+    _CategoryData(
+      title: 'Workshop',
+      events: '215 events',
+      icon: Icons.auto_awesome_outlined,
+      iconBgColor: Color(0xE0E0F7FA), // Colors.cyan.shade100
+      iconColor: Colors.cyan,
+    ),
+    _CategoryData(
+      title: 'Hackathons',
+      events: '154 events',
+      icon: Icons.hourglass_empty_outlined,
+      iconBgColor: Color(0xFFFFE0B2), // Colors.orange.shade100
+      iconColor: Colors.orange,
+    ),
+    _CategoryData(
+      title: 'Webinars',
+      events: '123 events',
+      icon: Icons.record_voice_over_outlined,
+      iconBgColor: Color(0xFFE1BEE7), // Colors.purple.shade100
+      iconColor: Colors.purple,
+    ),
+    _CategoryData(
+      title: 'Networking',
+      events: '21 events',
+      icon: Icons.handshake_outlined,
+      iconBgColor: Color(0xFFC8E6C9), // Colors.green.shade100
+      iconColor: Colors.green,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategory = ref.watch(exploreCategoryProvider);
-
-    // Get current theme colors
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -37,67 +88,27 @@ class ExploreCategories extends ConsumerWidget {
 
         SizedBox(
           height: 140,
-          child: ListView(
+          child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.s24,
             ),
-            children: [
-              _CategoryCardItem(
-                title: 'Conferences',
-                events: '315 Events',
-                icon: Icons.groups_outlined,
-                iconBgColor: Colors.pink.shade100,
-                iconColor: Colors.pink,
-                isSelected: selectedCategory == 'Conferences',
-                isDark: isDark,
-                onTap: () => _handleTap(ref, 'Conferences', selectedCategory),
-              ),
+            itemCount: _categories.length,
+            itemBuilder: (context, index) {
+              final cat = _categories[index];
+              final isSelected = selectedCategory == cat.title;
 
-              _CategoryCardItem(
-                title: 'Workshop',
-                events: '215 events',
-                icon: Icons.auto_awesome_outlined,
-                iconBgColor: Colors.cyan.shade100,
-                iconColor: Colors.cyan,
-                isSelected: selectedCategory == 'Workshop',
+              return _CategoryCardItem(
+                title: cat.title,
+                events: cat.events,
+                icon: cat.icon,
+                iconBgColor: cat.iconBgColor,
+                iconColor: cat.iconColor,
+                isSelected: isSelected,
                 isDark: isDark,
-                onTap: () => _handleTap(ref, 'Workshop', selectedCategory),
-              ),
-
-              _CategoryCardItem(
-                title: 'Hackathons',
-                events: '154 events',
-                icon: Icons.hourglass_empty_outlined,
-                iconBgColor: Colors.orange.shade100,
-                iconColor: Colors.orange,
-                isSelected: selectedCategory == 'Hackathons',
-                isDark: isDark,
-                onTap: () => _handleTap(ref, 'Hackathons', selectedCategory),
-              ),
-
-              _CategoryCardItem(
-                title: 'Webinars',
-                events: '123 events',
-                icon: Icons.record_voice_over_outlined,
-                iconBgColor: Colors.purple.shade100,
-                iconColor: Colors.purple,
-                isSelected: selectedCategory == 'Webinars',
-                isDark: isDark,
-                onTap: () => _handleTap(ref, 'Webinars', selectedCategory),
-              ),
-
-              _CategoryCardItem(
-                title: 'Networking',
-                events: '21 events',
-                icon: Icons.handshake_outlined,
-                iconBgColor: Colors.green.shade100,
-                iconColor: Colors.green,
-                isSelected: selectedCategory == 'Networking',
-                isDark: isDark,
-                onTap: () => _handleTap(ref, 'Networking', selectedCategory),
-              ),
-            ],
+                onTap: () => _handleTap(ref, cat.title, selectedCategory),
+              );
+            },
           ),
         ),
       ],
@@ -110,10 +121,8 @@ class ExploreCategories extends ConsumerWidget {
     String? current,
   ) {
     if (current == title) {
-      // Deselect
       ref.read(exploreCategoryProvider.notifier).state = null;
     } else {
-      // Select
       ref.read(exploreCategoryProvider.notifier).state = title;
     }
   }
@@ -150,8 +159,8 @@ class _CategoryCardItem extends StatefulWidget {
 
 class _CategoryCardItemState extends State<_CategoryCardItem>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -181,30 +190,28 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
   }
 
   void _onTapDown(TapDownDetails details) {
-    unawaited(_controller.forward());
+    _controller.forward();
   }
 
   void _onTapUp(TapUpDetails details) {
-    unawaited(_controller.reverse());
+    _controller.reverse();
     widget.onTap();
   }
 
   void _onTapCancel() {
-    unawaited(_controller.reverse());
+    _controller.reverse();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Card background changes automatically
     final cardColor = widget.isSelected
         ? null
         : widget.isDark
         ? const Color(0xFF16152B)
         : Colors.white;
 
-    // Text colors change automatically
     final titleColor = widget.isSelected
         ? Colors.white
         : theme.colorScheme.onSurface;
@@ -215,7 +222,6 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
         ? Colors.grey.shade400
         : Colors.grey.shade600;
 
-    // Border changes automatically
     final borderColor = widget.isSelected
         ? Colors.transparent
         : widget.isDark
@@ -237,10 +243,7 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
               width: 120,
               margin: const EdgeInsets.only(right: 12),
               padding: const EdgeInsets.all(12),
-
               decoration: BoxDecoration(
-                // Selected = blue gradient
-                // Unselected = theme-aware background
                 gradient: widget.isSelected
                     ? const LinearGradient(
                         colors: [
@@ -251,11 +254,8 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
                         end: Alignment.bottomRight,
                       )
                     : null,
-
                 color: cardColor,
-
                 borderRadius: BorderRadius.circular(16),
-
                 border: Border.all(
                   color: widget.isSelected
                       ? Colors.transparent
@@ -266,7 +266,6 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
                       : borderColor,
                   width: 1.5,
                 ),
-
                 boxShadow: widget.isDark && !widget.isSelected
                     ? [
                         BoxShadow(
@@ -279,13 +278,10 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
                       ]
                     : null,
               ),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
-
                 children: [
-                  // Icon background
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -298,10 +294,7 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
                       size: 24,
                     ),
                   ),
-
                   const Spacer(),
-
-                  // Category title
                   Text(
                     widget.title,
                     style: TextStyle(
@@ -312,10 +305,7 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-
                   const SizedBox(height: 2),
-
-                  // Event count
                   Text(
                     widget.events,
                     style: TextStyle(

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
@@ -8,18 +7,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PopularCities extends ConsumerWidget {
   const PopularCities({super.key});
 
+  static const List<String> _cities = [
+    'San Francisco',
+    'Toronto',
+    'Singapore',
+    'India',
+    'New York',
+  ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cities = [
-      'San Francisco',
-      'Toronto',
-      'Singapore',
-      'India',
-      'New York',
-    ];
-
     final selectedCity = ref.watch(exploreCityProvider);
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
@@ -48,9 +46,9 @@ class PopularCities extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.s24,
             ),
-            itemCount: cities.length,
+            itemCount: _cities.length,
             itemBuilder: (context, index) {
-              final city = cities[index];
+              final city = _cities[index];
               final isSelected = city == selectedCity;
 
               return _CityChipItem(
@@ -120,16 +118,16 @@ class _CityChipItemState extends State<_CityChipItem>
   }
 
   void _onTapDown(TapDownDetails details) {
-    unawaited(_controller.forward());
+    _controller.forward();
   }
 
   void _onTapUp(TapUpDetails details) {
-    unawaited(_controller.reverse());
+    _controller.reverse();
     widget.onTap();
   }
 
   void _onTapCancel() {
-    unawaited(_controller.reverse());
+    _controller.reverse();
   }
 
   @override

@@ -53,13 +53,16 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
       );
     }
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final isLive = event.startDate.isBefore(DateTime.now()) && event.endDate.isAfter(DateTime.now());
     final isUpcoming = event.startDate.isAfter(DateTime.now());
     final dateFormatted = DateFormat('dd MMM yyyy').format(event.startDate).toUpperCase();
     final timeFormatted = '${DateFormat('h:mm a').format(event.startDate)} TO ${DateFormat('h:mm a').format(event.endDate)}';
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: isDark ? const Color(0xFF0F0E17) : Colors.black,
       extendBody: true,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -67,7 +70,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
             SliverAppBar(
               expandedHeight: 440,
               pinned: true,
-              backgroundColor: Colors.black,
+              backgroundColor: isDark ? const Color(0xFF0F0E17) : Colors.black,
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
@@ -287,80 +290,109 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
               delegate: _SliverAppBarDelegate(
                 TabBar(
                   controller: _tabController,
-                  indicatorColor: AppColors.primary,
-                  indicatorWeight: 3,
-                  labelColor: AppColors.primary,
-                  unselectedLabelColor: Colors.black54,
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    color: isDark
+                        ? AppColors.primary.withValues(alpha: 0.3)
+                        : AppColors.primary.withValues(alpha: 0.12),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.6),
+                      width: 1.2,
+                    ),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  labelColor: isDark ? Colors.white : AppColors.primary,
+                  unselectedLabelColor: isDark ? Colors.grey.shade400 : Colors.black54,
                   labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
                   tabs: const [
                     Tab(text: 'About'),
                     Tab(text: 'Schedule'),
                     Tab(text: 'Speaker'),
                   ],
                 ),
+                isDark: isDark,
               ),
             ),
           ];
         },
         body: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFF3F4F6),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF16152B) : const Color(0xFFF3F4F6),
           ),
           child: TabBarView(
             controller: _tabController,
             children: [
-              _buildAboutTab(event),
-              _buildScheduleTab(event),
-              _buildSpeakerTab(event),
+              _buildAboutTab(event, isDark),
+              _buildScheduleTab(event, isDark),
+              _buildSpeakerTab(event, isDark),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomBar(event, isLive),
+      bottomNavigationBar: _buildBottomBar(event, isLive, isDark),
     );
   }
 
-  Widget _buildAboutTab(EventModel event) {
+  Widget _buildAboutTab(EventModel event, bool isDark) {
+    final headingTextColor = isDark ? Colors.white : Colors.black87;
+    final bodyTextColor = isDark ? Colors.grey.shade300 : Colors.black87;
+    final cardBgColor = isDark ? const Color(0xFF201F3D) : Colors.white;
+    final cardBorderColor = isDark
+        ? AppColors.primary.withValues(alpha: 0.35)
+        : Colors.grey.withValues(alpha: 0.25);
+    final detailLabelColor = isDark ? Colors.grey.shade400 : Colors.black45;
+    final detailValueColor = isDark ? Colors.white : Colors.black87;
+    final tagBgColor = isDark ? AppColors.primary.withValues(alpha: 0.25) : AppColors.primary.withValues(alpha: 0.08);
+    final tagBorderColor = isDark ? AppColors.primary.withValues(alpha: 0.45) : AppColors.primary.withValues(alpha: 0.2);
+    final tagTextColor = isDark ? const Color(0xFF9EA5FF) : AppColors.primary;
+
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.s24).copyWith(bottom: 120),
       children: [
-        const Text(
+        Text(
           'About this Event',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: headingTextColor),
         ),
         const SizedBox(height: AppSpacing.s16),
         Text(
           event.description,
-          style: const TextStyle(fontSize: 16, color: Colors.black87, height: 1.6),
+          style: TextStyle(fontSize: 16, color: bodyTextColor, height: 1.6),
         ),
         const SizedBox(height: AppSpacing.s24),
         // Event Details Card
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+            color: cardBgColor,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: cardBorderColor, width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.4)
+                    : Colors.grey.withValues(alpha: 0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Event Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+              Text('Event Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: headingTextColor)),
               const SizedBox(height: 16),
-              _buildDetailRow(Icons.business, 'Host', event.host),
-              const SizedBox(height: 12),
-              _buildDetailRow(Icons.calendar_today, 'Date', DateFormat('EEEE, MMMM d, yyyy').format(event.startDate)),
-              const SizedBox(height: 12),
-              _buildDetailRow(Icons.access_time, 'Time', '${DateFormat('h:mm a').format(event.startDate)} - ${DateFormat('h:mm a').format(event.endDate)}'),
-              const SizedBox(height: 12),
-              _buildDetailRow(event.isOnline ? Icons.videocam : Icons.location_on, 'Location', event.location),
-              const SizedBox(height: 12),
-              _buildDetailRow(Icons.link, 'Website', event.url),
+              _buildDetailRow(Icons.business, 'Host', event.host, detailLabelColor, detailValueColor, isDark),
+              _buildDetailRow(Icons.calendar_today, 'Date', DateFormat('EEEE, MMMM d, yyyy').format(event.startDate), detailLabelColor, detailValueColor, isDark),
+              _buildDetailRow(Icons.access_time, 'Time', '${DateFormat('h:mm a').format(event.startDate)} - ${DateFormat('h:mm a').format(event.endDate)}', detailLabelColor, detailValueColor, isDark),
+              _buildDetailRow(event.isOnline ? Icons.videocam : Icons.location_on, 'Location', event.location, detailLabelColor, detailValueColor, isDark),
+              _buildDetailRow(Icons.link, 'Website', event.url, detailLabelColor, detailValueColor, isDark),
             ],
           ),
         ),
         const SizedBox(height: AppSpacing.s24),
-        const Text('Tags', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+        Text('Tags', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: headingTextColor)),
         const SizedBox(height: AppSpacing.s12),
         Wrap(
           spacing: 8,
@@ -368,38 +400,63 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
           children: event.tags.map((tag) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+              color: tagBgColor,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: tagBorderColor, width: 1.2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.06),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: Text(tag, style: const TextStyle(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.w600)),
+            child: Text(tag, style: TextStyle(color: tagTextColor, fontSize: 13, fontWeight: FontWeight.w600)),
           )).toList(),
         ),
       ],
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 20, color: AppColors.primary),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: const TextStyle(fontSize: 12, color: Colors.black45, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 2),
-              Text(value, style: const TextStyle(fontSize: 15, color: Colors.black87)),
-            ],
-          ),
+  Widget _buildDetailRow(IconData icon, String label, String value, Color labelColor, Color valueColor, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF181733) : const Color(0xFFF8F9FE),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0x353E63F5) : Colors.grey.withValues(alpha: 0.15),
         ),
-      ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, size: 20, color: isDark ? const Color(0xFF8C9EFF) : AppColors.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TextStyle(fontSize: 12, color: labelColor, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 2),
+                Text(value, style: TextStyle(fontSize: 15, color: valueColor, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildScheduleTab(EventModel event) {
+  Widget _buildScheduleTab(EventModel event, bool isDark) {
     // Generate schedule items based on event duration
     final duration = event.endDate.difference(event.startDate);
     final hours = duration.inHours;
@@ -426,14 +483,34 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.s24).copyWith(bottom: 120),
-      children: scheduleItems.map((item) => Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.s20),
-        child: _buildScheduleItem(item['time']!, item['title']!, item['desc']!),
+      children: scheduleItems.map((item) => Container(
+        margin: const EdgeInsets.only(bottom: AppSpacing.s16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF201F3D) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDark ? const Color(0x3D3E63F5) : Colors.grey.withValues(alpha: 0.2),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: _buildScheduleItem(item['time']!, item['title']!, item['desc']!, isDark),
       )).toList(),
     );
   }
 
-  Widget _buildScheduleItem(String time, String title, String description) {
+  Widget _buildScheduleItem(String time, String title, String description, bool isDark) {
+    final titleColor = isDark ? Colors.white : Colors.black87;
+    final descColor = isDark ? Colors.grey.shade400 : Colors.black54;
+    final barColor = isDark ? Colors.white24 : Colors.black12;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -444,16 +521,16 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 12),
           width: 2,
-          height: 80,
-          color: Colors.black12,
+          height: 60,
+          color: barColor,
         ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87)),
+              Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titleColor)),
               const SizedBox(height: 6),
-              Text(description, style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.4)),
+              Text(description, style: TextStyle(color: descColor, fontSize: 14, height: 1.4)),
             ],
           ),
         ),
@@ -461,7 +538,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
     );
   }
 
-  Widget _buildSpeakerTab(EventModel event) {
+  Widget _buildSpeakerTab(EventModel event, bool isDark) {
     // Generate speakers based on event host
     final speakers = [
       {'name': '${event.host} Team Lead', 'role': 'Lead Organizer, ${event.host}'},
@@ -474,19 +551,40 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
       children: speakers.asMap().entries.map((entry) {
         final index = entry.key;
         final speaker = entry.value;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.s20),
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.s16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF201F3D) : Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: isDark ? const Color(0x3D3E63F5) : Colors.grey.withValues(alpha: 0.2),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
           child: _buildSpeakerTile(
             speaker['name']!,
             speaker['role']!,
             'https://i.pravatar.cc/150?img=${widget.eventId.hashCode + index}',
+            isDark,
           ),
         );
       }).toList(),
     );
   }
 
-  Widget _buildSpeakerTile(String name, String role, String imageUrl) {
+  Widget _buildSpeakerTile(String name, String role, String imageUrl, bool isDark) {
+    final nameColor = isDark ? Colors.white : Colors.black87;
+    final roleColor = isDark ? Colors.grey.shade400 : Colors.black54;
+    final iconColor = isDark ? Colors.grey.shade400 : Colors.black54;
+
     return Row(
       children: [
         CircleAvatar(
@@ -499,30 +597,48 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Colors.black87)),
+              Text(name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: nameColor)),
               const SizedBox(height: 4),
-              Text(role, style: const TextStyle(color: Colors.black54, fontSize: 15)),
+              Text(role, style: TextStyle(color: roleColor, fontSize: 15)),
             ],
           ),
         ),
-        const Icon(Icons.chevron_right, color: Colors.black54),
+        Icon(Icons.chevron_right, color: iconColor),
       ],
     );
   }
 
-  Widget _buildBottomBar(EventModel event, bool isLive) {
+  Widget _buildBottomBar(EventModel event, bool isLive, bool isDark) {
+    final barBgColor = isDark
+        ? const Color(0xEE16152B)
+        : Colors.white.withValues(alpha: 0.85);
+    final barBorderColor = isDark
+        ? AppColors.primary.withValues(alpha: 0.45)
+        : Colors.grey.withValues(alpha: 0.3);
+    final bookmarkBgColor = isDark ? const Color(0xFF201F3D) : Colors.white.withValues(alpha: 0.7);
+    final bookmarkIconColor = event.isBookmarked
+        ? AppColors.primary
+        : (isDark ? Colors.white : Colors.black87);
+
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24, bottom: 32),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+              color: barBgColor,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: barBorderColor, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
             child: Row(
               children: [
@@ -540,10 +656,11 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3B41E3),
+                      backgroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      elevation: isDark ? 4 : 2,
+                      shadowColor: AppColors.primary.withValues(alpha: 0.4),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -561,14 +678,18 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                 const SizedBox(width: AppSpacing.s12),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(16),
+                    color: bookmarkBgColor,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isDark ? const Color(0x3D3E63F5) : Colors.grey.withValues(alpha: 0.2),
+                      width: 1.2,
+                    ),
                   ),
                   child: IconButton(
                     padding: const EdgeInsets.all(16),
                     icon: Icon(
                       event.isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                      color: event.isBookmarked ? AppColors.primary : Colors.black87,
+                      color: bookmarkIconColor,
                       size: 26,
                     ),
                     onPressed: () {
@@ -587,9 +708,10 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
+  _SliverAppBarDelegate(this._tabBar, {required this.isDark});
 
   final TabBar _tabBar;
+  final bool isDark;
 
   @override
   double get minExtent => _tabBar.preferredSize.height + 20;
@@ -598,30 +720,43 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final sheetBgColor = isDark ? const Color(0xFF16152B) : const Color(0xFFF3F4F6);
+    final handleColor = isDark ? Colors.white30 : Colors.black12;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFF3F4F6),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
+      decoration: BoxDecoration(
+        color: sheetBgColor,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(32),
         ),
+        border: Border(
+          top: BorderSide(
+            color: isDark
+                ? AppColors.primary.withValues(alpha: 0.35)
+                : Colors.white.withValues(alpha: 0.8),
+            width: 1.5,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, -6),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Container(
-            margin: const EdgeInsets.only(top: 12, bottom: 4),
+            margin: const EdgeInsets.only(top: 12, bottom: 6),
             width: 48,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.black12,
+              color: handleColor,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
           Expanded(child: _tabBar),
-          Container(
-            height: 1,
-            color: Colors.black12,
-          ),
         ],
       ),
     );
@@ -629,6 +764,6 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
+    return oldDelegate.isDark != isDark;
   }
 }

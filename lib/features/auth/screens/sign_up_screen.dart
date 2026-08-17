@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/theme/app_typography.dart';
@@ -86,10 +87,12 @@ class SignUpScreen extends HookConsumerWidget {
                   isLoading: authState.isLoading,
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      ref.read(authProvider.notifier).register(
-                        nameController.text,
-                        emailController.text,
-                        passwordController.text,
+                      unawaited(
+                        ref.read(authProvider.notifier).register(
+                          nameController.text,
+                          emailController.text,
+                          passwordController.text,
+                        ),
                       );
                     }
                   },

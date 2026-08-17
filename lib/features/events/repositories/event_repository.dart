@@ -1,7 +1,7 @@
 import 'package:ai_nexus/features/events/models/event_model.dart';
 
 /// Abstract contract for all event data sources.
-/// 
+///
 /// To integrate a real database, create a new class that implements
 /// this interface (e.g., `HttpEventRepository`, `FirebaseEventRepository`)
 /// and swap it in `repository_providers.dart`. No UI changes needed.

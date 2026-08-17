@@ -36,9 +36,11 @@ class LocationService {
     // continue accessing the position of the device.
     try {
       return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+        ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       _logger.e('Error getting location: $e');
       return null;
     }

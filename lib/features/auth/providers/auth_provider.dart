@@ -105,7 +105,7 @@ class AuthNotifier extends Notifier<AuthState> {
         isLoading: false,
         error: _loginErrorMessage(e),
       );
-    } catch (_) {
+    } on Object catch (_) {
       state = state.copyWith(
         isLoading: false,
         error: 'Something went wrong. Please try again.',
@@ -207,7 +207,7 @@ class AuthNotifier extends Notifier<AuthState> {
         isLoading: false,
         error: _registerErrorMessage(e),
       );
-    } catch (_) {
+    } on Object catch (_) {
       state = state.copyWith(
         isLoading: false,
         error: 'Something went wrong. Please try again.',
@@ -242,7 +242,7 @@ class AuthNotifier extends Notifier<AuthState> {
         default:
           return e.message ?? 'Could not send password reset email.';
       }
-    } catch (_) {
+    } on Object catch (_) {
       return 'Something went wrong. Please try again.';
     }
   }
@@ -262,7 +262,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
       // Clear local authentication state.
       state = const AuthState();
-    } catch (_) {
+    } on Object catch (_) {
       state = state.copyWith(
         isLoading: false,
         error: 'Unable to logout. Please try again.',

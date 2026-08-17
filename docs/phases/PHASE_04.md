@@ -42,10 +42,7 @@
 | Date | Completed | Files Modified | Notes |
 |------|-----------|----------------|-------|
 | 2026-07-15 | All 12 Tasks | `app_shell.dart`, `app_router.dart`, various placeholders | Navigation shell working perfectly with dummy data. |
-
-| Date | Completed | Files Modified | Notes |
-|------|-----------|----------------|-------|
-| — | — | — | — |
+| 2026-08-18 | Navigation Animations & About Dark Mode | `app_shell.dart`, `profile_screen.dart`, `pubspec.yaml` | Dynamic slide-in/slide-out animations added and tuned to 150ms for snappy, instant feel. About dialog fully themed with dark mode. |
 
 ---
 

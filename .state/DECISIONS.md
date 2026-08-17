@@ -26,6 +26,7 @@
 | D14 | Pinned AppHeader inside AppShell viewport | Migrated AppHeader into AppShell so that it is fixed globally at the top of the viewport. Sub-screen layouts can scroll underneath without duplicating headers. | 2026-07-16 | 07 | Phase 07 |
 | D15 | Native image picker and system share sheet integration | Integrated `image_picker` for custom avatar selection and `share_plus` to invoke Android/iOS system-level share dialogs with dynamic event info. | 2026-07-16 | 07 | Phase 07 |
 | D16 | Disable Kotlin incremental compilation & upgrade compileSdk | Set `kotlin.incremental=false` to fix Windows relative path cross-drive conflicts, and set `compileSdk=36` to satisfy package dependencies. | 2026-07-16 | 07 | All phases |
+| D17 | Dynamic index-based transition direction & 150ms duration | `SharedAxisTransition` in `AppShell` evaluates `currentIndex < previousIndex` for slide direction (forward/reverse), tuned to 150ms for snappy responsiveness. | 2026-08-18 | 04 | AppShell navigation |
 
 
 ---

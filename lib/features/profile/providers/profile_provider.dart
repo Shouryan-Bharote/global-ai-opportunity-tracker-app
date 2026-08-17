@@ -38,7 +38,7 @@ class ProfileNotifier extends AsyncNotifier<UserModel?> {
       if (result != null) {
         state = AsyncValue.data(result);
       }
-    } catch (e, st) {
+    } on Object catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
@@ -66,7 +66,7 @@ class ProfileNotifier extends AsyncNotifier<UserModel?> {
       if (result != null) {
         state = AsyncValue.data(result);
       }
-    } catch (e, st) {
+    } on Object catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }

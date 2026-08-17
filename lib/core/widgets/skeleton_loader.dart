@@ -3,9 +3,9 @@ import 'package:shimmer/shimmer.dart';
 
 class SkeletonLoader extends StatelessWidget {
   const SkeletonLoader({
-    super.key,
     required this.width,
     required this.height,
+    super.key,
     this.borderRadius = 16,
   });
 
@@ -68,18 +68,17 @@ class EventSkeletonCard extends StatelessWidget {
           SkeletonLoader(
             width: double.infinity,
             height: height * 0.6,
-            borderRadius: 16, // Top corners rounded usually
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
+          const Padding(
+            padding: EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title skeleton
-                const SkeletonLoader(width: 150, height: 16, borderRadius: 4),
-                const SizedBox(height: 8),
+                SkeletonLoader(width: 150, height: 16, borderRadius: 4),
+                SizedBox(height: 8),
                 // Subtitle/Date skeleton
-                const SkeletonLoader(width: 100, height: 12, borderRadius: 4),
+                SkeletonLoader(width: 100, height: 12, borderRadius: 4),
               ],
             ),
           ),

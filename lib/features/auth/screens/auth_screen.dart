@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/theme/app_typography.dart';
@@ -97,7 +98,7 @@ class AuthScreen extends HookConsumerWidget {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      context.push('/forgot-password');
+                      unawaited(context.push('/forgot-password'));
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.primary,
@@ -117,12 +118,14 @@ class AuthScreen extends HookConsumerWidget {
                   isLoading: authState.isLoading,
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      ref
-                          .read(authProvider.notifier)
-                          .login(
-                            emailController.text,
-                            passwordController.text,
-                          );
+                      unawaited(
+                        ref
+                            .read(authProvider.notifier)
+                            .login(
+                              emailController.text,
+                              passwordController.text,
+                            ),
+                      );
                     }
                   },
                 ),

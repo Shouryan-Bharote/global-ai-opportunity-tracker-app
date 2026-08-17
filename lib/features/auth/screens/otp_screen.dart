@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/auth/widgets/otp_input_field.dart';
@@ -72,7 +73,7 @@ class OtpScreen extends StatelessWidget {
               PrimaryButton(
                 text: 'Reset Password',
                 onPressed: () {
-                  context.push('/reset_password');
+                  unawaited(context.push('/reset_password'));
                 },
               ),
               const SizedBox(height: AppSpacing.s24),
