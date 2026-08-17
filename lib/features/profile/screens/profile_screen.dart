@@ -1,3 +1,4 @@
+import 'package:ai_nexus/core/providers/theme_provider.dart';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/widgets/bounceable.dart';
@@ -310,13 +311,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(isDarkModeProvider);
     final profileAsync = ref.watch(profileProvider);
     final eventsAsync = ref.watch(eventsProvider);
 
     return Scaffold(
-      backgroundColor: const Color(
-        0xFFFAF8FC,
-      ), // Soft purple-tinted white background from mockup
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,11 +351,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Container(
                     height: 72,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDarkMode ? const Color(0xFF16152B) : Colors.white,
                       borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: isDarkMode
+                            ? const Color(0x3D3E63F5)
+                            : Colors.grey.shade200,
+                        width: 1.2,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
+                          color: isDarkMode
+                              ? AppColors.primary.withValues(alpha: 0.15)
+                              : Colors.black.withValues(alpha: 0.05),
                           blurRadius: 16,
                           offset: const Offset(0, 8),
                         ),
@@ -404,16 +412,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 56),
 
             // Interests Section
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.s24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
               child: Text(
                 'Interests',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Color(
-                    0xFF1D273F,
-                  ), // Dark blue-grey text color from mockup
+                  color: isDarkMode
+                      ? Colors.white
+                      : const Color(0xFF1D273F),
                   letterSpacing: -0.5,
                 ),
               ),
@@ -444,12 +452,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color.fromRGBO(62, 99, 245, 1)
-                            : Colors.white,
+                            : (isDarkMode ? const Color(0xFF16152B) : Colors.white),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
                           color: isSelected
                               ? Colors.transparent
-                              : Colors.grey.shade300,
+                              : (isDarkMode
+                                  ? const Color(0x3D3E63F5)
+                                  : Colors.grey.shade300),
+                          width: 1.2,
                         ),
                       ),
                       child: Text(
@@ -457,7 +468,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         style: TextStyle(
                           color: isSelected
                               ? Colors.white
-                              : const Color(0xFF4A5568),
+                              : (isDarkMode ? Colors.white70 : const Color(0xFF4A5568)),
                           fontWeight: isSelected
                               ? FontWeight.bold
                               : FontWeight.w500,
@@ -478,8 +489,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: Column(
                 children: [
                   _buildMenuItem(
+                    icon: isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                    title: 'Dark Mode',
+                    isDarkMode: isDarkMode,
+                    onTap: () {
+                      ref.read(isDarkModeProvider.notifier).state = !isDarkMode;
+                    },
+                    trailing: Switch.adaptive(
+                      value: isDarkMode,
+                      activeTrackColor: AppColors.primary,
+                      onChanged: (val) {
+                        ref.read(isDarkModeProvider.notifier).state = val;
+                      },
+                    ),
+                  ),
+                  _buildMenuItem(
                     icon: Icons.bookmark_outline,
                     title: 'Saved Events',
+                    isDarkMode: isDarkMode,
                     onTap: () {
                       // Navigate directly to schedule saved opportunities tab
                       ref.read(scheduleTabProvider.notifier).state = 'Saved';
@@ -489,6 +516,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.pie_chart_outline,
                     title: 'Interests settings',
+                    isDarkMode: isDarkMode,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -503,6 +531,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.notifications_none_outlined,
                     title: 'Notification',
+                    isDarkMode: isDarkMode,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -517,6 +546,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.info_outline,
                     title: 'About AI events',
+                    isDarkMode: isDarkMode,
                     onTap: () async {
                       await _showAboutDialog();
                     },
@@ -543,7 +573,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     },
                     icon: const Icon(Icons.logout_rounded),
                     label: const Text(
-                      "Log out",
+                      'Log out',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -553,7 +583,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       backgroundColor: const Color(0xFFFF5274),
                       foregroundColor: Colors.white,
                       elevation: 6,
-                      shadowColor: const Color(0xFFFF5274).withOpacity(0.4),
+                      shadowColor: const Color(
+                        0xFFFF5274,
+                      ).withValues(alpha: 0.4),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -572,24 +604,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildStatItem(String label, String value) {
+    final isDarkMode = ref.watch(isDarkModeProvider);
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1D273F), // Dark blue-grey text
+              color: isDarkMode ? Colors.white : const Color(0xFF1D273F),
             ),
           ),
           const SizedBox(height: 2),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
-              color: Color(0xFF7A869A), // Cool grey text
+              color: isDarkMode ? Colors.grey.shade400 : const Color(0xFF7A869A),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -599,10 +632,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildVerticalDivider() {
+    final isDarkMode = ref.watch(isDarkModeProvider);
     return Container(
       width: 1,
       height: 36,
-      color: Colors.grey.shade200,
+      color: isDarkMode ? const Color(0x3D3E63F5) : Colors.grey.shade200,
     );
   }
 
@@ -610,6 +644,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    required bool isDarkMode,
+    Widget? trailing,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -618,26 +654,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: const Color(0xFFEDEDED).withValues(
-              alpha: 0.5,
-            ), // Very light grey tile background from mockup
+            color: isDarkMode
+                ? const Color(0xFF16152B)
+                : const Color(0xFFEDEDED).withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isDarkMode
+                  ? const Color(0x3D3E63F5)
+                  : Colors.transparent,
+              width: 1.2,
+            ),
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Color(
-                    0xFFE2D6FF,
-                  ), // Soft purple icon container background from mockup
+                decoration: BoxDecoration(
+                  color: isDarkMode
+                      ? AppColors.primary.withValues(alpha: 0.2)
+                      : const Color(0xFFE2D6FF),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
-                  color: const Color(
-                    0xFF9000FF,
-                  ), // Deep purple icon from mockup
+                  color: isDarkMode
+                      ? AppColors.secondary
+                      : const Color(0xFF9000FF),
                   size: 22,
                 ),
               ),
@@ -645,18 +687,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1D273F), // Dark grey text
+                    color: isDarkMode ? Colors.white : const Color(0xFF1D273F),
                   ),
                 ),
               ),
-              const Icon(
-                Icons.chevron_right,
-                color: Color(0xFF7A869A), // Cool grey chevron from mockup
-                size: 20,
-              ),
+              trailing ??
+                  const Icon(
+                    Icons.chevron_right,
+                    color: Color(0xFF7A869A),
+                    size: 20,
+                  ),
             ],
           ),
         ),

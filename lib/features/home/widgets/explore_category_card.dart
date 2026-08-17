@@ -70,6 +70,7 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
         child: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
+            final isDarkMode = Theme.of(context).brightness == Brightness.dark;
             final isPressed = _controller.value > 0.3;
             return Transform.scale(
               scale: _scaleAnimation.value,
@@ -77,13 +78,15 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                 width: 140,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDarkMode ? const Color(0xFF16152B) : Colors.white,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
                     color: (widget.isSelected || isPressed)
-                        ? AppColors.primary.withValues(alpha: 0.45)
-                        : AppColors.border.withValues(alpha: 0.6),
-                    width: 1.5,
+                        ? AppColors.primary
+                        : (isDarkMode
+                            ? const Color(0x3D3E63F5)
+                            : AppColors.border.withValues(alpha: 0.6)),
+                    width: 1.2,
                   ),
                 ),
                 child: Column(
@@ -100,7 +103,9 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                         size: 32,
                         color: widget.isSelected
                             ? AppColors.primary
-                            : AppColors.textPrimary,
+                            : (isDarkMode
+                                ? AppColors.secondary
+                                : AppColors.textPrimary),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -112,7 +117,7 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                                 : FontWeight.bold,
                             color: widget.isSelected
                                 ? AppColors.primary
-                                : AppColors.textPrimary,
+                                : Theme.of(context).colorScheme.onSurface,
                             fontSize: 16,
                           ),
                       textAlign: TextAlign.center,
@@ -125,7 +130,9 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: widget.isSelected
                                 ? AppColors.primary.withValues(alpha: 0.7)
-                                : AppColors.textSecondary,
+                                : (isDarkMode
+                                    ? Colors.grey.shade400
+                                    : AppColors.textSecondary),
                             fontSize: 13,
                           ),
                       textAlign: TextAlign.center,

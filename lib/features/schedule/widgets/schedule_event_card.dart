@@ -128,10 +128,10 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
     // COLORS
     // ==========================================================
 
-    final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final cardColor = isDark ? const Color(0xFF16152B) : Colors.white;
 
     final borderColor = isDark
-        ? Colors.white.withValues(alpha: 0.10)
+        ? const Color(0x3D3E63F5)
         : Colors.grey.withValues(alpha: 0.25);
 
     final titleColor = isDark ? Colors.white : Colors.black87;
@@ -140,7 +140,7 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
         ? Colors.white.withValues(alpha: 0.60)
         : Colors.grey.shade600;
 
-    final dateColor = isDark ? Colors.purple.shade200 : Colors.deepPurple;
+    final dateColor = isDark ? const Color(0xFFC084FC) : Colors.deepPurple;
 
     final imagePlaceholderColor = isDark
         ? const Color(0xFF30243D)
@@ -187,7 +187,6 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
                     // ==================================================
                     // EVENT IMAGE
                     // ==================================================
-
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
@@ -204,7 +203,7 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
                             width: 80,
                             height: 80,
                             color: imagePlaceholderColor,
-                            child: Icon(
+                            child: const Icon(
                               Icons.event_rounded,
                               color: AppColors.primary,
                               size: 28,
@@ -223,7 +222,7 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
                             color: isDark
                                 ? const Color(0xFF292929)
                                 : Colors.grey.shade100,
-                            child: Center(
+                            child: const Center(
                               child: SizedBox(
                                 width: 20,
                                 height: 20,
@@ -250,7 +249,6 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
                           // ==========================================
                           // DATE + BOOKMARK
                           // ==========================================
-
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

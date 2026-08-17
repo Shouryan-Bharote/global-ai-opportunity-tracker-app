@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
@@ -180,16 +181,16 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
   }
 
   void _onTapDown(TapDownDetails details) {
-    _controller.forward();
+    unawaited(_controller.forward());
   }
 
   void _onTapUp(TapUpDetails details) {
-    _controller.reverse();
+    unawaited(_controller.reverse());
     widget.onTap();
   }
 
   void _onTapCancel() {
-    _controller.reverse();
+    unawaited(_controller.reverse());
   }
 
   @override
@@ -200,7 +201,7 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
     final cardColor = widget.isSelected
         ? null
         : widget.isDark
-        ? const Color(0xFF1E1E1E)
+        ? const Color(0xFF16152B)
         : Colors.white;
 
     // Text colors change automatically
@@ -217,9 +218,9 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
     // Border changes automatically
     final borderColor = widget.isSelected
         ? Colors.transparent
-        : Colors.grey.withValues(
-            alpha: widget.isDark ? 0.25 : 0.3,
-          );
+        : widget.isDark
+        ? const Color(0x3D3E63F5)
+        : Colors.grey.withValues(alpha: 0.3);
 
     return GestureDetector(
       onTapDown: _onTapDown,

@@ -39,6 +39,7 @@ flowchart TD
 
     NAV_EXPLORE --> EXPLORE[Explore Screen]
     EXPLORE --> E_SEARCH[Search Events]
+    EXPLORE --> E_VOICE[Voice Search]
     EXPLORE --> E_FILTER[Apply Filters]
     EXPLORE --> E_TAP[Tap Event Card]
     E_TAP --> EVENT
@@ -179,7 +180,7 @@ graph TD
 **Shell tab**: 1 (Explore)
 
 **Content**:
-- **Search Bar**: Debounced text input (300ms delay).
+- **Search Bar**: Debounced text input (300ms delay) with Voice Search capability.
 - **Filter Chips**: Horizontal scrollable chips for quick filters.
 - **Event Grid/List**: Results matching search + filters.
 - **Sort Options**: By date, by name, by platform.

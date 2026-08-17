@@ -32,153 +32,218 @@ class FeaturedEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget cardContent = Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.s24),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s20,
+        vertical: 16,
+      ),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D0518), // Dark background matching Figma
+        color: const Color(0xFF141326), // Deep aesthetic midnight surface
         borderRadius: BorderRadius.circular(AppRadius.large),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.3),
+        ),
         image: imageUrl != null
             ? DecorationImage(
                 image: NetworkImage(imageUrl!),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withValues(alpha: 0.6), // Dark overlay for text readability
+                  Colors.black.withValues(alpha: 0.65), // Aesthetic dark overlay
                   BlendMode.darken,
                 ),
               )
             : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: AppColors.primary.withValues(alpha: 0.15),
             blurRadius: 20,
-            offset: const Offset(0, 10),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Stack(
         children: [
-          // Graphic Placeholder (only if no image provided)
+          // Ambient Glow Circle (when no image provided)
           if (imageUrl == null)
             Positioned(
-              right: -50,
-              top: -20,
-              bottom: -20,
+              right: -30,
+              top: -30,
               child: Container(
-                width: 150,
-                decoration: const BoxDecoration(
+                width: 140,
+                height: 140,
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF8A4DFF), Color(0xFF3E63F5)],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.6),
+                      AppColors.accentPurple.withValues(alpha: 0.1),
+                      Colors.transparent,
+                    ],
                   ),
                 ),
               ),
             ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Badge
+              // Glassmorphic Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.white30),
-                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white.withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.25),
+                  ),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 8,
-                      height: 8,
+                      width: 7,
+                      height: 7,
                       decoration: const BoxDecoration(
-                        color: AppColors.success,
+                        color: AppColors.onlineIndicator,
                         shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Featured - Trending',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Featured • Trending',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.2,
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.s24),
+              const SizedBox(height: 12),
               
               Text(
                 title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                  letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: AppSpacing.s8),
+              const SizedBox(height: 6),
               
               SizedBox(
-                width: 200,
+                width: 250,
                 child: Text(
                   subtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white70,
-                    height: 1.5,
+                    color: Colors.white.withValues(alpha: 0.8),
+                    height: 1.4,
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.s16),
+              const SizedBox(height: 14),
               
               Row(
                 children: [
-                  const Icon(Icons.calendar_today, size: 16, color: Colors.white),
-                  const SizedBox(width: AppSpacing.s4),
+                  Icon(
+                    Icons.calendar_today_rounded,
+                    size: 15,
+                    color: Colors.white.withValues(alpha: 0.85),
+                  ),
+                  const SizedBox(width: 6),
                   Text(
                     date,
-                    style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  const SizedBox(width: AppSpacing.s16),
-                  const Icon(Icons.location_on_outlined, size: 16, color: Colors.white),
-                  const SizedBox(width: AppSpacing.s4),
-                  Text(
-                    location,
-                    style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                  const SizedBox(width: 16),
+                  const Icon(
+                    Icons.location_on_rounded,
+                    size: 15,
+                    color: AppColors.secondary,
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      location,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.s24),
+              const SizedBox(height: 16),
               
               Row(
                 children: [
                   Bounceable(
                     onTap: onRegister,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
                       ),
-                      child: const Row(
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.35),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
                         children: [
-                          Text('Register', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                          SizedBox(width: 4),
-                          Icon(Icons.chevron_right, size: 18, color: Colors.black),
+                          Text(
+                            'Register',
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.s16),
+                  const SizedBox(width: 12),
                   Bounceable(
                     onTap: onBookmark ?? () {},
                     child: Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: isBookmarked ? Colors.white : Colors.transparent,
-                        border: Border.all(color: Colors.white30),
-                        borderRadius: BorderRadius.circular(8),
+                        color: isBookmarked
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.12),
+                        border: Border.all(
+                          color: isBookmarked
+                              ? Colors.white
+                              : Colors.white.withValues(alpha: 0.25),
+                        ),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Icon(
-                        isBookmarked ? Icons.bookmark : Icons.bookmark_outline, 
-                        color: isBookmarked ? Colors.black : Colors.white, 
-                        size: 20,
+                        isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, 
+                        color: isBookmarked ? AppColors.primary : Colors.white, 
+                        size: 18,
                       ),
                     ),
                   ),

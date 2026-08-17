@@ -119,7 +119,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
           // =====================================================
           Expanded(
             child: eventsAsync.when(
-              loading: () => Center(
+              loading: () => const Center(
                 child: CircularProgressIndicator(
                   color: AppColors.primary,
                 ),

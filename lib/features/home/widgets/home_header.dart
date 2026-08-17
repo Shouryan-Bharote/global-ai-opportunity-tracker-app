@@ -49,7 +49,7 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -58,7 +58,7 @@ class HomeHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1D273F),
+                  color: isDarkMode ? Colors.white : const Color(0xFF1D273F),
                   letterSpacing: -0.3,
                 ),
               ),
@@ -67,7 +67,9 @@ class HomeHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF9A9AA8),
+                  color: isDarkMode
+                      ? Colors.grey.shade400
+                      : const Color(0xFF9A9AA8),
                   letterSpacing: 0.2,
                 ),
               ),

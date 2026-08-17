@@ -16,10 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
-  debugLabel: 'root',
-);
-
 class _RouterNotifier extends ChangeNotifier {
   _RouterNotifier(this._ref) {
     _ref.listen<AuthState>(
@@ -34,12 +30,13 @@ class _RouterNotifier extends ChangeNotifier {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
+  ref.keepAlive();
   final notifier = _RouterNotifier(ref);
 
   ref.onDispose(notifier.dispose);
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'root'),
 
     initialLocation: '/splash',
 

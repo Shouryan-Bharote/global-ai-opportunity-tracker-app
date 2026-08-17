@@ -243,7 +243,7 @@ class _ResultCardItemState extends State<_ResultCardItem>
 
     _scaleAnimation =
         Tween<double>(
-          begin: 1.0,
+          begin: 1,
           end: 0.95,
         ).animate(
           CurvedAnimation(
@@ -303,21 +303,27 @@ class _ResultCardItemState extends State<_ResultCardItem>
               // CARD DECORATION
               // ======================================================
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                color: isDark ? const Color(0xFF16152B) : Colors.white,
 
                 borderRadius: BorderRadius.circular(16),
 
                 border: Border.all(
                   color: isPressed
-                      ? AppColors.primary.withValues(alpha: 0.45)
+                      ? AppColors.primary
                       : isDark
-                      ? const Color(0xFF444444)
+                      ? const Color(0x3D3E63F5)
                       : Colors.grey.withValues(alpha: 0.3),
-                  width: 1.5,
+                  width: 1.2,
                 ),
 
                 boxShadow: isDark
-                    ? null
+                    ? [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ]
                     : [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.04),
@@ -342,14 +348,14 @@ class _ResultCardItemState extends State<_ResultCardItem>
                     ),
                     decoration: BoxDecoration(
                       color: isDark
-                          ? const Color(0xFF30243D)
+                          ? const Color(0xFF231E3D)
                           : Colors.purple.shade100.withValues(alpha: 0.5),
 
                       borderRadius: BorderRadius.circular(12),
 
                       border: Border.all(
                         color: isDark
-                            ? Colors.deepPurple.shade300.withValues(alpha: 0.5)
+                            ? AppColors.primary.withValues(alpha: 0.3)
                             : Colors.purple.shade200,
                       ),
                     ),
@@ -360,7 +366,7 @@ class _ResultCardItemState extends State<_ResultCardItem>
                           widget.day,
                           style: TextStyle(
                             color: isDark
-                                ? Colors.purple.shade200
+                                ? const Color(0xFFC084FC)
                                 : Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
@@ -371,7 +377,7 @@ class _ResultCardItemState extends State<_ResultCardItem>
                           widget.month,
                           style: TextStyle(
                             color: isDark
-                                ? Colors.purple.shade200
+                                ? const Color(0xFFC084FC)
                                 : Colors.deepPurple,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,

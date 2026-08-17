@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
@@ -92,16 +93,16 @@ class _FilterChipItemState extends State<_FilterChipItem>
   }
 
   void _onTapDown(TapDownDetails details) {
-    _controller.forward();
+    unawaited(_controller.forward());
   }
 
   void _onTapUp(TapUpDetails details) {
-    _controller.reverse();
+    unawaited(_controller.reverse());
     widget.onTap();
   }
 
   void _onTapCancel() {
-    _controller.reverse();
+    unawaited(_controller.reverse());
   }
 
   @override
@@ -111,13 +112,13 @@ class _FilterChipItemState extends State<_FilterChipItem>
 
     // Colors for the unselected chip.
     final unselectedBackground = isDarkMode
-        ? const Color(0xFF2A2A2A)
+        ? const Color(0xFF16152B)
         : Colors.white;
 
-    final unselectedText = isDarkMode ? Colors.white : Colors.black87;
+    final unselectedText = isDarkMode ? Colors.white70 : Colors.black87;
 
     final unselectedBorder = isDarkMode
-        ? const Color(0xFF444444)
+        ? const Color(0x3D3E63F5)
         : Colors.grey.withValues(alpha: 0.3);
 
     return Padding(

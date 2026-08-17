@@ -1,3 +1,4 @@
+import 'package:ai_nexus/core/providers/location_provider.dart';
 import 'package:ai_nexus/core/providers/repository_providers.dart';
 import 'package:ai_nexus/features/events/models/event_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,8 +7,19 @@ class EventsNotifier extends AsyncNotifier<List<EventModel>> {
   @override
   Future<List<EventModel>> build() async {
     final repository = ref.watch(eventRepositoryProvider);
+    
+    // Watch location state. This will automatically rebuild the events 
+    // when location is fetched.
+    final locationAsync = ref.watch(locationProvider);
+    
+    // If location is loading, we can still fetch events without location,
+    // or wait. Progressive loading means we can fetch with location if available.
+    final position = locationAsync.valueOrNull;
 
-    return repository.getEvents();
+    return repository.getEvents(
+      latitude: position?.latitude,
+      longitude: position?.longitude,
+    );
   }
 
   // ============================================================

@@ -71,19 +71,21 @@ class AppHeader extends StatelessWidget {
                 if (subtitle != null)
                   Text(
                     subtitle!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF9A9AA8),
+                      color: isDarkMode
+                          ? Colors.grey.shade400
+                          : const Color(0xFF9A9AA8),
                       letterSpacing: 0.2,
                     ),
                   ),
                 Text(
                   pageTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1D273F),
+                    color: isDarkMode ? Colors.white : const Color(0xFF1D273F),
                     letterSpacing: -0.3,
                   ),
                 ),

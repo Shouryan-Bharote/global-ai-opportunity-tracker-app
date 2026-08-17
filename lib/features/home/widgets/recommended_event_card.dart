@@ -74,21 +74,28 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
         child: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
+            final isDarkMode = Theme.of(context).brightness == Brightness.dark;
             final isPressed = _controller.value > 0.3;
             return Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
                 width: 240,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDarkMode ? const Color(0xFF16152B) : Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.large),
                   border: Border.all(
-                    color: isPressed ? AppColors.primary.withValues(alpha: 0.45) : AppColors.border.withValues(alpha: 0.6),
-                    width: 1.5,
+                    color: isPressed
+                        ? AppColors.primary
+                        : (isDarkMode
+                            ? const Color(0x3D3E63F5)
+                            : AppColors.border.withValues(alpha: 0.6)),
+                    width: 1.2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: isDarkMode
+                          ? AppColors.primary.withValues(alpha: 0.1)
+                          : Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -125,13 +132,25 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: isDarkMode
+                              ? const Color(0xFF231E3D)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDarkMode
+                                ? AppColors.primary.withValues(alpha: 0.3)
+                                : Colors.transparent,
+                          ),
                         ),
                         child: Text(
                           widget.tag,
-                          style: const TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: isDarkMode
+                                ? const Color(0xFFC084FC)
+                                : Colors.black,
+                          ),
                         ),
                       ),
                     ),
@@ -142,35 +161,51 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                         children: [
                           Text(
                             widget.title,
-                            style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
-                                  fontSize: 18,
-                                ),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: 18,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: AppSpacing.s8),
                           Row(
                             children: [
-                              const Icon(Icons.calendar_today,
-                                  size: 16, color: AppColors.textSecondary),
+                              Icon(Icons.calendar_today,
+                                  size: 16,
+                                  color: isDarkMode
+                                      ? Colors.grey.shade400
+                                      : AppColors.textSecondary),
                               const SizedBox(width: AppSpacing.s4),
                               Text(
                                 widget.date,
-                                style: const TextStyle(
-                                    fontSize: 13,
-                                    color: AppColors.textSecondary),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: isDarkMode
+                                      ? Colors.grey.shade400
+                                      : AppColors.textSecondary,
+                                ),
                               ),
                               const SizedBox(width: AppSpacing.s8),
-                              const Icon(Icons.location_on,
-                                  size: 16, color: AppColors.textSecondary),
+                              Icon(Icons.location_on,
+                                  size: 16,
+                                  color: isDarkMode
+                                      ? AppColors.secondary
+                                      : AppColors.textSecondary),
                               const SizedBox(width: AppSpacing.s4),
-                              Text(
-                                widget.location,
-                                style: const TextStyle(
+                              Expanded(
+                                child: Text(
+                                  widget.location,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
                                     fontSize: 13,
-                                    color: AppColors.textSecondary),
+                                    color: isDarkMode
+                                        ? Colors.grey.shade400
+                                        : AppColors.textSecondary,
+                                  ),
+                                ),
                               ),
                             ],
                           ),

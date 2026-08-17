@@ -16,6 +16,11 @@ class CategoryChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final unselectedBg = isDarkMode ? const Color(0xFF16152B) : Colors.white;
+    final unselectedText = isDarkMode ? Colors.white70 : AppColors.textPrimary;
+    final unselectedBorder = isDarkMode ? const Color(0x3D3E63F5) : AppColors.border;
+
     return SizedBox(
       height: 40,
       child: ListView.builder(
@@ -33,16 +38,21 @@ class CategoryChips extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  gradient: isSelected ? const LinearGradient(
-                    colors: [Colors.blue, Colors.lightBlueAccent],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ) : null,
-                  color: isSelected ? null : Colors.white,
+                  gradient: isSelected
+                      ? const LinearGradient(
+                          colors: [Colors.blue, Colors.lightBlueAccent],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  color: isSelected ? null : unselectedBg,
                   borderRadius: BorderRadius.circular(20),
-                  border: isSelected ? null : Border.all(
-                    color: AppColors.border,
-                  ),
+                  border: isSelected
+                      ? null
+                      : Border.all(
+                          color: unselectedBorder,
+                          width: 1.2,
+                        ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -51,14 +61,14 @@ class CategoryChips extends StatelessWidget {
                       Icon(
                         category.icon,
                         size: 16,
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
+                        color: isSelected ? Colors.white : unselectedText,
                       ),
                       const SizedBox(width: AppSpacing.s8),
                     ],
                     Text(
                       category.label,
                       style: TextStyle(
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
+                        color: isSelected ? Colors.white : unselectedText,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         fontSize: 14,
                       ),

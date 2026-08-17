@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
@@ -38,7 +39,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
     final events = eventsAsync.valueOrNull ?? [];
     try {
       return events.firstWhere((e) => e.id == widget.eventId);
-    } catch (_) {
+    } on Object catch (_) {
       return null;
     }
   }
@@ -519,7 +520,17 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Successfully registered for ${event.title}!'),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3B41E3),
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -529,16 +540,10 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (isLive) ...[
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
-                          ),
-                          const SizedBox(width: AppSpacing.s8),
-                        ],
+                        const Icon(Icons.app_registration_rounded, size: 20, color: Colors.white),
+                        const SizedBox(width: AppSpacing.s8),
                         Text(
-                          isLive ? 'Watch live now' : event.isOnline ? 'Join Online' : 'Register Now',
+                          event.isOnline ? 'Register for Online Event' : 'Register for Event',
                           style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -559,7 +564,8 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> with Si
                       size: 26,
                     ),
                     onPressed: () {
-                      ref.read(eventsProvider.notifier).toggleBookmark(event.id);
+                      unawaited(
+                          ref.read(eventsProvider.notifier).toggleBookmark(event.id));
                     },
                   ),
                 ),

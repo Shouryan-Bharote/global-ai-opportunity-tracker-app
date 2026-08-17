@@ -80,18 +80,16 @@ class _ExploreSearchBarState extends ConsumerState<ExploreSearchBar>
     // Get colors from the current Flutter theme.
     // These automatically change when light/dark mode changes.
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     final isDark = theme.brightness == Brightness.dark;
 
-    final searchBackground = isDark ? const Color(0xFF2A2A2A) : Colors.white;
+    final searchBackground = isDark ? const Color(0xFF16152B) : Colors.white;
 
     final textColor = isDark ? Colors.white : Colors.black87;
 
     final hintColor = isDark ? Colors.grey.shade400 : Colors.grey.shade400;
 
     final clearButtonColor = isDark
-        ? const Color(0xFF444444)
+        ? const Color(0xFF231E3D)
         : Colors.grey.shade200;
 
     final clearIconColor = isDark ? Colors.grey.shade300 : Colors.grey.shade600;
@@ -113,6 +111,14 @@ class _ExploreSearchBarState extends ConsumerState<ExploreSearchBar>
       decoration: BoxDecoration(
         color: searchBackground,
         borderRadius: BorderRadius.circular(32),
+        border: Border.all(
+          color: _isFocused
+              ? AppColors.primary
+              : (isDark
+                  ? const Color(0x3D3E63F5)
+                  : AppColors.border),
+          width: 1.2,
+        ),
 
         boxShadow: [
           BoxShadow(
@@ -260,10 +266,7 @@ class _ExploreSearchBarState extends ConsumerState<ExploreSearchBar>
               _micController.reverse();
             },
 
-            onTap: () {
-              // Voice search can be connected later.
-              _focusNode.requestFocus();
-            },
+            onTap: _focusNode.requestFocus,
 
             child: ScaleTransition(
               scale: _micScale,

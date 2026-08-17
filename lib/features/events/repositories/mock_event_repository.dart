@@ -12,7 +12,7 @@ class MockEventRepository implements EventRepository {
   final List<EventModel> _events = List.from(MockEvents.events);
 
   @override
-  Future<List<EventModel>> getEvents() async {
+  Future<List<EventModel>> getEvents({double? latitude, double? longitude}) async {
     // Simulate network delay to test loading states
     await Future<void>.delayed(const Duration(milliseconds: 800));
     return List.unmodifiable(_events);
@@ -55,6 +55,8 @@ class MockEventRepository implements EventRepository {
     String? city,
     bool? isOnline,
     List<String>? tags,
+    double? latitude,
+    double? longitude,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 400));
 

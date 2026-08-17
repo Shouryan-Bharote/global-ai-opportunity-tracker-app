@@ -19,9 +19,9 @@ class ExploreScreen extends StatelessWidget {
       // This automatically changes between light and dark mode.
       backgroundColor: theme.scaffoldBackgroundColor,
 
-      body: SafeArea(
+      body: const SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(
+          padding: EdgeInsets.only(
             bottom: 120,
           ),
           child: Column(
@@ -30,45 +30,45 @@ class ExploreScreen extends StatelessWidget {
               // ==========================================
               // SEARCH BAR
               // ==========================================
-              const ExploreSearchBar(),
+              ExploreSearchBar(),
 
-              const SizedBox(
+              SizedBox(
                 height: AppSpacing.s24,
               ),
 
               // ==========================================
               // FILTER CHIPS
               // ==========================================
-              const ExploreFilterChips(),
+              ExploreFilterChips(),
 
-              const SizedBox(
+              SizedBox(
                 height: AppSpacing.s32,
               ),
 
               // ==========================================
               // CATEGORIES
               // ==========================================
-              const ExploreCategories(),
+              ExploreCategories(),
 
-              const SizedBox(
+              SizedBox(
                 height: AppSpacing.s32,
               ),
 
               // ==========================================
               // POPULAR CITIES
               // ==========================================
-              const PopularCities(),
+              PopularCities(),
 
-              const SizedBox(
+              SizedBox(
                 height: AppSpacing.s32,
               ),
 
               // ==========================================
               // SEARCH RESULTS
               // ==========================================
-              const ExploreResults(),
+              ExploreResults(),
 
-              const SizedBox(
+              SizedBox(
                 height: AppSpacing.s24,
               ),
             ],

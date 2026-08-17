@@ -24,15 +24,24 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final initials = _getInitials(user.name);
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFFE6EEFA), // Light blue background from mockup
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: isDarkMode
+            ? const Color(0xFF16152B)
+            : const Color(0xFFE6EEFA),
+        borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(36),
           bottomRight: Radius.circular(36),
+        ),
+        border: Border.all(
+          color: isDarkMode
+              ? const Color(0x3D3E63F5)
+              : Colors.transparent,
+          width: 1.2,
         ),
       ),
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 48), // Padding bottom is larger to allow stats card overlap
@@ -144,10 +153,10 @@ class ProfileHeader extends StatelessWidget {
           // User Name
           Text(
             user.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1D273F), // Dark blue-grey text from mockup
+              color: isDarkMode ? Colors.white : const Color(0xFF1D273F),
               letterSpacing: -0.5,
             ),
           ),
@@ -155,9 +164,9 @@ class ProfileHeader extends StatelessWidget {
           // User Email
           Text(
             user.email,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
-              color: Color(0xFF7A869A), // Cool grey text from mockup
+              color: isDarkMode ? Colors.grey.shade400 : const Color(0xFF7A869A),
               fontWeight: FontWeight.w500,
             ),
           ),

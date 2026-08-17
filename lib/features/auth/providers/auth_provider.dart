@@ -99,7 +99,6 @@ class AuthNotifier extends Notifier<AuthState> {
 
       state = AuthState(
         user: user,
-        isLoading: false,
       );
     } on FirebaseAuthException catch (e) {
       state = state.copyWith(
@@ -202,7 +201,6 @@ class AuthNotifier extends Notifier<AuthState> {
 
       state = AuthState(
         user: user,
-        isLoading: false,
       );
     } on FirebaseAuthException catch (e) {
       state = state.copyWith(

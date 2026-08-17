@@ -6,8 +6,8 @@ import 'package:ai_nexus/features/events/models/event_model.dart';
 /// this interface (e.g., `HttpEventRepository`, `FirebaseEventRepository`)
 /// and swap it in `repository_providers.dart`. No UI changes needed.
 abstract class EventRepository {
-  /// Fetches all events.
-  Future<List<EventModel>> getEvents();
+  /// Fetches all events. Can optionally pass location to fetch nearby events.
+  Future<List<EventModel>> getEvents({double? latitude, double? longitude});
 
   /// Fetches a single event by its ID.
   Future<EventModel?> getEventById(String id);
@@ -25,5 +25,7 @@ abstract class EventRepository {
     String? city,
     bool? isOnline,
     List<String>? tags,
+    double? latitude,
+    double? longitude,
   });
 }
