@@ -563,7 +563,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "consumerwidget",
-      "community": 51,
+      "community": 54,
       "norm_label": "consumerwidget"
     },
     {
@@ -3673,7 +3673,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "package_ai_nexus_core_config_env_config_dart",
-      "community": 85,
+      "community": 103,
       "norm_label": "package:ai_nexus/core/config/env_config.dart"
     },
     {
@@ -3723,7 +3723,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_providers_location_provider_locationserviceprovider",
-      "community": 59,
+      "community": 50,
       "norm_label": "locationserviceprovider"
     },
     {
@@ -3743,7 +3743,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_providers_location_provider_locationprovider",
-      "community": 59,
+      "community": 50,
       "norm_label": "locationprovider"
     },
     {
@@ -3983,7 +3983,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_providers_theme_provider_isdarkmodeprovider",
-      "community": 73,
+      "community": 112,
       "norm_label": "isdarkmodeprovider"
     },
     {
@@ -4253,7 +4253,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "offset",
-      "community": 62,
+      "community": 24,
       "norm_label": "offset"
     },
     {
@@ -4313,7 +4313,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_storage_secure_storage",
-      "community": 6,
+      "community": 59,
       "norm_label": "secure_storage.dart"
     },
     {
@@ -4333,7 +4333,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_storage_secure_storage_storage",
-      "community": 6,
+      "community": 59,
       "norm_label": "_storage"
     },
     {
@@ -4343,7 +4343,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "fluttersecurestorage",
-      "community": 6,
+      "community": 59,
       "norm_label": "fluttersecurestorage"
     },
     {
@@ -4353,7 +4353,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_storage_secure_storage_tokenkey",
-      "community": 6,
+      "community": 59,
       "norm_label": "_tokenkey"
     },
     {
@@ -4363,7 +4363,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_storage_secure_storage_savetoken",
-      "community": 6,
+      "community": 59,
       "norm_label": "savetoken"
     },
     {
@@ -4373,7 +4373,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_storage_secure_storage_gettoken",
-      "community": 6,
+      "community": 59,
       "norm_label": "gettoken"
     },
     {
@@ -4383,7 +4383,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_storage_secure_storage_deletetoken",
-      "community": 6,
+      "community": 59,
       "norm_label": "deletetoken"
     },
     {
@@ -4393,7 +4393,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "package_flutter_secure_storage_flutter_secure_storage_dart",
-      "community": 6,
+      "community": 59,
       "norm_label": "package:flutter_secure_storage/flutter_secure_storage.dart"
     },
     {
@@ -5053,7 +5053,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_theme_app_typography",
-      "community": 6,
+      "community": 81,
       "norm_label": "app_typography.dart"
     },
     {
@@ -5063,7 +5063,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_theme_app_typography_apptypography",
-      "community": 6,
+      "community": 81,
       "norm_label": "apptypography"
     },
     {
@@ -5073,7 +5073,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_theme_app_typography_fontfamily",
-      "community": 6,
+      "community": 81,
       "norm_label": "fontfamily"
     },
     {
@@ -5083,7 +5083,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_theme_app_typography_texttheme",
-      "community": 6,
+      "community": 81,
       "norm_label": "texttheme"
     },
     {
@@ -5093,7 +5093,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "static_texttheme_get",
-      "community": 6,
+      "community": 81,
       "norm_label": "static texttheme get"
     },
     {
@@ -5103,7 +5103,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_theme_app_typography_button",
-      "community": 6,
+      "community": 81,
       "norm_label": "button"
     },
     {
@@ -5113,7 +5113,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "static_const_textstyle",
-      "community": 6,
+      "community": 81,
       "norm_label": "static const textstyle"
     },
     {
@@ -5123,7 +5123,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_theme_app_typography_caption",
-      "community": 6,
+      "community": 81,
       "norm_label": "caption"
     },
     {
@@ -5503,7 +5503,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "consumerstatefulwidget",
-      "community": 86,
+      "community": 70,
       "norm_label": "consumerstatefulwidget"
     },
     {
@@ -5523,7 +5523,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "consumerstate",
-      "community": 86,
+      "community": 70,
       "norm_label": "consumerstate"
     },
     {
@@ -5633,7 +5633,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_widgets_app_shell_build",
-      "community": 73,
+      "community": 112,
       "norm_label": "build"
     },
     {
@@ -5657,6 +5657,16 @@
       "norm_label": "package:ai_nexus/core/widgets/custom_nav_bar.dart"
     },
     {
+      "label": "package:animations/animations.dart",
+      "file_type": "code",
+      "source_file": null,
+      "source_location": null,
+      "_origin": "ast",
+      "id": "package_animations_animations_dart",
+      "community": 62,
+      "norm_label": "package:animations/animations.dart"
+    },
+    {
       "label": "bounceable.dart",
       "file_type": "code",
       "source_file": "lib/core/widgets/bounceable.dart",
@@ -5673,7 +5683,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_widgets_bounceable_bounceable",
-      "community": 64,
+      "community": 86,
       "norm_label": "bounceable"
     },
     {
@@ -5683,7 +5693,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "statefulwidget",
-      "community": 64,
+      "community": 86,
       "norm_label": "statefulwidget"
     },
     {
@@ -5693,7 +5703,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_core_widgets_bounceable_bounceablestate",
-      "community": 64,
+      "community": 86,
       "norm_label": "_bounceablestate"
     },
     {
@@ -5703,7 +5713,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "state",
-      "community": 64,
+      "community": 86,
       "norm_label": "state"
     },
     {
@@ -5713,7 +5723,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "singletickerproviderstatemixin",
-      "community": 58,
+      "community": 86,
       "norm_label": "singletickerproviderstatemixin"
     },
     {
@@ -5773,7 +5783,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "animationcontroller",
-      "community": 81,
+      "community": 64,
       "norm_label": "animationcontroller"
     },
     {
@@ -5793,7 +5803,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "animation",
-      "community": 81,
+      "community": 64,
       "norm_label": "animation"
     },
     {
@@ -6723,7 +6733,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_forgot_password_screen_forgotpasswordscreen",
-      "community": 86,
+      "community": 70,
       "norm_label": "forgotpasswordscreen"
     },
     {
@@ -6733,7 +6743,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_forgot_password_screen_forgotpasswordscreenstate",
-      "community": 86,
+      "community": 70,
       "norm_label": "_forgotpasswordscreenstate"
     },
     {
@@ -6933,7 +6943,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen",
-      "community": 81,
+      "community": 64,
       "norm_label": "splash_screen.dart"
     },
     {
@@ -6963,7 +6973,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen_controller",
-      "community": 81,
+      "community": 64,
       "norm_label": "_controller"
     },
     {
@@ -6973,7 +6983,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen_scaleanimation",
-      "community": 81,
+      "community": 64,
       "norm_label": "_scaleanimation"
     },
     {
@@ -6983,7 +6993,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen_fadeanimation",
-      "community": 81,
+      "community": 64,
       "norm_label": "_fadeanimation"
     },
     {
@@ -6993,7 +7003,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen_createstate",
-      "community": 81,
+      "community": 64,
       "norm_label": "createstate"
     },
     {
@@ -7003,7 +7013,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen_initstate",
-      "community": 81,
+      "community": 64,
       "norm_label": "initstate"
     },
     {
@@ -7013,7 +7023,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen_dispose",
-      "community": 81,
+      "community": 64,
       "norm_label": "dispose"
     },
     {
@@ -7033,7 +7043,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_auth_screens_splash_screen_build",
-      "community": 81,
+      "community": 64,
       "norm_label": "build"
     },
     {
@@ -7623,7 +7633,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_events_providers_events_provider_eventsprovider",
-      "community": 112,
+      "community": 66,
       "norm_label": "eventsprovider"
     },
     {
@@ -7923,7 +7933,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_events_screens_event_details_screen_eventdetailsscreen",
-      "community": 86,
+      "community": 70,
       "norm_label": "eventdetailsscreen"
     },
     {
@@ -7933,7 +7943,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_events_screens_event_details_screen_eventdetailsscreenstate",
-      "community": 86,
+      "community": 70,
       "norm_label": "_eventdetailsscreenstate"
     },
     {
@@ -8093,7 +8103,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_events_screens_event_details_screen_findevent",
-      "community": 112,
+      "community": 66,
       "norm_label": "_findevent"
     },
     {
@@ -8173,7 +8183,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_events_screens_event_details_screen_buildbottombar",
-      "community": 112,
+      "community": 66,
       "norm_label": "_buildbottombar"
     },
     {
@@ -8483,7 +8493,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_explore_categories_categorycarditem",
-      "community": 64,
+      "community": 86,
       "norm_label": "_categorycarditem"
     },
     {
@@ -8493,7 +8503,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_explore_categories_categorycarditemstate",
-      "community": 64,
+      "community": 86,
       "norm_label": "_categorycarditemstate"
     },
     {
@@ -8733,7 +8743,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_explore_filter_chips_filterchipitem",
-      "community": 54,
+      "community": 86,
       "norm_label": "_filterchipitem"
     },
     {
@@ -8743,7 +8753,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_explore_filter_chips_filterchipitemstate",
-      "community": 54,
+      "community": 86,
       "norm_label": "_filterchipitemstate"
     },
     {
@@ -8903,7 +8913,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_explore_results_resultcarditem",
-      "community": 60,
+      "community": 86,
       "norm_label": "_resultcarditem"
     },
     {
@@ -8913,7 +8923,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_explore_results_resultcarditemstate",
-      "community": 60,
+      "community": 86,
       "norm_label": "_resultcarditemstate"
     },
     {
@@ -9233,7 +9243,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_popular_cities_citychipitem",
-      "community": 53,
+      "community": 86,
       "norm_label": "_citychipitem"
     },
     {
@@ -9243,7 +9253,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_explore_widgets_popular_cities_citychipitemstate",
-      "community": 53,
+      "community": 86,
       "norm_label": "_citychipitemstate"
     },
     {
@@ -9393,7 +9403,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_providers_home_provider_selectedcategoryprovider",
-      "community": 59,
+      "community": 50,
       "norm_label": "selectedcategoryprovider"
     },
     {
@@ -9403,7 +9413,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_providers_home_provider_homeeventsprovider",
-      "community": 59,
+      "community": 50,
       "norm_label": "homeeventsprovider"
     },
     {
@@ -9413,7 +9423,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_providers_home_provider_filteredeventsprovider",
-      "community": 59,
+      "community": 50,
       "norm_label": "filteredeventsprovider"
     },
     {
@@ -9503,7 +9513,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_providers_home_provider_selectedexplorecategoryprovider",
-      "community": 59,
+      "community": 50,
       "norm_label": "selectedexplorecategoryprovider"
     },
     {
@@ -9533,7 +9543,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_providers_home_provider_upcomingfilteredeventsprovider",
-      "community": 59,
+      "community": 50,
       "norm_label": "upcomingfilteredeventsprovider"
     },
     {
@@ -9573,7 +9583,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_screens_home_screen_homescreen",
-      "community": 86,
+      "community": 70,
       "norm_label": "homescreen"
     },
     {
@@ -9583,7 +9593,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_screens_home_screen_homescreenstate",
-      "community": 59,
+      "community": 50,
       "norm_label": "_homescreenstate"
     },
     {
@@ -9593,7 +9603,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "widgetsbindingobserver",
-      "community": 59,
+      "community": 50,
       "norm_label": "widgetsbindingobserver"
     },
     {
@@ -9703,7 +9713,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_screens_home_screen_startfeaturedtimer",
-      "community": 112,
+      "community": 66,
       "norm_label": "_startfeaturedtimer"
     },
     {
@@ -9743,7 +9753,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_screens_home_screen_onrefresh",
-      "community": 112,
+      "community": 66,
       "norm_label": "_onrefresh"
     },
     {
@@ -9753,7 +9763,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_screens_home_screen_enablelocation",
-      "community": 59,
+      "community": 50,
       "norm_label": "_enablelocation"
     },
     {
@@ -9763,7 +9773,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_screens_home_screen_build",
-      "community": 59,
+      "community": 50,
       "norm_label": "build"
     },
     {
@@ -9773,7 +9783,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_screens_home_screen_buildexplorecard",
-      "community": 59,
+      "community": 50,
       "norm_label": "_buildexplorecard"
     },
     {
@@ -9973,7 +9983,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_widgets_explore_category_card_explorecategorycard",
-      "community": 37,
+      "community": 86,
       "norm_label": "explorecategorycard"
     },
     {
@@ -9983,7 +9993,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_widgets_explore_category_card_explorecategorycardstate",
-      "community": 37,
+      "community": 86,
       "norm_label": "_explorecategorycardstate"
     },
     {
@@ -10333,7 +10343,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_widgets_recommended_event_card_recommendedeventcard",
-      "community": 40,
+      "community": 86,
       "norm_label": "recommendedeventcard"
     },
     {
@@ -10343,7 +10353,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_home_widgets_recommended_event_card_recommendedeventcardstate",
-      "community": 40,
+      "community": 86,
       "norm_label": "_recommendedeventcardstate"
     },
     {
@@ -10813,7 +10823,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_profile_providers_profile_provider_profileprovider",
-      "community": 59,
+      "community": 107,
       "norm_label": "profileprovider"
     },
     {
@@ -10873,7 +10883,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_profile_screens_profile_screen_profilescreen",
-      "community": 4,
+      "community": 70,
       "norm_label": "profilescreen"
     },
     {
@@ -10883,7 +10893,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_profile_screens_profile_screen_profilescreenstate",
-      "community": 4,
+      "community": 107,
       "norm_label": "_profilescreenstate"
     },
     {
@@ -10953,7 +10963,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_profile_screens_profile_screen_showaboutdialog",
-      "community": 4,
+      "community": 112,
       "norm_label": "_showaboutdialog"
     },
     {
@@ -10983,7 +10993,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_profile_screens_profile_screen_buildstatitem",
-      "community": 73,
+      "community": 112,
       "norm_label": "_buildstatitem"
     },
     {
@@ -10993,7 +11003,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_profile_screens_profile_screen_buildverticaldivider",
-      "community": 73,
+      "community": 112,
       "norm_label": "_buildverticaldivider"
     },
     {
@@ -11203,7 +11213,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_schedule_screens_schedule_screen_build",
-      "community": 112,
+      "community": 66,
       "norm_label": "build"
     },
     {
@@ -11393,7 +11403,7 @@
       "source_location": null,
       "_origin": "ast",
       "id": "lib_features_schedule_widgets_schedule_event_card_togglebookmark",
-      "community": 112,
+      "community": 66,
       "norm_label": "_togglebookmark"
     },
     {
@@ -14819,7 +14829,7 @@
       "label": "Current Work",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L52",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "docs_phases_phase_04_current_work",
       "community": 5,
@@ -14829,7 +14839,7 @@
       "label": "Blockers",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L62",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "docs_phases_phase_04_blockers",
       "community": 5,
@@ -14839,7 +14849,7 @@
       "label": "Decisions Made",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L70",
+      "source_location": "L67",
       "_origin": "ast",
       "id": "docs_phases_phase_04_decisions_made",
       "community": 5,
@@ -14849,7 +14859,7 @@
       "label": "Notes For Next Agent",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L78",
+      "source_location": "L75",
       "_origin": "ast",
       "id": "docs_phases_phase_04_notes_for_next_agent",
       "community": 5,
@@ -14859,7 +14869,7 @@
       "label": "Context",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L82",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "docs_phases_phase_04_context",
       "community": 5,
@@ -14869,7 +14879,7 @@
       "label": "What Was Done",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L87",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "docs_phases_phase_04_what_was_done",
       "community": 5,
@@ -14879,7 +14889,7 @@
       "label": "What Remains",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L90",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "docs_phases_phase_04_what_remains",
       "community": 5,
@@ -14889,7 +14899,7 @@
       "label": "Suggested Next Steps",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L93",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "docs_phases_phase_04_suggested_next_steps",
       "community": 5,
@@ -14899,7 +14909,7 @@
       "label": "Warnings",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L102",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "docs_phases_phase_04_warnings",
       "community": 5,
@@ -14909,7 +14919,7 @@
       "label": "Assumptions",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L108",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "docs_phases_phase_04_assumptions",
       "community": 5,
@@ -14919,7 +14929,7 @@
       "label": "Useful Context",
       "file_type": "document",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L114",
+      "source_location": "L111",
       "_origin": "ast",
       "id": "docs_phases_phase_04_useful_context",
       "community": 5,
@@ -21845,6 +21855,28 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": "lib/features/profile/screens/profile_screen.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "context": "riverpod_reference",
+      "source": "lib_features_profile_screens_profile_screen_showaboutdialog",
+      "target": "lib_core_providers_theme_provider_isdarkmodeprovider"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/features/profile/screens/profile_screen.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "context": "riverpod_reference",
+      "source": "lib_features_profile_screens_profile_screen_showsignoutdialog",
+      "target": "lib_core_providers_theme_provider_isdarkmodeprovider"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "lib/core/router/app_router.dart",
       "source_location": null,
       "weight": 1.0,
@@ -22318,17 +22350,6 @@
       "weight": 1.0,
       "source": "lib_features_schedule_widgets_schedule_event_card",
       "target": "package_go_router_go_router_dart"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "lib/core/widgets/app_shell.dart",
-      "source_location": null,
-      "weight": 1.0,
-      "context": "type_lookup",
-      "source": "lib_core_widgets_app_shell",
-      "target": "offset"
     },
     {
       "relation": "defines",
@@ -24571,6 +24592,16 @@
       "weight": 1.0,
       "source": "lib_core_widgets_app_shell",
       "target": "package_ai_nexus_core_widgets_custom_nav_bar_dart"
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/core/widgets/app_shell.dart",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "lib_core_widgets_app_shell",
+      "target": "package_animations_animations_dart"
     },
     {
       "relation": "references",
@@ -33303,7 +33334,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L116",
+      "source_location": "L113",
       "weight": 1.0,
       "source": "docs_phases_phase_04",
       "target": "docs_architecture",
@@ -33673,7 +33704,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L117",
+      "source_location": "L114",
       "weight": 1.0,
       "source": "docs_phases_phase_04",
       "target": "docs_codebase_guide",
@@ -34453,7 +34484,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L115",
+      "source_location": "L112",
       "weight": 1.0,
       "source": "docs_phases_phase_04",
       "target": "docs_features_and_flows",
@@ -35793,7 +35824,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L62",
+      "source_location": "L59",
       "weight": 1.0,
       "source": "docs_phases_phase_04_phase_04_navigation_shell",
       "target": "docs_phases_phase_04_blockers",
@@ -35803,7 +35834,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L52",
+      "source_location": "L49",
       "weight": 1.0,
       "source": "docs_phases_phase_04_phase_04_navigation_shell",
       "target": "docs_phases_phase_04_current_work",
@@ -35813,7 +35844,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L70",
+      "source_location": "L67",
       "weight": 1.0,
       "source": "docs_phases_phase_04_phase_04_navigation_shell",
       "target": "docs_phases_phase_04_decisions_made",
@@ -35823,7 +35854,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L78",
+      "source_location": "L75",
       "weight": 1.0,
       "source": "docs_phases_phase_04_phase_04_navigation_shell",
       "target": "docs_phases_phase_04_notes_for_next_agent",
@@ -35853,7 +35884,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L108",
+      "source_location": "L105",
       "weight": 1.0,
       "source": "docs_phases_phase_04_notes_for_next_agent",
       "target": "docs_phases_phase_04_assumptions",
@@ -35863,7 +35894,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L82",
+      "source_location": "L79",
       "weight": 1.0,
       "source": "docs_phases_phase_04_notes_for_next_agent",
       "target": "docs_phases_phase_04_context",
@@ -35873,7 +35904,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L93",
+      "source_location": "L90",
       "weight": 1.0,
       "source": "docs_phases_phase_04_notes_for_next_agent",
       "target": "docs_phases_phase_04_suggested_next_steps",
@@ -35883,7 +35914,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L114",
+      "source_location": "L111",
       "weight": 1.0,
       "source": "docs_phases_phase_04_notes_for_next_agent",
       "target": "docs_phases_phase_04_useful_context",
@@ -35893,7 +35924,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L102",
+      "source_location": "L99",
       "weight": 1.0,
       "source": "docs_phases_phase_04_notes_for_next_agent",
       "target": "docs_phases_phase_04_warnings",
@@ -35903,7 +35934,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L90",
+      "source_location": "L87",
       "weight": 1.0,
       "source": "docs_phases_phase_04_notes_for_next_agent",
       "target": "docs_phases_phase_04_what_remains",
@@ -35913,7 +35944,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/phases/PHASE_04.md",
-      "source_location": "L87",
+      "source_location": "L84",
       "weight": 1.0,
       "source": "docs_phases_phase_04_notes_for_next_agent",
       "target": "docs_phases_phase_04_what_was_done",

@@ -113,5 +113,7 @@
   "111": "flutter_export_environment.sh",
   "112": "eventsProvider",
   "113": "package:flutter_riverpod/flutter_riverpod.dart",
+  "114": "ConsumerState",
+  "115": "eventsProvider",
   "118": "mock_auth_repository.dart"
 }

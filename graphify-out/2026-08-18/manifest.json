@@ -5,7 +5,7 @@
     "semantic_hash": ""
   },
   "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java": {
-    "mtime": 1786968180.854723,
+    "mtime": 1786992261.0986936,
     "ast_hash": "7bc45a5e09bc95d52075922fad39aaa8",
     "semantic_hash": ""
   },
@@ -30,7 +30,7 @@
     "semantic_hash": ""
   },
   "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift": {
-    "mtime": 1786990748.489869,
+    "mtime": 1786992808.083323,
     "ast_hash": "c3ca67f6d9d27f78ca451a7112e4c386",
     "semantic_hash": ""
   },
@@ -45,7 +45,7 @@
     "semantic_hash": "98fc75412162af387e2e3461e4e58094"
   },
   "ios/Flutter/flutter_export_environment.sh": {
-    "mtime": 1786990748.230927,
+    "mtime": 1786992807.8016088,
     "ast_hash": "e8a7c3ab0c3aa3069d5d15830d0e6b8c",
     "semantic_hash": ""
   },
@@ -75,7 +75,7 @@
     "semantic_hash": "decb9041b5e91a07e66f4664e5dac408"
   },
   "ios/Runner/GeneratedPluginRegistrant.m": {
-    "mtime": 1786968180.8675592,
+    "mtime": 1786992261.1086996,
     "ast_hash": "3268e1c9e3e596d2de29b02f1db69345",
     "semantic_hash": ""
   },
@@ -130,8 +130,8 @@
     "semantic_hash": "f7ee1b402881509d197f34963e569927"
   },
   "pubspec.yaml": {
-    "mtime": 1786968484.3522336,
-    "ast_hash": "b9bdca4a495cdd52a9bef109a0c621b6",
+    "mtime": 1786992243.740893,
+    "ast_hash": "97bdfee927efeefcdfd9de07b1b75950",
     "semantic_hash": ""
   },
   "web/index.html": {
@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   "lib/core/widgets/app_shell.dart": {
-    "mtime": 1786991257.5974946,
-    "ast_hash": "05ed21322386b04a3a50ea37e8e9a59e",
+    "mtime": 1786992800.7280686,
+    "ast_hash": "77cce66f9b54b9f8c398803b05a708e2",
     "semantic_hash": ""
   },
   "lib/core/widgets/bounceable.dart": {
@@ -630,8 +630,8 @@
     "semantic_hash": ""
   },
   "lib/features/profile/screens/profile_screen.dart": {
-    "mtime": 1786979923.693999,
-    "ast_hash": "6fc22c810de9ff0842ac8a67a68d405e",
+    "mtime": 1786992655.3712015,
+    "ast_hash": "9aeb102feaa4473ca1daa73d5d421773",
     "semantic_hash": ""
   },
   "lib/features/schedule/providers/schedule_provider.dart": {
@@ -750,8 +750,8 @@
     "semantic_hash": ""
   },
   "docs/phases/PHASE_04.md": {
-    "mtime": 1786800321.8782754,
-    "ast_hash": "ac23ad75a6f182819285c5e7c27b6929",
+    "mtime": 1786992819.5015721,
+    "ast_hash": "24c2976fb62d38ceae6cb83607fe00e7",
     "semantic_hash": ""
   },
   "docs/phases/PHASE_05.md": {
@@ -765,8 +765,8 @@
     "semantic_hash": ""
   },
   "docs/phases/PHASE_07.md": {
-    "mtime": 1786990334.2192812,
-    "ast_hash": "be43c9964e945fe7db21a305fc15b932",
+    "mtime": 1786991285.5979023,
+    "ast_hash": "86882db8d9fdb95eb40e0ec3ab112543",
     "semantic_hash": ""
   },
   "docs/phases/PHASE_08.md": {
@@ -830,7 +830,7 @@
     "semantic_hash": ""
   },
   "macos/Flutter/GeneratedPluginRegistrant.swift": {
-    "mtime": 1786968180.8733475,
+    "mtime": 1786992261.1127002,
     "ast_hash": "94dea124de866f12b96be2c494a78cfc",
     "semantic_hash": ""
   },
