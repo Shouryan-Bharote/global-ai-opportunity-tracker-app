@@ -1,6 +1,5 @@
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
-import 'package:ai_nexus/features/events/providers/events_provider.dart';
 import 'package:ai_nexus/features/home/providers/home_provider.dart';
 import 'package:ai_nexus/features/home/widgets/category_chips.dart';
 import 'package:ai_nexus/features/home/widgets/explore_category_card.dart';
@@ -8,6 +7,7 @@ import 'package:ai_nexus/features/home/widgets/featured_event_card.dart';
 import 'package:ai_nexus/features/home/widgets/recommended_event_card.dart';
 import 'package:ai_nexus/features/home/widgets/section_title.dart';
 import 'package:ai_nexus/features/home/widgets/upcoming_event_tile.dart';
+import 'package:ai_nexus/features/opportunities/providers/opportunities_provider.dart';
 import 'package:ai_nexus/features/profile/providers/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,12 +71,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final isDarkMode = theme.brightness == Brightness.dark;
 
     final selectedCategory = ref.watch(selectedCategoryProvider);
-    final filteredEvents = ref.watch(filteredEventsProvider);
+    final filteredOpportunities = ref.watch(filteredOpportunitiesProvider);
 
-    final isEventsLoading = ref.watch(homeEventsProvider).isLoading;
+    final isOpportunitiesLoading = ref.watch(homeOpportunitiesProvider).isLoading;
 
-    final eventsAsync = ref.watch(eventsProvider);
-    final scheduleEvents = eventsAsync.valueOrNull ?? [];
+    final opportunitiesAsync = ref.watch(opportunitiesProvider);
+    final allOpportunities = opportunitiesAsync.valueOrNull ?? [];
 
     final profileAsync = ref.watch(profileProvider);
     final user = profileAsync.valueOrNull;
@@ -85,13 +85,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final todayDate = DateFormat('EEEE, MMM d').format(DateTime.now());
 
-    const featuredEventId = 'e1';
-
-    final featuredEvent = scheduleEvents.isNotEmpty
-        ? scheduleEvents.firstWhere(
-            (e) => e.id == featuredEventId,
-            orElse: () => scheduleEvents.first,
-          )
+    final featuredOpportunity = allOpportunities.isNotEmpty
+        ? allOpportunities.first
         : null;
 
     return Scaffold(
@@ -205,7 +200,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
 
                         TextSpan(
-                          text: '${scheduleEvents.length} New',
+                          text: '${allOpportunities.length} New',
 
                           style: TextStyle(
                             color: isDarkMode
@@ -215,7 +210,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
 
                         TextSpan(
-                          text: ' events in your area.',
+                          text: ' opportunities available.',
 
                           style: TextStyle(
                             color: isDarkMode
@@ -248,47 +243,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: AppSpacing.s24),
 
             // ============================================================
-            // FEATURED EVENT
+            // FEATURED OPPORTUNITY
             // ============================================================
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.s24,
               ),
 
-              child: featuredEvent == null
+              child: featuredOpportunity == null
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
                   : FeaturedEventCard(
-                      title: 'AI SUMMIT 2026',
+                      title: featuredOpportunity.title,
 
-                      subtitle:
-                          'A feature of generative Ai, agents and multimodel',
+                      subtitle: featuredOpportunity.description ??
+                          '${featuredOpportunity.opportunityType} by ${featuredOpportunity.displayOrganizer}',
 
-                      date: 'Jul 24',
+                      date: featuredOpportunity.deadline != null
+                          ? DateFormat('MMM d').format(featuredOpportunity.deadline!)
+                          : 'Open',
 
-                      location: 'San Francisco',
+                      location: featuredOpportunity.locationType,
 
-                      imageUrl:
+                      imageUrl: featuredOpportunity.imageUrl ??
                           'https://h2svision.github.io/publicAssets2/bah2026/why_participate.webp',
 
-                      heroTag: 'event_${featuredEventId}_image',
+                      heroTag: 'opp_${featuredOpportunity.id}_image',
 
                       onRegister: () {
                         context.push(
-                          '/events/$featuredEventId',
-                          extra:
+                          '/opportunities/${featuredOpportunity.id}',
+                          extra: featuredOpportunity.imageUrl ??
                               'https://h2svision.github.io/publicAssets2/bah2026/why_participate.webp',
                         );
                       },
 
-                      isBookmarked: featuredEvent.isBookmarked,
+                      isBookmarked: featuredOpportunity.isBookmarked,
 
                       onBookmark: () {
                         ref
-                            .read(eventsProvider.notifier)
+                            .read(opportunitiesProvider.notifier)
                             .toggleBookmark(
-                              featuredEventId,
+                              featuredOpportunity.id,
                             );
                       },
                     ),
@@ -307,14 +304,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             SizedBox(
               height: 220,
 
-              child: isEventsLoading
+              child: isOpportunitiesLoading
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
-                  : filteredEvents.isEmpty
+                  : filteredOpportunities.isEmpty
                   ? Center(
                       child: Text(
-                        'No events found for this category',
+                        'No opportunities found for this category',
 
                         style: TextStyle(
                           color: colorScheme.onSurface.withValues(alpha: 0.6),
@@ -328,25 +325,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         horizontal: AppSpacing.s24,
                       ),
 
-                      itemCount: filteredEvents.length,
+                      itemCount: filteredOpportunities.length,
 
                       itemBuilder: (context, index) {
-                        final event = filteredEvents[index];
+                        final opp = filteredOpportunities[index];
+                        final displayDate = opp.deadline ?? opp.createdAt;
 
                         return RecommendedEventCard(
-                          title: event.title,
+                          title: opp.title,
 
-                          tag: event.tags.isNotEmpty
-                              ? event.tags.first
-                              : 'Event',
+                          tag: opp.opportunityType,
 
                           date: DateFormat('MMM d').format(
-                            event.startDate,
+                            displayDate,
                           ),
 
-                          location: event.location,
+                          location: opp.locationType,
 
-                          imageUrl:
+                          imageUrl: opp.imageUrl ??
                               'https://picsum.photos/400/200?random=$index',
 
                           gradientColors: const [
@@ -356,7 +352,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                           onTap: () {
                             context.push(
-                              '/events/${event.id}',
+                              '/opportunities/${opp.id}',
                             );
                           },
                         );
@@ -651,21 +647,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 horizontal: AppSpacing.s24,
               ),
 
-              child: isEventsLoading
+              child: isOpportunitiesLoading
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
                   : Builder(
                       builder: (context) {
-                        final upcomingEvents = ref.watch(
-                          upcomingFilteredEventsProvider,
+                        final upcomingOpportunities = ref.watch(
+                          upcomingFilteredOpportunitiesProvider,
                         );
 
                         final selectedExplore = ref.watch(
                           selectedExploreCategoryProvider,
                         );
 
-                        if (upcomingEvents.isEmpty) {
+                        if (upcomingOpportunities.isEmpty) {
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -674,8 +670,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                               child: Text(
                                 selectedExplore == null
-                                    ? 'No upcoming events'
-                                    : 'No upcoming events for $selectedExplore',
+                                    ? 'No upcoming opportunities'
+                                    : 'No upcoming opportunities for $selectedExplore',
 
                                 style: TextStyle(
                                   color: colorScheme.onSurface.withValues(
@@ -688,27 +684,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         }
 
                         return Column(
-                          children: upcomingEvents.take(3).map(
-                            (event) {
+                          children: upcomingOpportunities.take(3).map(
+                            (opp) {
+                              final displayDate = opp.deadline ?? opp.createdAt;
+
                               return UpcomingEventTile(
                                 day: DateFormat('dd').format(
-                                  event.startDate,
+                                  displayDate,
                                 ),
 
                                 month: DateFormat('MMM')
                                     .format(
-                                      event.startDate,
+                                      displayDate,
                                     )
                                     .toUpperCase(),
 
-                                title: event.title,
+                                title: opp.title,
 
                                 subtitle:
-                                    'Fri . ${event.isOnline ? 'Online' : event.location}',
+                                    '${opp.opportunityType} • ${opp.locationType}',
 
                                 onTap: () {
                                   context.push(
-                                    '/events/${event.id}',
+                                    '/opportunities/${opp.id}',
                                   );
                                 },
                               );

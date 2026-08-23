@@ -1,6 +1,7 @@
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
+import 'package:ai_nexus/features/opportunities/providers/opportunities_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,8 +11,15 @@ class ExploreCategories extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategory = ref.watch(exploreCategoryProvider);
+    final opportunitiesAsync = ref.watch(opportunitiesProvider);
+    final opportunities = opportunitiesAsync.valueOrNull ?? [];
 
-    // Get current theme colors
+    int countType(String type) {
+      return opportunities
+          .where((opp) => opp.opportunityType.toLowerCase() == type.toLowerCase())
+          .length;
+    }
+
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -43,58 +51,58 @@ class ExploreCategories extends ConsumerWidget {
             ),
             children: [
               _CategoryCardItem(
-                title: 'Conferences',
-                events: '315 Events',
-                icon: Icons.groups_outlined,
-                iconBgColor: Colors.pink.shade100,
-                iconColor: Colors.pink,
-                isSelected: selectedCategory == 'Conferences',
-                isDark: isDark,
-                onTap: () => _handleTap(ref, 'Conferences', selectedCategory),
-              ),
-
-              _CategoryCardItem(
-                title: 'Workshop',
-                events: '215 events',
-                icon: Icons.auto_awesome_outlined,
-                iconBgColor: Colors.cyan.shade100,
-                iconColor: Colors.cyan,
-                isSelected: selectedCategory == 'Workshop',
-                isDark: isDark,
-                onTap: () => _handleTap(ref, 'Workshop', selectedCategory),
-              ),
-
-              _CategoryCardItem(
                 title: 'Hackathons',
-                events: '154 events',
+                events: '${countType('Hackathon')} opportunities',
                 icon: Icons.hourglass_empty_outlined,
                 iconBgColor: Colors.orange.shade100,
                 iconColor: Colors.orange,
-                isSelected: selectedCategory == 'Hackathons',
+                isSelected: selectedCategory == 'Hackathon',
                 isDark: isDark,
-                onTap: () => _handleTap(ref, 'Hackathons', selectedCategory),
+                onTap: () => _handleTap(ref, 'Hackathon', selectedCategory),
               ),
 
               _CategoryCardItem(
-                title: 'Webinars',
-                events: '123 events',
-                icon: Icons.record_voice_over_outlined,
-                iconBgColor: Colors.purple.shade100,
-                iconColor: Colors.purple,
-                isSelected: selectedCategory == 'Webinars',
+                title: 'Competitions',
+                events: '${countType('Competition')} opportunities',
+                icon: Icons.emoji_events_outlined,
+                iconBgColor: Colors.amber.shade100,
+                iconColor: Colors.amber.shade800,
+                isSelected: selectedCategory == 'Competition',
                 isDark: isDark,
-                onTap: () => _handleTap(ref, 'Webinars', selectedCategory),
+                onTap: () => _handleTap(ref, 'Competition', selectedCategory),
               ),
 
               _CategoryCardItem(
-                title: 'Networking',
-                events: '21 events',
-                icon: Icons.handshake_outlined,
+                title: 'Conferences',
+                events: '${countType('Conference')} opportunities',
+                icon: Icons.groups_outlined,
+                iconBgColor: Colors.pink.shade100,
+                iconColor: Colors.pink,
+                isSelected: selectedCategory == 'Conference',
+                isDark: isDark,
+                onTap: () => _handleTap(ref, 'Conference', selectedCategory),
+              ),
+
+              _CategoryCardItem(
+                title: 'Fellowships',
+                events: '${countType('Fellowship')} opportunities',
+                icon: Icons.school_outlined,
+                iconBgColor: Colors.cyan.shade100,
+                iconColor: Colors.cyan.shade800,
+                isSelected: selectedCategory == 'Fellowship',
+                isDark: isDark,
+                onTap: () => _handleTap(ref, 'Fellowship', selectedCategory),
+              ),
+
+              _CategoryCardItem(
+                title: 'Grants',
+                events: '${countType('Grant')} opportunities',
+                icon: Icons.monetization_on_outlined,
                 iconBgColor: Colors.green.shade100,
-                iconColor: Colors.green,
-                isSelected: selectedCategory == 'Networking',
+                iconColor: Colors.green.shade800,
+                isSelected: selectedCategory == 'Grant',
                 isDark: isDark,
-                onTap: () => _handleTap(ref, 'Networking', selectedCategory),
+                onTap: () => _handleTap(ref, 'Grant', selectedCategory),
               ),
             ],
           ),
@@ -109,10 +117,8 @@ class ExploreCategories extends ConsumerWidget {
     String? current,
   ) {
     if (current == title) {
-      // Deselect
       ref.read(exploreCategoryProvider.notifier).state = null;
     } else {
-      // Select
       ref.read(exploreCategoryProvider.notifier).state = title;
     }
   }
@@ -149,8 +155,8 @@ class _CategoryCardItem extends StatefulWidget {
 
 class _CategoryCardItemState extends State<_CategoryCardItem>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -161,16 +167,15 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
       duration: const Duration(milliseconds: 120),
     );
 
-    _scaleAnimation =
-        Tween<double>(
-          begin: 1,
-          end: 0.95,
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeInOut,
-          ),
-        );
+    _scaleAnimation = Tween<double>(
+      begin: 1,
+      end: 0.95,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   @override
@@ -194,33 +199,6 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    // Card background changes automatically
-    final cardColor = widget.isSelected
-        ? null
-        : widget.isDark
-        ? const Color(0xFF1E1E1E)
-        : Colors.white;
-
-    // Text colors change automatically
-    final titleColor = widget.isSelected
-        ? Colors.white
-        : theme.colorScheme.onSurface;
-
-    final eventColor = widget.isSelected
-        ? Colors.white.withValues(alpha: 0.9)
-        : widget.isDark
-        ? Colors.grey.shade400
-        : Colors.grey.shade600;
-
-    // Border changes automatically
-    final borderColor = widget.isSelected
-        ? Colors.transparent
-        : Colors.grey.withValues(
-            alpha: widget.isDark ? 0.25 : 0.3,
-          );
-
     return GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
@@ -232,95 +210,84 @@ class _CategoryCardItemState extends State<_CategoryCardItem>
 
           return Transform.scale(
             scale: _scaleAnimation.value,
-            child: Container(
-              width: 120,
-              margin: const EdgeInsets.only(right: 12),
-              padding: const EdgeInsets.all(12),
-
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 140,
+              margin: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                // Selected = blue gradient
-                // Unselected = theme-aware background
-                gradient: widget.isSelected
-                    ? const LinearGradient(
-                        colors: [
-                          Colors.blue,
-                          Colors.lightBlueAccent,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      )
-                    : null,
-
-                color: cardColor,
-
+                color: widget.isSelected
+                    ? AppColors.primary
+                    : (widget.isDark ? const Color(0xFF1E1E1E) : Colors.white),
                 borderRadius: BorderRadius.circular(16),
-
                 border: Border.all(
-                  color: widget.isSelected
-                      ? Colors.transparent
-                      : isPressed
-                      ? AppColors.primary.withValues(
-                          alpha: 0.45,
-                        )
-                      : borderColor,
-                  width: 1.5,
+                  color: isPressed || widget.isSelected
+                      ? AppColors.primary
+                      : widget.isDark
+                          ? const Color(0xFF333333)
+                          : Colors.grey.withValues(alpha: 0.2),
+                  width: widget.isSelected ? 2 : 1,
                 ),
-
-                boxShadow: widget.isDark && !widget.isSelected
-                    ? [
+                boxShadow: widget.isDark
+                    ? null
+                    : [
                         BoxShadow(
-                          color: Colors.black.withValues(
-                            alpha: 0.25,
-                          ),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
-                      ]
-                    : null,
+                      ],
               ),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Icon background
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: widget.iconBgColor,
+                      color: widget.isSelected
+                          ? Colors.white.withValues(alpha: 0.2)
+                          : (widget.isDark
+                              ? widget.iconColor.withValues(alpha: 0.15)
+                              : widget.iconBgColor),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       widget.icon,
-                      color: widget.iconColor,
+                      color: widget.isSelected ? Colors.white : widget.iconColor,
                       size: 24,
                     ),
                   ),
-
-                  const Spacer(),
-
-                  // Category title
-                  Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: titleColor,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  const SizedBox(height: 2),
-
-                  // Event count
-                  Text(
-                    widget.events,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: eventColor,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: widget.isSelected
+                              ? Colors.white
+                              : (widget.isDark ? Colors.white : Colors.black87),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.events,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: widget.isSelected
+                              ? Colors.white.withValues(alpha: 0.8)
+                              : (widget.isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

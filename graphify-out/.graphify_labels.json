@@ -107,5 +107,11 @@
   "105": "mock_event_repository.dart",
   "106": "package:ai_nexus/features/events/models/event_model.dart",
   "107": "step_indicator.dart",
-  "108": "build"
+  "108": "build",
+  "109": "otp_input_field.dart",
+  "110": "profile_provider.dart",
+  "111": "app.dart",
+  "112": "OpportunityModel",
+  "113": "flutter_export_environment.sh",
+  "114": "_"
 }

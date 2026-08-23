@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:ai_nexus/core/theme/app_colors.dart';
-import 'package:ai_nexus/features/events/models/event_model.dart';
-import 'package:ai_nexus/features/events/providers/events_provider.dart';
+import 'package:ai_nexus/features/opportunities/models/opportunity_model.dart';
+import 'package:ai_nexus/features/opportunities/providers/opportunities_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,11 +10,11 @@ import 'package:intl/intl.dart';
 
 class ScheduleEventCard extends ConsumerStatefulWidget {
   const ScheduleEventCard({
-    required this.event,
+    required this.opportunity,
     super.key,
   });
 
-  final EventModel event;
+  final OpportunityModel opportunity;
 
   @override
   ConsumerState<ScheduleEventCard> createState() => _ScheduleEventCardState();
@@ -34,16 +34,15 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
       duration: const Duration(milliseconds: 120),
     );
 
-    _scaleAnimation =
-        Tween<double>(
-          begin: 1,
-          end: 0.97,
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeInOut,
-          ),
-        );
+    _scaleAnimation = Tween<double>(
+      begin: 1,
+      end: 0.97,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   @override
@@ -52,19 +51,14 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
     super.dispose();
   }
 
-  // ============================================================
-  // CARD TAP
-  // ============================================================
-
   void _onTapDown(TapDownDetails details) {
     _controller.forward();
   }
 
   void _onTapUp(TapUpDetails details) {
     unawaited(_controller.reverse());
-
     context.push(
-      '/events/${widget.event.id}',
+      '/opportunities/${widget.opportunity.id}',
     );
   }
 
@@ -72,76 +66,36 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
     _controller.reverse();
   }
 
-  // ============================================================
-  // BOOKMARK
-  // ============================================================
-
   void _toggleBookmark() {
     unawaited(
-      ref.read(eventsProvider.notifier).toggleBookmark(widget.event.id),
+      ref
+          .read(opportunitiesProvider.notifier)
+          .toggleBookmark(widget.opportunity.id),
     );
   }
-
-  // ============================================================
-  // BUILD
-  // ============================================================
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    // ==========================================================
-    // DATE
-    // ==========================================================
-
-    final day = widget.event.startDate.day;
-
-    final month =
-        DateFormat(
-              'MMM',
-            )
-            .format(
-              widget.event.startDate,
-            )
-            .toUpperCase();
-
-    final dayOfWeek =
-        DateFormat(
-              'EEE',
-            )
-            .format(
-              widget.event.startDate,
-            )
-            .toUpperCase();
-
-    final time =
-        DateFormat(
-          'h:mm a',
-        ).format(
-          widget.event.startDate,
-        );
+    final displayDate =
+        widget.opportunity.deadline ?? widget.opportunity.createdAt;
+    final day = displayDate.day;
+    final month = DateFormat('MMM').format(displayDate).toUpperCase();
+    final dayOfWeek = DateFormat('EEE').format(displayDate).toUpperCase();
+    final time = DateFormat('h:mm a').format(displayDate);
 
     final dateString = '${_getOrdinal(day)} $month - $dayOfWeek - $time';
 
-    // ==========================================================
-    // COLORS
-    // ==========================================================
-
     final cardColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-
     final borderColor = isDark
         ? Colors.white.withValues(alpha: 0.10)
         : Colors.grey.withValues(alpha: 0.25);
-
     final titleColor = isDark ? Colors.white : Colors.black87;
-
-    final secondaryColor = isDark
-        ? Colors.white.withValues(alpha: 0.60)
-        : Colors.grey.shade600;
-
+    final secondaryColor =
+        isDark ? Colors.white.withValues(alpha: 0.60) : Colors.grey.shade600;
     final dateColor = isDark ? Colors.purple.shade200 : Colors.deepPurple;
-
     final imagePlaceholderColor = isDark
         ? const Color(0xFF30243D)
         : AppColors.primary.withValues(alpha: 0.10);
@@ -158,7 +112,9 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: cardColor,
                 borderRadius: BorderRadius.circular(16),
@@ -172,205 +128,140 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
                     ? null
                     : [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
               ),
-
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ==================================================
-                    // EVENT IMAGE
-                    // ==================================================
-
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        widget.event.imageUrl ??
-                            'https://picsum.photos/200?random=${widget.event.id.hashCode}',
-
-                        width: 80,
-                        height: 80,
-
-                        fit: BoxFit.cover,
-
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 80,
-                            height: 80,
-                            color: imagePlaceholderColor,
-                            child: Icon(
-                              Icons.event_rounded,
-                              color: AppColors.primary,
-                              size: 28,
-                            ),
-                          );
-                        },
-
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-
-                          return Container(
-                            width: 80,
-                            height: 80,
-                            color: isDark
-                                ? const Color(0xFF292929)
-                                : Colors.grey.shade100,
-                            child: Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 16),
-
-                    // ==================================================
-                    // EVENT DETAILS
-                    // ==================================================
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header Row: Date badge + Bookmark
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
                         children: [
-                          // ==========================================
-                          // DATE + BOOKMARK
-                          // ==========================================
-
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  dateString,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: dateColor,
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(width: 8),
-
-                              // BOOKMARK BUTTON
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(20),
-                                  onTap: _toggleBookmark,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4),
-                                    child: Icon(
-                                      widget.event.isBookmarked
-                                          ? Icons.bookmark_rounded
-                                          : Icons.bookmark_outline_rounded,
-                                      size: 24,
-                                      color: widget.event.isBookmarked
-                                          ? AppColors.primary
-                                          : secondaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Icon(
+                            Icons.calendar_today_rounded,
+                            size: 14,
+                            color: dateColor,
                           ),
-
-                          const SizedBox(height: 5),
-
-                          // ==========================================
-                          // TITLE
-                          // ==========================================
+                          const SizedBox(width: 6),
                           Text(
-                            widget.event.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            dateString,
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: titleColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: dateColor,
                             ),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          // ==========================================
-                          // LOCATION
-                          // ==========================================
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.location_on_outlined,
-                                size: 16,
-                                color: secondaryColor,
-                              ),
-
-                              const SizedBox(width: 4),
-
-                              Expanded(
-                                child: Text(
-                                  widget.event.location,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                    color: secondaryColor,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 4),
-
-                          // ==========================================
-                          // ONLINE / OFFLINE
-                          // ==========================================
-                          Row(
-                            children: [
-                              Icon(
-                                widget.event.isOnline
-                                    ? Icons.language_rounded
-                                    : Icons.location_city_rounded,
-                                size: 15,
-                                color: secondaryColor,
-                              ),
-
-                              const SizedBox(width: 4),
-
-                              Text(
-                                widget.event.isOnline ? 'Online' : 'Offline',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: secondaryColor,
-                                ),
-                              ),
-                            ],
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
+                      IconButton(
+                        onPressed: _toggleBookmark,
+                        icon: Icon(
+                          widget.opportunity.isBookmarked
+                              ? Icons.bookmark_rounded
+                              : Icons.bookmark_border_rounded,
+                          color: widget.opportunity.isBookmarked
+                              ? AppColors.primary
+                              : (isDark ? Colors.white54 : Colors.grey),
+                          size: 20,
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Middle Row: Thumbnail + Info
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Thumbnail
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: 64,
+                          height: 64,
+                          color: imagePlaceholderColor,
+                          child: widget.opportunity.imageUrl != null
+                              ? Image.network(
+                                  widget.opportunity.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Center(
+                                    child: Icon(
+                                      Icons.rocket_launch_rounded,
+                                      color: AppColors.primary,
+                                      size: 28,
+                                    ),
+                                  ),
+                                )
+                              : Center(
+                                  child: Icon(
+                                    Icons.rocket_launch_rounded,
+                                    color: AppColors.primary,
+                                    size: 28,
+                                  ),
+                                ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 14),
+
+                      // Title & details
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.opportunity.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: titleColor,
+                                height: 1.25,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'By ${widget.opportunity.displayOrganizer}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: secondaryColor,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 4,
+                              children: [
+                                _buildSmallBadge(
+                                  widget.opportunity.opportunityType,
+                                  Colors.blueAccent,
+                                ),
+                                _buildSmallBadge(
+                                  widget.opportunity.locationType,
+                                  widget.opportunity.isOnline
+                                      ? Colors.tealAccent
+                                      : Colors.orangeAccent,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           );
@@ -379,27 +270,35 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
     );
   }
 
-  // ============================================================
-  // ORDINAL DATE
-  // ============================================================
+  Widget _buildSmallBadge(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
 
-  String _getOrdinal(int day) {
-    if (day >= 11 && day <= 13) {
-      return '${day}TH';
-    }
-
-    switch (day % 10) {
+  String _getOrdinal(int n) {
+    if (n >= 11 && n <= 13) return '${n}th';
+    switch (n % 10) {
       case 1:
-        return '${day}ST';
-
+        return '${n}st';
       case 2:
-        return '${day}ND';
-
+        return '${n}nd';
       case 3:
-        return '${day}RD';
-
+        return '${n}rd';
       default:
-        return '${day}TH';
+        return '${n}th';
     }
   }
 }

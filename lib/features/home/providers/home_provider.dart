@@ -1,59 +1,55 @@
-import 'package:ai_nexus/features/events/models/event_model.dart';
-import 'package:ai_nexus/features/events/providers/events_provider.dart';
+import 'package:ai_nexus/features/opportunities/models/opportunity_model.dart';
+import 'package:ai_nexus/features/opportunities/providers/opportunities_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // StateProvider for the selected category filter
 final selectedCategoryProvider = StateProvider<String>((ref) => "Today's Events");
 
-// Derived provider that reads from the global eventsProvider (single source of truth).
-// Previously this was a standalone FutureProvider hitting MockEvents directly.
-final homeEventsProvider = Provider<AsyncValue<List<EventModel>>>((ref) {
-  return ref.watch(eventsProvider);
+// Derived provider that reads from the global opportunitiesProvider
+final homeOpportunitiesProvider = Provider<AsyncValue<List<OpportunityModel>>>((ref) {
+  return ref.watch(opportunitiesProvider);
 });
 
-// Provider that filters events based on the selected category
-final filteredEventsProvider = Provider<List<EventModel>>((ref) {
-  // Watch the selected category and the fetched events
+// Provider that filters opportunities based on the selected category
+final filteredOpportunitiesProvider = Provider<List<OpportunityModel>>((ref) {
   final category = ref.watch(selectedCategoryProvider);
-  final eventsAsyncValue = ref.watch(eventsProvider);
+  final opportunitiesAsync = ref.watch(opportunitiesProvider);
+  final allOpportunities = opportunitiesAsync.valueOrNull ?? [];
 
-  // If events are not yet loaded, return empty list (handled by UI)
-  final allEvents = eventsAsyncValue.valueOrNull ?? [];
-
-  return allEvents.where((event) {
-    if (category == "Today's Events") {
-      // Check if start date is today
-      final now = DateTime.now();
-      return event.startDate.year == now.year &&
-          event.startDate.month == now.month &&
-          event.startDate.day == now.day;
-    } else if (category == 'Meetings') {
-      return event.tags.contains('Meeting');
+  return allOpportunities.where((opp) {
+    if (category == "Today's Events" || category == 'Upcoming') {
+      if (opp.deadline == null) return true;
+      return !opp.deadline!.isBefore(DateTime.now());
     } else if (category == 'Hackathons') {
-      return event.tags.contains('Hackathon');
+      return opp.opportunityType.toLowerCase() == 'hackathon';
+    } else if (category == 'Competitions' || category == 'Meetings') {
+      return opp.opportunityType.toLowerCase() == 'competition' ||
+          opp.opportunityType.toLowerCase() == 'conference';
     } else if (category == 'Online') {
-      return event.isOnline;
-    } else if (category == 'Near me') {
-      return event.tags.contains('Near me');
+      return opp.isOnline;
+    } else if (category == 'Near me' || category == 'In-Person') {
+      return !opp.isOnline;
     }
-    return true; // Default
+    return true;
   }).toList();
 });
 
 // StateProvider for the Continue Exploring section
 final selectedExploreCategoryProvider = StateProvider<String?>((ref) => null);
 
-// Provider that filters Upcoming events based on Explore Category
-final upcomingFilteredEventsProvider = Provider<List<EventModel>>((ref) {
+// Provider that filters opportunities based on Explore Category
+final upcomingFilteredOpportunitiesProvider = Provider<List<OpportunityModel>>((ref) {
   final category = ref.watch(selectedExploreCategoryProvider);
-  final eventsAsyncValue = ref.watch(eventsProvider);
-  final allEvents = eventsAsyncValue.valueOrNull ?? [];
+  final opportunitiesAsync = ref.watch(opportunitiesProvider);
+  final allOpportunities = opportunitiesAsync.valueOrNull ?? [];
 
   if (category == null) {
-    return allEvents;
+    return allOpportunities;
   }
 
-  return allEvents.where((event) {
-    return event.tags.contains(category);
+  final lowerCat = category.toLowerCase();
+  return allOpportunities.where((opp) {
+    return opp.opportunityType.toLowerCase() == lowerCat ||
+        opp.requiredSkills.any((s) => s.toLowerCase() == lowerCat);
   }).toList();
 });

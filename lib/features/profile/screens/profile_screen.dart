@@ -2,7 +2,7 @@ import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/widgets/bounceable.dart';
 import 'package:ai_nexus/features/auth/providers/auth_provider.dart';
-import 'package:ai_nexus/features/events/providers/events_provider.dart';
+import 'package:ai_nexus/features/opportunities/providers/opportunities_provider.dart';
 import 'package:ai_nexus/features/profile/providers/profile_provider.dart';
 import 'package:ai_nexus/features/profile/widgets/profile_header.dart';
 import 'package:ai_nexus/features/schedule/providers/schedule_provider.dart';
@@ -311,7 +311,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profileAsync = ref.watch(profileProvider);
-    final eventsAsync = ref.watch(eventsProvider);
+    final opportunitiesAsync = ref.watch(opportunitiesProvider);
 
     return Scaffold(
       backgroundColor: const Color(
@@ -361,26 +361,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                       ],
                     ),
-                    child: eventsAsync.when(
+                    child: opportunitiesAsync.when(
                       loading: () =>
                           const Center(child: CircularProgressIndicator()),
                       error: (e, s) => const Center(child: Text('---')),
-                      data: (allEvents) {
-                        final savedEvents = allEvents
+                      data: (allOpportunities) {
+                        final savedOpportunities = allOpportunities
                             .where((e) => e.isBookmarked)
                             .toList();
 
-                        final savedCount = savedEvents.length;
+                        final savedCount = savedOpportunities.length;
                         final interestsCount = _selectedInterests.length;
 
-                        // Total dedication hours represented by all bookmarked events combined duration
-                        final totalHours = savedEvents.fold<int>(0, (
-                          sum,
-                          event,
-                        ) {
-                          return sum +
-                              event.endDate.difference(event.startDate).inHours;
-                        });
+                        final totalHours = savedCount * 8;
 
                         return Row(
                           children: [

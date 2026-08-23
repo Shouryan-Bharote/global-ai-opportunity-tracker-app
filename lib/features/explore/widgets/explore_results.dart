@@ -11,10 +11,10 @@ class ExploreResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filteredEventsAsync = ref.watch(exploreFilteredEventsProvider);
+    final filteredOpportunitiesAsync = ref.watch(exploreFilteredOpportunitiesProvider);
     final isExpanded = ref.watch(exploreResultsExpandedProvider);
 
-    return filteredEventsAsync.when(
+    return filteredOpportunitiesAsync.when(
       // ============================================================
       // LOADING
       // ============================================================
@@ -31,12 +31,23 @@ class ExploreResults extends ConsumerWidget {
       error: (e, st) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text(
-            'Error: $e',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.error,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                size: 40,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Unable to load opportunities.\n$e',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -44,10 +55,10 @@ class ExploreResults extends ConsumerWidget {
       // ============================================================
       // DATA
       // ============================================================
-      data: (filteredEvents) {
-        final displayEvents = isExpanded || filteredEvents.length <= 2
-            ? filteredEvents
-            : filteredEvents.take(2).toList();
+      data: (filteredOpportunities) {
+        final displayOpportunities = isExpanded || filteredOpportunities.length <= 2
+            ? filteredOpportunities
+            : filteredOpportunities.take(2).toList();
 
         return Column(
           children: [
@@ -62,7 +73,7 @@ class ExploreResults extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Result',
+                    'Opportunities (${filteredOpportunities.length})',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -111,7 +122,7 @@ class ExploreResults extends ConsumerWidget {
                       // ==================================================
                       // SEE ALL / SHOW LESS
                       // ==================================================
-                      if (filteredEvents.length > 2)
+                      if (filteredOpportunities.length > 2)
                         TextButton(
                           onPressed: () {
                             ref
@@ -149,12 +160,12 @@ class ExploreResults extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.s24,
               ),
-              child: filteredEvents.isEmpty
+              child: filteredOpportunities.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Center(
                         child: Text(
-                          'No events found for these filters',
+                          'No opportunities found for these filters',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(
@@ -166,26 +177,27 @@ class ExploreResults extends ConsumerWidget {
                     )
                   : Column(
                       children: [
-                        ...displayEvents.map(
-                          (event) {
+                        ...displayOpportunities.map(
+                          (opp) {
+                            final displayDate = opp.deadline ?? opp.createdAt;
+                            final formattedDay = DateFormat('dd').format(displayDate);
+                            final formattedMonth =
+                                DateFormat('MMM').format(displayDate).toUpperCase();
+                            final subtitle =
+                                '${opp.opportunityType} • ${opp.locationType} • ${opp.displayOrganizer}';
+
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 12,
                               ),
                               child: _ResultCardItem(
-                                day: DateFormat('dd').format(event.startDate),
-                                month: DateFormat(
-                                  'MMM',
-                                ).format(event.startDate).toUpperCase(),
-                                title: event.title,
-                                subtitle:
-                                    '${DateFormat('EEE').format(event.startDate)} • '
-                                    '${event.isOnline ? 'Online' : 'Offline'} • '
-                                    '${event.location}',
+                                day: formattedDay,
+                                month: formattedMonth,
+                                title: opp.title,
+                                subtitle: subtitle,
+                                isDeadline: opp.deadline != null,
                                 onTap: () {
-                                  context.push(
-                                    '/events/${event.id}',
-                                  );
+                                  context.push('/opportunities/${opp.id}');
                                 },
                               ),
                             );
@@ -215,6 +227,7 @@ class _ResultCardItem extends StatefulWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.isDeadline = true,
   });
 
   final String day;
@@ -222,6 +235,7 @@ class _ResultCardItem extends StatefulWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final bool isDeadline;
 
   @override
   State<_ResultCardItem> createState() => _ResultCardItemState();
@@ -241,16 +255,15 @@ class _ResultCardItemState extends State<_ResultCardItem>
       duration: const Duration(milliseconds: 120),
     );
 
-    _scaleAnimation =
-        Tween<double>(
-          begin: 1.0,
-          end: 0.95,
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeInOut,
-          ),
-        );
+    _scaleAnimation = Tween<double>(
+      begin: 1,
+      end: 0.95,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   @override
@@ -258,10 +271,6 @@ class _ResultCardItemState extends State<_ResultCardItem>
     _controller.dispose();
     super.dispose();
   }
-
-  // ================================================================
-  // PRESS ANIMATION
-  // ================================================================
 
   void _onTapDown(TapDownDetails details) {
     _controller.forward();
@@ -275,10 +284,6 @@ class _ResultCardItemState extends State<_ResultCardItem>
   void _onTapCancel() {
     _controller.reverse();
   }
-
-  // ================================================================
-  // BUILD CARD
-  // ================================================================
 
   @override
   Widget build(BuildContext context) {
@@ -298,24 +303,17 @@ class _ResultCardItemState extends State<_ResultCardItem>
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.all(16),
-
-              // ======================================================
-              // CARD DECORATION
-              // ======================================================
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-
                 borderRadius: BorderRadius.circular(16),
-
                 border: Border.all(
                   color: isPressed
                       ? AppColors.primary.withValues(alpha: 0.45)
                       : isDark
-                      ? const Color(0xFF444444)
-                      : Colors.grey.withValues(alpha: 0.3),
+                          ? const Color(0xFF444444)
+                          : Colors.grey.withValues(alpha: 0.3),
                   width: 1.5,
                 ),
-
                 boxShadow: isDark
                     ? null
                     : [
@@ -326,14 +324,10 @@ class _ResultCardItemState extends State<_ResultCardItem>
                         ),
                       ],
               ),
-
-              // ======================================================
-              // CARD CONTENT
-              // ======================================================
               child: Row(
                 children: [
                   // ====================================================
-                  // DATE BOX
+                  // DATE / DEADLINE BOX
                   // ====================================================
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -344,16 +338,13 @@ class _ResultCardItemState extends State<_ResultCardItem>
                       color: isDark
                           ? const Color(0xFF30243D)
                           : Colors.purple.shade100.withValues(alpha: 0.5),
-
                       borderRadius: BorderRadius.circular(12),
-
                       border: Border.all(
                         color: isDark
                             ? Colors.deepPurple.shade300.withValues(alpha: 0.5)
                             : Colors.purple.shade200,
                       ),
                     ),
-
                     child: Column(
                       children: [
                         Text(
@@ -366,7 +357,6 @@ class _ResultCardItemState extends State<_ResultCardItem>
                             fontSize: 24,
                           ),
                         ),
-
                         Text(
                           widget.month,
                           style: TextStyle(
@@ -384,7 +374,7 @@ class _ResultCardItemState extends State<_ResultCardItem>
                   const SizedBox(width: 16),
 
                   // ====================================================
-                  // EVENT INFORMATION
+                  // OPPORTUNITY INFORMATION
                   // ====================================================
                   Expanded(
                     child: Column(
@@ -400,9 +390,7 @@ class _ResultCardItemState extends State<_ResultCardItem>
                             color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
-
                         const SizedBox(height: 4),
-
                         Text(
                           widget.subtitle,
                           maxLines: 2,
@@ -420,9 +408,6 @@ class _ResultCardItemState extends State<_ResultCardItem>
 
                   const SizedBox(width: 8),
 
-                  // ====================================================
-                  // ARROW
-                  // ====================================================
                   Icon(
                     Icons.chevron_right,
                     color: isDark ? Colors.white54 : Colors.grey,

@@ -26,6 +26,7 @@
 | D14 | Pinned AppHeader inside AppShell viewport | Migrated AppHeader into AppShell so that it is fixed globally at the top of the viewport. Sub-screen layouts can scroll underneath without duplicating headers. | 2026-07-16 | 07 | Phase 07 |
 | D15 | Native image picker and system share sheet integration | Integrated `image_picker` for custom avatar selection and `share_plus` to invoke Android/iOS system-level share dialogs with dynamic event info. | 2026-07-16 | 07 | Phase 07 |
 | D16 | Disable Kotlin incremental compilation & upgrade compileSdk | Set `kotlin.incremental=false` to fix Windows relative path cross-drive conflicts, and set `compileSdk=36` to satisfy package dependencies. | 2026-07-16 | 07 | All phases |
+| D17 | Canonical Firestore `OpportunityModel` & Direct Firestore SDK | Migrated Flutter domain model from legacy mock `EventModel` to canonical backend Pydantic `Opportunity` contract and Firestore `opportunities` collection (`FirestoreOpportunityRepository`). Handled camelCase/snake_case boundary, defensive Timestamp/ISO date parsing, and safe enum fallbacks. | 2026-08-23 | 07 | Phase 07, Explore, Home, Schedule |
 
 
 ---

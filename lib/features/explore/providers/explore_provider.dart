@@ -1,159 +1,103 @@
-import 'package:ai_nexus/features/events/models/event_model.dart';
-import 'package:ai_nexus/features/events/providers/events_provider.dart';
+import 'package:ai_nexus/features/opportunities/models/opportunity_model.dart';
+import 'package:ai_nexus/features/opportunities/providers/opportunities_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // ============================================================
 // EXPLORE FILTER STATE
 // ============================================================
 
-// Selected top filter:
-// All, This Week, Free, Paid, Offline, Online
+// Selected top filter: All, This Week, Free, Paid, Offline, Online
 final exploreFilterProvider = StateProvider<String>((ref) => 'All');
 
-// Selected category.
-// null = no category selected.
+// Selected category / opportunity type (e.g. 'Hackathons', 'Conferences', null)
 final exploreCategoryProvider = StateProvider<String?>((ref) => null);
 
-// Selected city.
-// null = no city selected.
+// Selected city / location filter
 final exploreCityProvider = StateProvider<String?>((ref) => null);
 
-// Search text entered by the user.
+// Search text entered by the user
 final exploreSearchQueryProvider = StateProvider<String>((ref) => '');
 
-// Controls "See all" / "Show less".
+// Controls "See all" / "Show less"
 final exploreResultsExpandedProvider = StateProvider<bool>((ref) => false);
 
 // ============================================================
-// FILTERED EVENTS
+// FILTERED OPPORTUNITIES
 // ============================================================
 
-final exploreFilteredEventsProvider = Provider<AsyncValue<List<EventModel>>>((
-  ref,
-) {
-  // Read current Explore selections.
+final exploreFilteredOpportunitiesProvider =
+    Provider<AsyncValue<List<OpportunityModel>>>((ref) {
   final activeFilter = ref.watch(exploreFilterProvider);
   final activeCategory = ref.watch(exploreCategoryProvider);
   final activeCity = ref.watch(exploreCityProvider);
+  final searchQuery = ref.watch(exploreSearchQueryProvider).trim().toLowerCase();
 
-  final searchQuery = ref
-      .watch(exploreSearchQueryProvider)
-      .trim()
-      .toLowerCase();
+  // Watch canonical Firestore opportunities provider
+  final opportunitiesAsync = ref.watch(opportunitiesProvider);
 
-  // Get all events from the main events provider.
-  final eventsAsyncValue = ref.watch(eventsProvider);
-
-  return eventsAsyncValue.whenData((allEvents) {
-    return allEvents.where((event) {
-      // ======================================================
-      // 1. SEARCH
-      // ======================================================
-
+  return opportunitiesAsync.whenData((allOpportunities) {
+    return allOpportunities.where((opp) {
+      // 1. SEARCH FILTER
       if (searchQuery.isNotEmpty) {
-        final title = event.title.toLowerCase();
-        final description = event.description.toLowerCase();
-        final host = event.host.toLowerCase();
+        final title = opp.title.toLowerCase();
+        final description = opp.description?.toLowerCase() ?? '';
+        final organizer = opp.organizer.toLowerCase();
+        final source = opp.source.toLowerCase();
+        final skills = opp.requiredSkills.map((s) => s.toLowerCase()).join(' ');
 
-        final matchesSearch =
-            title.contains(searchQuery) ||
+        final matchesSearch = title.contains(searchQuery) ||
             description.contains(searchQuery) ||
-            host.contains(searchQuery);
+            organizer.contains(searchQuery) ||
+            source.contains(searchQuery) ||
+            skills.contains(searchQuery);
 
-        if (!matchesSearch) {
-          return false;
-        }
+        if (!matchesSearch) return false;
       }
 
-      // ======================================================
       // 2. TOP FILTER CHIPS
-      // ======================================================
-
-      // Online
       if (activeFilter == 'Online') {
-        if (!event.isOnline) {
-          return false;
-        }
-      }
-
-      // Offline
-      if (activeFilter == 'Offline') {
-        if (event.isOnline) {
-          return false;
-        }
-      }
-
-      // This Week
-      if (activeFilter == 'This Week') {
+        if (!opp.isOnline) return false;
+      } else if (activeFilter == 'Offline' || activeFilter == 'In-Person') {
+        if (opp.isOnline) return false;
+      } else if (activeFilter == 'This Week') {
+        if (opp.deadline == null) return false;
         final now = DateTime.now();
-
-        // Start of current week: Monday
-        final startOfWeek =
-            DateTime(
-              now.year,
-              now.month,
-              now.day,
-            ).subtract(
-              Duration(days: now.weekday - 1),
-            );
-
-        // Start of next week
+        final startOfWeek = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(Duration(days: now.weekday - 1));
         final startOfNextWeek = startOfWeek.add(const Duration(days: 7));
 
-        // Event must start during this week.
-        if (event.startDate.isBefore(startOfWeek) ||
-            !event.startDate.isBefore(startOfNextWeek)) {
+        if (opp.deadline!.isBefore(startOfWeek) ||
+            !opp.deadline!.isBefore(startOfNextWeek)) {
           return false;
         }
       }
 
-      // ======================================================
-      // FREE / PAID
-      // ======================================================
-      //
-      // Your EventModel currently does NOT contain:
-      //
-      // price
-      // isFree
-      // ticketPrice
-      //
-      // Therefore we intentionally do not filter Free/Paid
-      // yet. We should add this properly later instead of
-      // guessing from event data.
-
-      // ======================================================
-      // 3. CATEGORY
-      // ======================================================
-
+      // 3. CATEGORY / OPPORTUNITY TYPE FILTER
       if (activeCategory != null && activeCategory.trim().isNotEmpty) {
-        final selectedCategory = activeCategory.trim().toLowerCase();
+        final targetCat = activeCategory.trim().toLowerCase();
+        final oppType = opp.opportunityType.toLowerCase();
 
-        final hasCategory = event.tags.any(
-          (tag) => tag.trim().toLowerCase() == selectedCategory,
-        );
+        final matchesType = oppType == targetCat ||
+            oppType.contains(targetCat) ||
+            targetCat.contains(oppType) ||
+            opp.requiredSkills.any((s) => s.toLowerCase() == targetCat);
 
-        if (!hasCategory) {
-          return false;
-        }
+        if (!matchesType) return false;
       }
 
-      // ======================================================
-      // 4. CITY
-      // ======================================================
-
+      // 4. CITY / LOCATION FILTER
       if (activeCity != null && activeCity.trim().isNotEmpty) {
-        final selectedCity = activeCity.trim().toLowerCase();
+        final targetCity = activeCity.trim().toLowerCase();
+        final location = opp.locationType.toLowerCase();
+        final desc = opp.description?.toLowerCase() ?? '';
 
-        final eventLocation = event.location.trim().toLowerCase();
-
-        if (!eventLocation.contains(selectedCity)) {
+        if (!location.contains(targetCity) && !desc.contains(targetCity)) {
           return false;
         }
       }
-
-      // ======================================================
-      // EVENT PASSES ALL FILTERS
-      // ======================================================
 
       return true;
     }).toList();

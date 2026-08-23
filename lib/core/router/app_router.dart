@@ -7,7 +7,7 @@ import 'package:ai_nexus/features/auth/screens/reset_password_screen.dart';
 import 'package:ai_nexus/features/auth/screens/sign_up_screen.dart';
 import 'package:ai_nexus/features/auth/screens/splash_screen.dart';
 import 'package:ai_nexus/features/auth/screens/welcome_screen.dart';
-import 'package:ai_nexus/features/events/screens/event_details_screen.dart';
+import 'package:ai_nexus/features/opportunities/screens/opportunity_details_screen.dart';
 import 'package:ai_nexus/features/explore/screens/explore_screen.dart';
 import 'package:ai_nexus/features/home/screens/home_screen.dart';
 import 'package:ai_nexus/features/profile/screens/profile_screen.dart';
@@ -111,13 +111,47 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/events/:id',
         pageBuilder: (context, state) {
-          final eventId = state.pathParameters['id']!;
+          final opportunityId = state.pathParameters['id']!;
           final imageUrl = state.extra as String?;
 
           return CustomTransitionPage(
             key: state.pageKey,
-            child: EventDetailsScreen(
-              eventId: eventId,
+            child: OpportunityDetailsScreen(
+              opportunityId: opportunityId,
+              imageUrl: imageUrl,
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  final offsetAnimation =
+                      Tween<Offset>(
+                        begin: const Offset(1, 0),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeOutCubic,
+                        ),
+                      );
+
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/opportunities/:id',
+        pageBuilder: (context, state) {
+          final opportunityId = state.pathParameters['id']!;
+          final imageUrl = state.extra as String?;
+
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: OpportunityDetailsScreen(
+              opportunityId: opportunityId,
               imageUrl: imageUrl,
             ),
             transitionsBuilder:

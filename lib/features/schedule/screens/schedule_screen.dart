@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
-import 'package:ai_nexus/features/events/models/event_model.dart';
-import 'package:ai_nexus/features/events/providers/events_provider.dart';
+import 'package:ai_nexus/features/opportunities/models/opportunity_model.dart';
+import 'package:ai_nexus/features/opportunities/providers/opportunities_provider.dart';
 import 'package:ai_nexus/features/schedule/widgets/schedule_event_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +37,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
 
   @override
   Widget build(BuildContext context) {
-    final eventsAsync = ref.watch(eventsProvider);
+    final opportunitiesAsync = ref.watch(opportunitiesProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -68,7 +68,6 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
               ),
               child: TabBar(
                 controller: _tabController,
-
                 indicator: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
                   gradient: const LinearGradient(
@@ -80,31 +79,22 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
                     end: Alignment.bottomRight,
                   ),
                 ),
-
                 labelColor: Colors.white,
-
                 unselectedLabelColor: theme.colorScheme.onSurface.withValues(
                   alpha: 0.75,
                 ),
-
                 labelStyle: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
                 ),
-
                 unselectedLabelStyle: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
                 ),
-
                 dividerColor: Colors.transparent,
-
                 indicatorSize: TabBarIndicatorSize.tab,
-
-                labelPadding: EdgeInsets.zero,
-
                 tabs: const [
-                  Tab(text: 'Today'),
+                  Tab(text: 'Closing Soon'),
                   Tab(text: 'Upcoming'),
                   Tab(text: 'Saved'),
                 ],
@@ -112,50 +102,42 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
             ),
           ),
 
-          const SizedBox(height: AppSpacing.s24),
+          const SizedBox(height: 16),
 
           // =====================================================
           // TAB CONTENT
           // =====================================================
           Expanded(
-            child: eventsAsync.when(
-              loading: () => Center(
+            child: opportunitiesAsync.when(
+              loading: () => const Center(
                 child: CircularProgressIndicator(
                   color: AppColors.primary,
                 ),
               ),
-
               error: (error, stack) => _buildErrorState(
                 context,
                 error,
               ),
-
-              data: (allEvents) {
-                final todayEvents = _getTodayEvents(allEvents);
-
-                final upcomingEvents = _getUpcomingEvents(
-                  allEvents,
-                );
-
-                final savedEvents = allEvents
-                    .where(
-                      (event) => event.isBookmarked,
-                    )
+              data: (allOpportunities) {
+                final closingSoon = _getClosingSoonOpportunities(allOpportunities);
+                final upcoming = _getUpcomingOpportunities(allOpportunities);
+                final saved = allOpportunities
+                    .where((opp) => opp.isBookmarked)
                     .toList();
 
                 return TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildEventList(
-                      todayEvents,
-                      'Today',
+                    _buildOpportunityList(
+                      closingSoon,
+                      'Closing Soon',
                     ),
-                    _buildEventList(
-                      upcomingEvents,
+                    _buildOpportunityList(
+                      upcoming,
                       'Upcoming',
                     ),
-                    _buildEventList(
-                      savedEvents,
+                    _buildOpportunityList(
+                      saved,
                       'Saved',
                       isSavedTab: true,
                     ),
@@ -170,256 +152,174 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
   }
 
   // ============================================================
-  // TODAY EVENTS
+  // CLOSING SOON (Within 7 days)
   // ============================================================
 
-  List<EventModel> _getTodayEvents(
-    List<EventModel> events,
+  List<OpportunityModel> _getClosingSoonOpportunities(
+    List<OpportunityModel> opportunities,
   ) {
     final now = DateTime.now();
+    final in7Days = now.add(const Duration(days: 7));
 
-    final startOfToday = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    );
-
-    final startOfTomorrow = startOfToday.add(
-      const Duration(days: 1),
-    );
-
-    final todayEvents = events.where((event) {
-      return !event.startDate.isBefore(startOfToday) &&
-          event.startDate.isBefore(startOfTomorrow);
+    final list = opportunities.where((opp) {
+      if (opp.deadline == null) return false;
+      return !opp.deadline!.isBefore(now) && opp.deadline!.isBefore(in7Days);
     }).toList();
 
-    todayEvents.sort(
-      (a, b) => a.startDate.compareTo(b.startDate),
-    );
-
-    return todayEvents;
+    list.sort((a, b) => a.deadline!.compareTo(b.deadline!));
+    return list;
   }
 
   // ============================================================
-  // UPCOMING EVENTS
+  // UPCOMING (All with future deadline or open)
   // ============================================================
 
-  List<EventModel> _getUpcomingEvents(
-    List<EventModel> events,
+  List<OpportunityModel> _getUpcomingOpportunities(
+    List<OpportunityModel> opportunities,
   ) {
     final now = DateTime.now();
 
-    final upcomingEvents = events.where((event) {
-      return event.startDate.isAfter(now);
+    final list = opportunities.where((opp) {
+      if (opp.deadline == null) return true;
+      return !opp.deadline!.isBefore(now);
     }).toList();
 
-    upcomingEvents.sort(
-      (a, b) => a.startDate.compareTo(b.startDate),
-    );
+    list.sort((a, b) {
+      if (a.deadline == null && b.deadline == null) return 0;
+      if (a.deadline == null) return 1;
+      if (b.deadline == null) return -1;
+      return a.deadline!.compareTo(b.deadline!);
+    });
 
-    return upcomingEvents;
+    return list;
   }
 
   // ============================================================
-  // EVENT LIST
+  // OPPORTUNITY LIST
   // ============================================================
 
-  Widget _buildEventList(
-    List<EventModel> events,
+  Widget _buildOpportunityList(
+    List<OpportunityModel> opportunities,
     String tabName, {
     bool isSavedTab = false,
   }) {
-    if (events.isEmpty) {
+    if (opportunities.isEmpty) {
       return _buildEmptyState(
         tabName,
       );
     }
 
     return ListView.builder(
-      padding:
-          const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s24,
-          ).copyWith(
-            bottom: 120,
-          ),
-      itemCount: events.length,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s24,
+      ).copyWith(
+        bottom: 120,
+      ),
+      itemCount: opportunities.length,
       itemBuilder: (context, index) {
-        final event = events[index];
-
-        // ======================================================
-        // SAVED EVENTS
-        // ======================================================
+        final opp = opportunities[index];
 
         if (isSavedTab) {
           return Dismissible(
-            key: Key(
-              'saved_${event.id}',
-            ),
+            key: Key('saved_${opp.id}'),
             direction: DismissDirection.endToStart,
-
-            onDismissed: (direction) {
-              unawaited(
-                ref.read(eventsProvider.notifier).toggleBookmark(event.id),
-              );
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${event.title} removed from saved',
-                  ),
-                  duration: const Duration(
-                    seconds: 2,
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-
             background: Container(
-              margin: const EdgeInsets.only(
-                bottom: 16,
-              ),
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 24),
               decoration: BoxDecoration(
                 color: Colors.red.shade400,
                 borderRadius: BorderRadius.circular(16),
               ),
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(
-                right: 24,
-              ),
               child: const Icon(
-                Icons.delete_outline,
+                Icons.delete_outline_rounded,
                 color: Colors.white,
-                size: 30,
+                size: 28,
               ),
             ),
-
-            child: Padding(
-              padding: const EdgeInsets.only(
-                bottom: 16,
-              ),
-              child: ScheduleEventCard(
-                event: event,
-              ),
+            onDismissed: (_) {
+              ref
+                  .read(opportunitiesProvider.notifier)
+                  .toggleBookmark(opp.id);
+            },
+            child: ScheduleEventCard(
+              opportunity: opp,
             ),
           );
         }
 
-        // ======================================================
-        // NORMAL EVENTS
-        // ======================================================
-
-        return Padding(
-          padding: const EdgeInsets.only(
-            bottom: 16,
-          ),
-          child: ScheduleEventCard(
-            event: event,
-          ),
+        return ScheduleEventCard(
+          opportunity: opp,
         );
       },
     );
   }
 
-  // ============================================================
-  // EMPTY STATE
-  // ============================================================
-
-  Widget _buildEmptyState(
-    String tab,
-  ) {
+  Widget _buildEmptyState(String tabName) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final isSaved = tab == 'Saved';
-
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 32,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isSaved
-                  ? Icons.bookmark_border_rounded
-                  : Icons.event_busy_rounded,
-              size: 64,
-              color: isDark ? Colors.white38 : Colors.grey.shade400,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            tabName == 'Saved'
+                ? Icons.bookmark_border_rounded
+                : Icons.event_busy_rounded,
+            size: 64,
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.3)
+                : Colors.grey.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No $tabName Opportunities',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
             ),
-
-            const SizedBox(height: 16),
-
-            Text(
-              'No $tab events',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            tabName == 'Saved'
+                ? 'Opportunities you bookmark will appear here.'
+                : 'Check back later for new opportunities.',
+            style: TextStyle(
+              fontSize: 14,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              isSaved
-                  ? 'Save events to see them here!'
-                  : 'Check out Explore to find more events.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-              ),
-            ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 
-  // ============================================================
-  // ERROR STATE
-  // ============================================================
-
-  Widget _buildErrorState(
-    BuildContext context,
-    Object error,
-  ) {
-    final theme = Theme.of(context);
-
+  Widget _buildErrorState(BuildContext context, Object error) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline_rounded,
-              size: 56,
-              color: theme.colorScheme.error,
+              size: 48,
+              color: Colors.red,
             ),
-
             const SizedBox(height: 16),
-
             Text(
-              'Something went wrong',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              '$error',
+              'Error loading schedule:\n$error',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
+              style: const TextStyle(color: Colors.red),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(opportunitiesProvider.notifier).refresh();
+              },
+              child: const Text('Retry'),
             ),
           ],
         ),
