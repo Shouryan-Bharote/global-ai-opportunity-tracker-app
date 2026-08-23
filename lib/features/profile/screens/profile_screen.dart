@@ -31,12 +31,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     'Agents',
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    // profileProvider is auto-initialized by Riverpod — no manual .build() call needed.
-  }
-
   Future<void> _showEditProfileSheet(
     String currentName,
     String? currentAvatarUrl,
@@ -57,212 +51,238 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       isScrollControlled: true,
       useRootNavigator: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      builder: (sheetContext) {
+        final isDark = Theme.of(sheetContext).brightness == Brightness.dark;
+        final sheetBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+        final textColor = isDark ? Colors.white : Colors.black87;
+        final subtextColor = isDark ? Colors.grey.shade400 : Colors.grey;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
           ),
-          padding: const EdgeInsets.all(24),
-          child: SafeArea(
-            top: false,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Edit Profile',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Name',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+          child: Container(
+            decoration: BoxDecoration(
+              color: sheetBg,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: const EdgeInsets.all(24),
+            child: SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Edit Profile',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter name',
-                      border: OutlineInputBorder(),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Name',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: subtextColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    textCapitalization: TextCapitalization.words,
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Profile Photo',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: nameController,
+                      style: TextStyle(color: textColor),
+                      decoration: const InputDecoration(
+                        hintText: 'Enter name',
+                      ),
+                      textCapitalization: TextCapitalization.words,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Select a preset avatar:',
-                    style: TextStyle(fontSize: 13, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: presets
-                        .map(
-                          (url) => GestureDetector(
-                            onTap: () {
-                              avatarController.text = url;
-                            },
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.grey.shade200,
-                                  width: 2,
+                    const SizedBox(height: 24),
+                    Text(
+                      'Profile Photo',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: subtextColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Select a preset avatar:',
+                      style: TextStyle(fontSize: 13, color: subtextColor),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: presets
+                          .map(
+                            (url) => GestureDetector(
+                              onTap: () {
+                                avatarController.text = url;
+                              },
+                              child: Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isDark
+                                        ? const Color(0xFF333333)
+                                        : Colors.grey.shade200,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: ClipOval(
+                                  child: Image.network(url, fit: BoxFit.cover),
                                 ),
                               ),
-                              child: ClipOval(
-                                child: Image.network(url, fit: BoxFit.cover),
-                              ),
                             ),
+                          )
+                          .toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Or import from device:',
+                      style: TextStyle(fontSize: 13, color: subtextColor),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        )
-                        .toList(),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Or import from device:',
-                    style: TextStyle(fontSize: 13, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          side: const BorderSide(color: AppColors.primary),
                         ),
-                        side: const BorderSide(color: AppColors.primary),
-                      ),
-                      icon: const Icon(
-                        Icons.photo_library_outlined,
-                        color: AppColors.primary,
-                      ),
-                      label: const Text(
-                        'Choose from Gallery',
-                        style: TextStyle(
+                        icon: const Icon(
+                          Icons.photo_library_outlined,
                           color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      onPressed: () async {
-                        final picker = ImagePicker();
-                        final image = await picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
-                        if (image != null) {
-                          avatarController.text = image.path;
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Or enter custom image URL:',
-                    style: TextStyle(fontSize: 13, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: avatarController,
-                    decoration: const InputDecoration(
-                      hintText: 'https://example.com/photo.jpg',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                        label: const Text(
+                          'Choose from Gallery',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
+                        onPressed: () async {
+                          final picker = ImagePicker();
+                          final image = await picker.pickImage(
+                            source: ImageSource.gallery,
+                          );
+                          if (image != null) {
+                            avatarController.text = image.path;
+                          }
+                        },
                       ),
-                      onPressed: () async {
-                        final newName = nameController.text.trim();
-                        final url = avatarController.text.trim();
-                        if (newName.isNotEmpty) {
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Or enter custom image URL:',
+                      style: TextStyle(fontSize: 13, color: subtextColor),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: avatarController,
+                      style: TextStyle(color: textColor),
+                      decoration: const InputDecoration(
+                        hintText: 'https://example.com/photo.jpg',
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onPressed: () async {
+                          final newName = nameController.text.trim();
+                          final url = avatarController.text.trim();
+                          if (newName.isNotEmpty) {
+                            await ref
+                                .read(profileProvider.notifier)
+                                .updateName(newName);
+                          }
                           await ref
                               .read(profileProvider.notifier)
-                              .updateName(newName);
-                        }
-                        // Either update with new URL or clear it if they delete the text
-                        await ref
-                            .read(profileProvider.notifier)
-                            .updateAvatarUrl(url);
-                        if (context.mounted) Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Save Changes',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                              .updateAvatarUrl(url);
+                          if (sheetContext.mounted) Navigator.pop(sheetContext);
+                        },
+                        child: const Text(
+                          'Save Changes',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Future<void> _showAboutDialog() async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('About AI Opportunity Tracker'),
-        content: const Column(
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        title: Text(
+          'About AI Opportunity Tracker',
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Version 1.0.0',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xFFFF5274),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Centralized catalog for technical workshops, hackathons, and webinars from Unstop, Hack2Skill, Devfolio, MLH, and more.',
+              style: TextStyle(
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               'Developed by Member 1 (Mobile), Member 2 (Backend), and Member 3 (Scraper).',
-              style: TextStyle(fontSize: 12, color: Colors.black54),
+              style: TextStyle(
+                fontSize: 12,
+                color: isDark ? Colors.white54 : Colors.black54,
+              ),
             ),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Close'),
           ),
         ],
@@ -271,13 +291,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _showSignOutDialog() async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Sign Out'),
-        content: const Text(
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        title: Text(
+          'Sign Out',
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
           'Are you sure you want to sign out? Your session details will be cleared.',
+          style: TextStyle(
+            color: isDark ? Colors.white70 : Colors.black87,
+          ),
         ),
         actions: [
           ElevatedButton(
@@ -286,7 +317,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               foregroundColor: Colors.white,
             ),
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
               await ref.read(authProvider.notifier).logout();
             },
             child: const Text('Sign Out'),
@@ -298,8 +329,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 backgroundColor: const Color.fromRGBO(62, 99, 245, 1),
                 foregroundColor: Colors.white,
               ),
-
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: const Text('Cancel'),
             ),
           ),
@@ -310,13 +340,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final profileAsync = ref.watch(profileProvider);
     final opportunitiesAsync = ref.watch(opportunitiesProvider);
 
+    final statsCardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final statsCardBorder = isDark ? const Color(0xFF2E2E2E) : null;
+    final sectionTitleColor = isDark ? Colors.white : const Color(0xFF1D273F);
+
     return Scaffold(
-      backgroundColor: const Color(
-        0xFFFAF8FC,
-      ), // Soft purple-tinted white background from mockup
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFFAF8FC),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,11 +384,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Container(
                     height: 72,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: statsCardBg,
                       borderRadius: BorderRadius.circular(24),
+                      border: statsCardBorder != null
+                          ? Border.all(color: statsCardBorder)
+                          : null,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
+                          color: Colors.black.withValues(
+                            alpha: isDark ? 0.25 : 0.05,
+                          ),
                           blurRadius: 16,
                           offset: const Offset(0, 8),
                         ),
@@ -372,7 +410,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
                         final savedCount = savedOpportunities.length;
                         final interestsCount = _selectedInterests.length;
-
                         final totalHours = savedCount * 8;
 
                         return Row(
@@ -380,11 +417,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             _buildStatItem(
                               'Interests',
                               interestsCount.toString(),
+                              isDark,
                             ),
-                            _buildVerticalDivider(),
-                            _buildStatItem('Saved', savedCount.toString()),
-                            _buildVerticalDivider(),
-                            _buildStatItem('Hours', totalHours.toString()),
+                            _buildVerticalDivider(isDark),
+                            _buildStatItem(
+                              'Saved',
+                              savedCount.toString(),
+                              isDark,
+                            ),
+                            _buildVerticalDivider(isDark),
+                            _buildStatItem(
+                              'Hours',
+                              totalHours.toString(),
+                              isDark,
+                            ),
                           ],
                         );
                       },
@@ -397,16 +443,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(height: 56),
 
             // Interests Section
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.s24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
               child: Text(
                 'Interests',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Color(
-                    0xFF1D273F,
-                  ), // Dark blue-grey text color from mockup
+                  color: sectionTitleColor,
                   letterSpacing: -0.5,
                 ),
               ),
@@ -419,6 +463,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 runSpacing: 10,
                 children: _interests.map((interest) {
                   final isSelected = _selectedInterests.contains(interest);
+                  final unselectedBg =
+                      isDark ? const Color(0xFF1E1E1E) : Colors.white;
+                  final unselectedBorder =
+                      isDark ? const Color(0xFF3A3A3A) : Colors.grey.shade300;
+                  final unselectedText =
+                      isDark ? Colors.white70 : const Color(0xFF4A5568);
+
                   return GestureDetector(
                     onTap: () {
                       setState(() {
@@ -437,20 +488,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color.fromRGBO(62, 99, 245, 1)
-                            : Colors.white,
+                            : unselectedBg,
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
                           color: isSelected
                               ? Colors.transparent
-                              : Colors.grey.shade300,
+                              : unselectedBorder,
                         ),
                       ),
                       child: Text(
                         interest,
                         style: TextStyle(
-                          color: isSelected
-                              ? Colors.white
-                              : const Color(0xFF4A5568),
+                          color: isSelected ? Colors.white : unselectedText,
                           fontWeight: isSelected
                               ? FontWeight.bold
                               : FontWeight.w500,
@@ -473,8 +522,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.bookmark_outline,
                     title: 'Saved Events',
+                    isDark: isDark,
                     onTap: () {
-                      // Navigate directly to schedule saved opportunities tab
                       ref.read(scheduleTabProvider.notifier).state = 'Saved';
                       context.go('/schedule');
                     },
@@ -482,6 +531,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.pie_chart_outline,
                     title: 'Interests settings',
+                    isDark: isDark,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -496,6 +546,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.notifications_none_outlined,
                     title: 'Notification',
+                    isDark: isDark,
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -510,6 +561,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.info_outline,
                     title: 'About AI events',
+                    isDark: isDark,
                     onTap: () async {
                       await _showAboutDialog();
                     },
@@ -536,7 +588,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     },
                     icon: const Icon(Icons.logout_rounded),
                     label: const Text(
-                      "Log out",
+                      'Log out',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -546,7 +598,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       backgroundColor: const Color(0xFFFF5274),
                       foregroundColor: Colors.white,
                       elevation: 6,
-                      shadowColor: const Color(0xFFFF5274).withOpacity(0.4),
+                      shadowColor: const Color(0xFFFF5274).withValues(alpha: 0.4),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -564,25 +616,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
+  Widget _buildStatItem(String label, String value, bool isDark) {
+    final valueColor = isDark ? Colors.white : const Color(0xFF1D273F);
+    final labelColor = isDark ? Colors.white54 : const Color(0xFF7A869A);
+
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1D273F), // Dark blue-grey text
+              color: valueColor,
             ),
           ),
           const SizedBox(height: 2),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
-              color: Color(0xFF7A869A), // Cool grey text
+              color: labelColor,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -591,19 +646,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildVerticalDivider() {
+  Widget _buildVerticalDivider(bool isDark) {
     return Container(
       width: 1,
       height: 36,
-      color: Colors.grey.shade200,
+      color: isDark ? const Color(0xFF2E2E2E) : Colors.grey.shade200,
     );
   }
 
   Widget _buildMenuItem({
     required IconData icon,
     required String title,
+    required bool isDark,
     required VoidCallback onTap,
   }) {
+    final tileBg = isDark
+        ? const Color(0xFF1E1E1E)
+        : const Color(0xFFEDEDED).withValues(alpha: 0.5);
+    final tileBorder = isDark ? const Color(0xFF2E2E2E) : null;
+    final iconBg = isDark ? const Color(0xFF2D1A4A) : const Color(0xFFE2D6FF);
+    final iconColor = isDark ? const Color(0xFFCB9EFF) : const Color(0xFF9000FF);
+    final titleColor = isDark ? Colors.white : const Color(0xFF1D273F);
+    final chevronColor = isDark ? Colors.white38 : const Color(0xFF7A869A);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Bounceable(
@@ -611,26 +676,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: const Color(0xFFEDEDED).withValues(
-              alpha: 0.5,
-            ), // Very light grey tile background from mockup
+            color: tileBg,
             borderRadius: BorderRadius.circular(18),
+            border: tileBorder != null ? Border.all(color: tileBorder) : null,
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Color(
-                    0xFFE2D6FF,
-                  ), // Soft purple icon container background from mockup
+                decoration: BoxDecoration(
+                  color: iconBg,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
-                  color: const Color(
-                    0xFF9000FF,
-                  ), // Deep purple icon from mockup
+                  color: iconColor,
                   size: 22,
                 ),
               ),
@@ -638,16 +698,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1D273F), // Dark grey text
+                    color: titleColor,
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: Color(0xFF7A869A), // Cool grey chevron from mockup
+                color: chevronColor,
                 size: 20,
               ),
             ],

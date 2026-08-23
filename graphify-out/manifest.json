@@ -30,7 +30,7 @@
     "semantic_hash": ""
   },
   "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift": {
-    "mtime": 1787500308.421699,
+    "mtime": 1787507232.2700925,
     "ast_hash": "63bc00d19466662a75b7492ac07d5a97",
     "semantic_hash": "63bc00d19466662a75b7492ac07d5a97"
   },
@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "test/widget_test.dart": {
-    "mtime": 1785929594.9739845,
-    "ast_hash": "22bf9629208d213123d301876c4b001e",
+    "mtime": 1787500908.2803032,
+    "ast_hash": "e5f5d423766bba3dfa6345b665f18fab",
     "semantic_hash": ""
   },
   "web/manifest.json": {
@@ -445,8 +445,8 @@
     "semantic_hash": ""
   },
   "lib/features/auth/providers/auth_provider.dart": {
-    "mtime": 1787498669.1574247,
-    "ast_hash": "ecb09ee55dd96646c1315d3447358ee2",
+    "mtime": 1787500842.8681152,
+    "ast_hash": "5fae755e5de6c32165b3108ac391f1a7",
     "semantic_hash": ""
   },
   "lib/features/auth/repositories/mock_auth_repository.dart": {
@@ -555,13 +555,13 @@
     "semantic_hash": ""
   },
   "lib/features/home/widgets/category_chips.dart": {
-    "mtime": 1787498669.1674242,
-    "ast_hash": "a2746dba0a340d8534d6c105c6b249b9",
+    "mtime": 1787504338.9580843,
+    "ast_hash": "eb57dcd6e8a5087172062dc461da06d5",
     "semantic_hash": ""
   },
   "lib/features/home/widgets/explore_category_card.dart": {
-    "mtime": 1787498669.1674242,
-    "ast_hash": "9758ecb63a19514e10da265aab1223fd",
+    "mtime": 1787504419.1352093,
+    "ast_hash": "655e9ce261abcf6867a0a59500a20e4b",
     "semantic_hash": ""
   },
   "lib/features/home/widgets/featured_event_card.dart": {
@@ -575,18 +575,18 @@
     "semantic_hash": ""
   },
   "lib/features/home/widgets/recommended_event_card.dart": {
-    "mtime": 1787498669.1694248,
-    "ast_hash": "fe3a22857b20c4c851cf53b885db1397",
+    "mtime": 1787504361.147704,
+    "ast_hash": "1c5d658ae65d09dc20e6d22424b4760f",
     "semantic_hash": ""
   },
   "lib/features/home/widgets/section_title.dart": {
-    "mtime": 1787498669.1694248,
-    "ast_hash": "26a7396d09c1fe7559c65677dadb9867",
+    "mtime": 1787504391.9632597,
+    "ast_hash": "95794ded5b0f58af4c751ff2f6453a19",
     "semantic_hash": ""
   },
   "lib/features/home/widgets/upcoming_event_tile.dart": {
-    "mtime": 1787498669.170425,
-    "ast_hash": "33f37f00eaa02f411dacf07d0a27e42b",
+    "mtime": 1787504381.680929,
+    "ast_hash": "cadaf52d3615be6167d760609f4c70bd",
     "semantic_hash": ""
   },
   "lib/features/profile/data/profile_repository.dart": {
@@ -600,8 +600,8 @@
     "semantic_hash": ""
   },
   "lib/features/profile/screens/profile_screen.dart": {
-    "mtime": 1787500219.7236738,
-    "ast_hash": "a3427a1eb87dd8d1a39d135d191350a9",
+    "mtime": 1787507252.05092,
+    "ast_hash": "5f73f644348810ce1df5f087630ec344",
     "semantic_hash": ""
   },
   "lib/features/schedule/providers/schedule_provider.dart": {
@@ -640,8 +640,8 @@
     "semantic_hash": ""
   },
   ".state/DECISIONS.md": {
-    "mtime": 1787498669.1364245,
-    "ast_hash": "9b58d7a4b1db71e69f72c38224b5f5f7",
+    "mtime": 1787500364.347257,
+    "ast_hash": "61004484869e9f8275a4e31fdf689d42",
     "semantic_hash": ""
   },
   ".state/DEVELOPMENT_STATUS.md": {
@@ -735,8 +735,8 @@
     "semantic_hash": ""
   },
   "docs/phases/PHASE_07.md": {
-    "mtime": 1787498669.140425,
-    "ast_hash": "c01f44983aa3a2f88d6b2c0d643f865d",
+    "mtime": 1787500369.6096556,
+    "ast_hash": "44dd73bf6b2e0d7473bc80dff259dbd5",
     "semantic_hash": ""
   },
   "docs/phases/PHASE_08.md": {
@@ -765,8 +765,8 @@
     "semantic_hash": ""
   },
   "lib/features/profile/widgets/profile_header.dart": {
-    "mtime": 1787498669.1724255,
-    "ast_hash": "c6cd0e96b7ba40f3c65ebd6cf98e7641",
+    "mtime": 1787506229.1514888,
+    "ast_hash": "013315ea5af7e6939e146e86e7247eb2",
     "semantic_hash": ""
   },
   "android/app/google-services.json": {
@@ -827,11 +827,6 @@
   "test/opportunity_model_test.dart": {
     "mtime": 1787500295.1863997,
     "ast_hash": "0d5f026a1978e6abe880556573c1887a",
-    "semantic_hash": ""
-  },
-  "UrgentTask.md": {
-    "mtime": 1787499397.8164268,
-    "ast_hash": "19923d6bc36015e63f431cc7523552b2",
     "semantic_hash": ""
   }
 }

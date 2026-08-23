@@ -46,21 +46,28 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) {
-    _controller.forward();
-  }
-
+  void _onTapDown(TapDownDetails details) => _controller.forward();
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
     widget.onTap();
   }
-
-  void _onTapCancel() {
-    _controller.reverse();
-  }
+  void _onTapCancel() => _controller.reverse();
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final borderColor = isDark ? const Color(0xFF3A3A3A) : AppColors.border;
+    final titleColor = widget.isSelected
+        ? AppColors.primary
+        : (isDark ? Colors.white : AppColors.textPrimary);
+    final subtitleColor = widget.isSelected
+        ? AppColors.primary.withValues(alpha: 0.7)
+        : (isDark ? Colors.white54 : AppColors.textSecondary);
+    final iconColor = widget.isSelected
+        ? AppColors.primary
+        : (isDark ? Colors.white70 : AppColors.textPrimary);
+
     return Padding(
       padding: const EdgeInsets.only(right: 20),
       child: GestureDetector(
@@ -73,18 +80,29 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
             final isPressed = _controller.value > 0.3;
             return Transform.scale(
               scale: _scaleAnimation.value,
-              child: Container(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
                 width: 140,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: cardBg,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
                     color: (widget.isSelected || isPressed)
-                        ? AppColors.primary.withValues(alpha: 0.45)
-                        : AppColors.border.withValues(alpha: 0.6),
+                        ? AppColors.primary.withValues(alpha: 0.55)
+                        : borderColor.withValues(alpha: 0.6),
                     width: 1.5,
                   ),
+                  boxShadow: isDark
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -92,15 +110,16 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: widget.backgroundColor,
+                        // Slightly adjust icon background in dark
+                        color: isDark
+                            ? widget.backgroundColor.withValues(alpha: 0.25)
+                            : widget.backgroundColor,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Icon(
                         widget.icon,
                         size: 32,
-                        color: widget.isSelected
-                            ? AppColors.primary
-                            : AppColors.textPrimary,
+                        color: iconColor,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -110,9 +129,7 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                             fontWeight: widget.isSelected
                                 ? FontWeight.w800
                                 : FontWeight.bold,
-                            color: widget.isSelected
-                                ? AppColors.primary
-                                : AppColors.textPrimary,
+                            color: titleColor,
                             fontSize: 16,
                           ),
                       textAlign: TextAlign.center,
@@ -123,9 +140,7 @@ class _ExploreCategoryCardState extends State<ExploreCategoryCard>
                     Text(
                       widget.subtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: widget.isSelected
-                                ? AppColors.primary.withValues(alpha: 0.7)
-                                : AppColors.textSecondary,
+                            color: subtitleColor,
                             fontSize: 13,
                           ),
                       textAlign: TextAlign.center,

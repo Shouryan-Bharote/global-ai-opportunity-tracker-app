@@ -50,21 +50,22 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) {
-    _controller.forward();
-  }
-
+  void _onTapDown(TapDownDetails details) => _controller.forward();
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
     widget.onTap();
   }
-
-  void _onTapCancel() {
-    _controller.reverse();
-  }
+  void _onTapCancel() => _controller.reverse();
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final borderColor = isDark ? const Color(0xFF3A3A3A) : AppColors.border;
+    final titleColor = isDark ? Colors.white : AppColors.textPrimary;
+    final subtitleColor =
+        isDark ? Colors.white54 : AppColors.textSecondary;
+
     return Padding(
       padding: const EdgeInsets.only(right: AppSpacing.s16),
       child: GestureDetector(
@@ -80,24 +81,28 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
               child: Container(
                 width: 240,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: cardBg,
                   borderRadius: BorderRadius.circular(AppRadius.large),
                   border: Border.all(
-                    color: isPressed ? AppColors.primary.withValues(alpha: 0.45) : AppColors.border.withValues(alpha: 0.6),
+                    color: isPressed
+                        ? AppColors.primary.withValues(alpha: 0.45)
+                        : borderColor.withValues(alpha: 0.6),
                     width: 1.5,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  boxShadow: isDark
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image
+                    // Image / Gradient Header
                     Container(
                       height: 120,
                       decoration: BoxDecoration(
@@ -125,16 +130,21 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Colors.white.withValues(alpha: 0.9),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           widget.tag,
                           style: const TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.bold),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
                         ),
                       ),
                     ),
+
+                    // Content
                     Padding(
                       padding: const EdgeInsets.all(AppSpacing.s12),
                       child: Column(
@@ -142,35 +152,36 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                         children: [
                           Text(
                             widget.title,
-                            style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
-                                  fontSize: 18,
-                                ),
-                            maxLines: 1,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: titleColor,
+                              fontSize: 15,
+                            ),
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: AppSpacing.s8),
                           Row(
                             children: [
-                              const Icon(Icons.calendar_today,
-                                  size: 16, color: AppColors.textSecondary),
+                              Icon(Icons.calendar_today,
+                                  size: 14, color: subtitleColor),
                               const SizedBox(width: AppSpacing.s4),
                               Text(
                                 widget.date,
-                                style: const TextStyle(
-                                    fontSize: 13,
-                                    color: AppColors.textSecondary),
+                                style: TextStyle(
+                                    fontSize: 12, color: subtitleColor),
                               ),
                               const SizedBox(width: AppSpacing.s8),
-                              const Icon(Icons.location_on,
-                                  size: 16, color: AppColors.textSecondary),
+                              Icon(Icons.location_on,
+                                  size: 14, color: subtitleColor),
                               const SizedBox(width: AppSpacing.s4),
-                              Text(
-                                widget.location,
-                                style: const TextStyle(
-                                    fontSize: 13,
-                                    color: AppColors.textSecondary),
+                              Expanded(
+                                child: Text(
+                                  widget.location,
+                                  style: TextStyle(
+                                      fontSize: 12, color: subtitleColor),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ],
                           ),

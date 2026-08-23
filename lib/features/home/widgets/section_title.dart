@@ -16,17 +16,21 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final titleColor = isDark ? Colors.white : AppColors.textPrimary;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24, vertical: AppSpacing.s8),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s24, vertical: AppSpacing.s8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: titleColor,
+                ),
           ),
           if (onActionTap != null)
             GestureDetector(
@@ -34,9 +38,9 @@ class SectionTitle extends StatelessWidget {
               child: Text(
                 actionText,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
               ),
             ),
         ],
