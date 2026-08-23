@@ -37,6 +37,49 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
+    // Listen to Firebase auth state changes to stay in sync
+    final sub = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) {
+        state = const AuthState();
+      } else {
+        final userEmail = user.email ?? '';
+        final userName = (user.displayName != null &&
+                user.displayName!.trim().isNotEmpty)
+            ? user.displayName!.trim()
+            : _nameFromEmail(userEmail);
+
+        state = AuthState(
+          user: UserModel(
+            id: user.uid,
+            email: userEmail,
+            name: userName,
+            avatarUrl: user.photoURL,
+          ),
+        );
+      }
+    });
+
+    ref.onDispose(sub.cancel);
+
+    // Initial check for already authenticated user persisted by Firebase SDK
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final userEmail = currentUser.email ?? '';
+      final userName = (currentUser.displayName != null &&
+              currentUser.displayName!.trim().isNotEmpty)
+          ? currentUser.displayName!.trim()
+          : _nameFromEmail(userEmail);
+
+      return AuthState(
+        user: UserModel(
+          id: currentUser.uid,
+          email: userEmail,
+          name: userName,
+          avatarUrl: currentUser.photoURL,
+        ),
+      );
+    }
+
     return const AuthState();
   }
 
