@@ -12,12 +12,12 @@
 
 | # | Phase | Task | Status | Priority |
 |---|:-----:|------|:------:|:--------:|
-| 1 | 07 | Verify backend API is deployed and accessible | Not Started | High |
-| 2 | 07 | Update `.env` with backend URL | Not Started | High |
-| 3 | 07 | Implement auth API services & repository | Not Started | High |
-| 4 | 07 | Implement events API services & repository | Not Started | High |
-| 5 | 07 | Implement real bookmark CRUD & sync | Not Started | High |
-| 6 | 07 | Implement real profile management endpoints | Not Started | High |
+| 1 | 07 | Verify backend API is deployed and accessible | Completed | High |
+| 2 | 07 | Update `.env` with backend URL | Completed | High |
+| 3 | 07 | Implement events API repository (`HttpEventRepository`) & audit fixes | Completed | High |
+| 4 | 07 | Implement real local bookmark persistence via `FlutterSecureStorage` | Completed | High |
+| 5 | 07 | Implement Firebase Auth & Google Sign-In with persistent session restoration | Completed | High |
+| 6 | 07 | Implement real profile management endpoints (`GET /users/me`, `PUT /users/me`) | Not Started | High |
 
 ---
 

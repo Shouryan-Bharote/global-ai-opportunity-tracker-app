@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:ai_nexus/core/constants/ai_interest_catalog.dart';
 import 'package:ai_nexus/core/providers/location_provider.dart';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/widgets/skeleton_loader.dart';
+import 'package:ai_nexus/features/events/models/event_model.dart';
 import 'package:ai_nexus/features/events/providers/events_provider.dart';
 import 'package:ai_nexus/features/home/providers/home_provider.dart';
 import 'package:ai_nexus/features/home/widgets/category_chips.dart';
@@ -30,7 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   static const int _kInitialPage = 10002;
   late final PageController _featuredPageController;
   Timer? _featuredTimer;
-  int _currentFeaturedPage = 0;
+  final ValueNotifier<int> _currentFeaturedPage = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -38,6 +40,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     WidgetsBinding.instance.addObserver(this);
     _featuredPageController = PageController(initialPage: _kInitialPage);
     _startFeaturedTimer();
+    _startAutoRefreshTimer();
+  }
+
+  Timer? _autoRefreshTimer;
+
+  void _startAutoRefreshTimer() {
+    // Silently refresh data every 5 minutes in the background.
+    // We do NOT invalidate (which causes a loading state); instead we
+    // let the next user-triggered pull-to-refresh pick up fresh data.
+    // The timer just keeps location fresh.
+    _autoRefreshTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+      if (!mounted) return;
+      // Only re-fetch location silently; events will refresh on next
+      // pull-to-refresh or app resume (when no data is present).
+      ref.invalidate(locationProvider);
+    });
   }
 
   void _startFeaturedTimer() {
@@ -61,7 +79,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void dispose() {
     _featuredTimer?.cancel();
+    _autoRefreshTimer?.cancel();
     _featuredPageController.dispose();
+    _currentFeaturedPage.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -69,21 +89,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      // Always refresh location on resume.
       ref.invalidate(locationProvider);
+
+      // Only force a full reload if we have NO data yet (first launch).
+      // If data is already showing, keep it visible while a silent
+      // background fetch happens on the next pull-to-refresh.
+      final eventsState = ref.read(eventsProvider);
+      final hasData = eventsState.valueOrNull?.isNotEmpty ?? false;
+      if (!hasData) {
+        ref.invalidate(eventsProvider);
+      }
     }
   }
 
   bool _showAllUpcoming = false;
 
-  final categories = const [
-    CategoryChipData(
+  List<CategoryChipData> _getCategories(int inPersonCount) => [
+    const CategoryChipData(
       label: "Today's Events",
       icon: Icons.local_fire_department,
     ),
-    CategoryChipData(label: 'Meetings', icon: Icons.stars_rounded),
-    CategoryChipData(label: 'Hackathons', icon: Icons.hourglass_bottom),
-    CategoryChipData(label: 'Online', icon: Icons.public),
-    CategoryChipData(label: 'Near me', icon: Icons.location_on_outlined),
+    const CategoryChipData(label: 'Hackathons', icon: Icons.code_rounded),
+    const CategoryChipData(label: 'Competitions', icon: Icons.emoji_events_outlined),
+    const CategoryChipData(label: 'Online', icon: Icons.public),
+    if (inPersonCount > 0)
+      const CategoryChipData(label: 'Near me', icon: Icons.location_on_outlined),
   ];
 
   String _getGreeting() {
@@ -120,11 +151,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final selectedExploreCategory = ref.watch(selectedExploreCategoryProvider);
     final filteredEvents = ref.watch(filteredEventsProvider);
-    final isEventsLoading = ref.watch(homeEventsProvider).isLoading;
-    final scheduleEvents = ref.watch(eventsProvider).valueOrNull ?? [];
+    final eventsAsync = ref.watch(eventsProvider);
+    final isEventsLoading = eventsAsync.isLoading;
+    final scheduleEvents = eventsAsync.valueOrNull ?? [];
+    final hasBackendError = eventsAsync.hasError && scheduleEvents.isEmpty;
     final locationAsync = ref.watch(locationProvider);
     final hasLocation = locationAsync.valueOrNull != null;
     final userName = ref.watch(profileProvider).valueOrNull?.name ?? 'there';
+    final userInterests = ref.watch(userInterestsProvider);
     final todayDate = DateFormat('EEEE, MMM d').format(DateTime.now());
 
     final upcomingEvents = ref.watch(upcomingFilteredEventsProvider);
@@ -134,6 +168,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         : upcomingEvents.take(2).toList();
 
     final top3FeaturedEvents = scheduleEvents.take(3).toList();
+    final totalOpportunities = scheduleEvents.length;
+    final inPersonCount = scheduleEvents.where((e) => !e.isOnline).length;
+    final categories = _getCategories(inPersonCount);
 
     final badgeBg = isDarkMode
         ? const Color(0xFF292929)
@@ -217,19 +254,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.location_on_rounded,
+                                  inPersonCount > 0
+                                      ? Icons.location_on_rounded
+                                      : Icons.public_rounded,
                                   size: 14,
-                                  color: hasLocation
-                                      ? const Color(0xFF6C5CE7)
-                                      : badgeTextColor,
+                                  color: const Color(0xFF6C5CE7),
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
                                   locationAsync.isLoading
                                       ? 'Locating...'
-                                      : (hasLocation
-                                            ? 'Near You'
-                                            : 'Location Off (Tap to Enable)'),
+                                      : (inPersonCount > 0
+                                            ? '$inPersonCount In-Person Near You'
+                                            : (hasLocation
+                                                ? 'Global & Remote'
+                                                : 'Global Opportunities')),
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
@@ -260,71 +299,139 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     const SizedBox(height: 6),
 
                     // DYNAMIC EVENT COUNT HEADER
-                    GestureDetector(
-                      onTap: hasLocation ? null : _enableLocation,
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            height: 1.35,
-                            color: colorScheme.onSurface,
-                          ),
-                          children: [
-                            if (hasLocation) ...[
-                              TextSpan(
-                                text: 'There are ',
-                                style: TextStyle(
-                                  color: isDarkMode
-                                      ? Colors.grey.shade500
-                                      : const Color(0xFFB0B0B8),
-                                ),
-                              ),
-                              TextSpan(
-                                text: '${scheduleEvents.length} events ',
-                                style: TextStyle(
-                                  color: isDarkMode
-                                      ? Colors.grey.shade300
-                                      : const Color(0xFF4A4A58),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'in your area.',
-                                style: TextStyle(
-                                  color: isDarkMode
-                                      ? Colors.grey.shade500
-                                      : const Color(0xFFB0B0B8),
-                                ),
-                              ),
-                            ] else ...[
-                              TextSpan(
-                                text: 'Location is off. ',
-                                style: TextStyle(
-                                  color: isDarkMode
-                                      ? const Color(0xFFFF7675)
-                                      : const Color(0xFFD63031),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              TextSpan(
-                                text:
-                                    'Tap to turn on & discover events near you.',
-                                style: TextStyle(
-                                  color: isDarkMode
-                                      ? Colors.grey.shade400
-                                      : const Color(0xFF7A869A),
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ],
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          height: 1.35,
+                          color: colorScheme.onSurface,
                         ),
+                        children: [
+                          if (inPersonCount > 0) ...[
+                            TextSpan(
+                              text: 'There are ',
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey.shade500
+                                    : const Color(0xFFB0B0B8),
+                              ),
+                            ),
+                            TextSpan(
+                              text: '$inPersonCount in-person events ',
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey.shade300
+                                    : const Color(0xFF4A4A58),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'available near you.',
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey.shade500
+                                    : const Color(0xFFB0B0B8),
+                              ),
+                            ),
+                          ] else ...[
+                            TextSpan(
+                              text: 'Explore ',
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey.shade500
+                                    : const Color(0xFFB0B0B8),
+                              ),
+                            ),
+                            TextSpan(
+                              text: totalOpportunities > 0
+                                  ? '$totalOpportunities opportunities '
+                                  : 'active opportunities ',
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey.shade300
+                                    : const Color(0xFF4A4A58),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'available worldwide.',
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? Colors.grey.shade500
+                                    : const Color(0xFFB0B0B8),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
+
+              if (hasBackendError)
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.s24,
+                    vertical: 8,
+                  ),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: isDarkMode
+                        ? const Color(0xFF331B24)
+                        : const Color(0xFFFFF0F2),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.redAccent.withValues(alpha: 0.4),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.cloud_off_rounded,
+                        color: Colors.redAccent,
+                        size: 28,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Server Connection Issue',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Unable to reach backend opportunities service.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDarkMode
+                                    ? Colors.white70
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () => ref.invalidate(eventsProvider),
+                        icon: const Icon(Icons.refresh, size: 16),
+                        label: const Text('Retry'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.redAccent,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
               const SizedBox(height: AppSpacing.s16),
 
@@ -345,11 +452,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               // FEATURED EVENTS CAROUSEL (TOP 3)
               // ============================================================
               if (top3FeaturedEvents.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(
+                Padding(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s24,
                   ),
-                  child: EventSkeletonCard(height: 250),
+                  child: hasBackendError
+                      ? Container(
+                          height: 180,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: isDarkMode
+                                ? const Color(0xFF16152B)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isDarkMode
+                                  ? Colors.white12
+                                  : Colors.grey.shade200,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.cloud_off_rounded,
+                                size: 36,
+                                color: Colors.grey.shade400,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Featured events currently unavailable',
+                                style: TextStyle(
+                                  color: colorScheme.onSurface
+                                      .withValues(alpha: 0.6),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : const EventSkeletonCard(height: 250),
                 )
               else
                 Column(
@@ -361,10 +503,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         itemCount: 100000,
                         onPageChanged: (index) {
                           final realIndex = index % top3FeaturedEvents.length;
-                          if (_currentFeaturedPage != realIndex) {
-                            setState(() {
-                              _currentFeaturedPage = realIndex;
-                            });
+                          if (_currentFeaturedPage.value != realIndex) {
+                            _currentFeaturedPage.value = realIndex;
                           }
                         },
                         itemBuilder: (context, index) {
@@ -376,8 +516,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             ),
                             child: FeaturedEventCard(
                               title: event.title,
-                              subtitle: event.description,
-                              date: DateFormat('MMM d').format(event.startDate),
+                              subtitle: EventModel.cleanHtml(event.description),
+                              date: event.isDateTba
+                                  ? 'Date TBA'
+                                  : DateFormat('MMM d').format(event.startDate),
                               location: event.location,
                               imageUrl:
                                   event.imageUrl ??
@@ -386,7 +528,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               onRegister: () {
                                 unawaited(
                                   context.push(
-                                    '/events/${event.id}',
+                                    '/events/${Uri.encodeComponent(event.id)}',
                                     extra:
                                         event.imageUrl ??
                                         'https://h2svision.github.io/publicAssets2/bah2026/why_participate.webp',
@@ -408,30 +550,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     const SizedBox(height: 12),
                     // PAGE INDICATOR DOTS
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(top3FeaturedEvents.length, (
-                        index,
-                      ) {
-                        final isActive = index == _currentFeaturedPage;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOutCubic,
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          width: isActive ? 20 : 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: isActive
-                                ? AppColors.primary
-                                : (isDarkMode
-                                      ? Colors.white.withValues(alpha: 0.2)
-                                      : AppColors.primary.withValues(
-                                          alpha: 0.2,
-                                        )),
-                            borderRadius: BorderRadius.circular(3),
-                          ),
+                    ValueListenableBuilder<int>(
+                      valueListenable: _currentFeaturedPage,
+                      builder: (context, currentPage, _) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(top3FeaturedEvents.length, (
+                            index,
+                          ) {
+                            final isActive = index == currentPage;
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOutCubic,
+                              margin: const EdgeInsets.symmetric(horizontal: 3),
+                              width: isActive ? 20 : 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: isActive
+                                    ? AppColors.primary
+                                    : (isDarkMode
+                                          ? Colors.white.withValues(alpha: 0.2)
+                                          : AppColors.primary.withValues(
+                                              alpha: 0.2,
+                                            )),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                            );
+                          }),
                         );
-                      }),
+                      },
                     ),
                   ],
                 ),
@@ -477,13 +624,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         itemCount: filteredEvents.length,
                         itemBuilder: (context, index) {
                           final event = filteredEvents[index];
+                          final isInterestMatch = AiInterestCatalog.eventMatchesInterests(
+                            event.tags,
+                            userInterests,
+                          );
                           return RecommendedEventCard(
                             title: event.title,
                             tag: event.tags.isNotEmpty
                                 ? event.tags.first
                                 : 'Event',
-                            date: DateFormat('MMM d').format(event.startDate),
+                            date: event.isDateTba
+                                ? 'Date TBA'
+                                : DateFormat('MMM d').format(event.startDate),
                             location: event.location,
+                            isInterestMatch: isInterestMatch,
                             imageUrl:
                                 event.imageUrl ??
                                 'https://picsum.photos/400/200?random=$index',
@@ -492,7 +646,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               Color(0xFF3E63F5),
                             ],
                             onTap: () {
-                              unawaited(context.push('/events/${event.id}'));
+                              unawaited(context.push('/events/${Uri.encodeComponent(event.id)}'));
                             },
                           );
                         },
@@ -506,7 +660,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               // ============================================================
               SectionTitle(
                 title: 'Continue Exploring',
-                onActionTap: () => context.go('/explore'),
+                actionText: selectedExploreCategory != null ? 'Clear filter' : 'See all',
+                onActionTap: selectedExploreCategory != null
+                    ? () {
+                        ref.read(selectedExploreCategoryProvider.notifier).state = null;
+                      }
+                    : () => context.go('/explore'),
               ),
 
               SizedBox(
@@ -519,7 +678,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   children: [
                     _buildExploreCard(
                       'AI',
-                      '126 events',
+                      _countEventsForTopic(scheduleEvents, 'AI'),
                       Icons.lightbulb_outline,
                       Colors.white,
                       isDarkMode,
@@ -527,7 +686,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     _buildExploreCard(
                       'Data Science',
-                      '84 events',
+                      _countEventsForTopic(scheduleEvents, 'Data Science'),
                       Icons.analytics_outlined,
                       AppColors.background,
                       isDarkMode,
@@ -535,7 +694,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     _buildExploreCard(
                       'Cybersecurity',
-                      '52 events',
+                      _countEventsForTopic(scheduleEvents, 'Cybersecurity'),
                       Icons.security_outlined,
                       Colors.white,
                       isDarkMode,
@@ -543,7 +702,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     _buildExploreCard(
                       'Robotics',
-                      '91 events',
+                      _countEventsForTopic(scheduleEvents, 'Robotics'),
                       Icons.smart_toy_outlined,
                       isDarkMode
                           ? const Color(0xFF392A33)
@@ -553,7 +712,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     _buildExploreCard(
                       'Cloud',
-                      '112 events',
+                      _countEventsForTopic(scheduleEvents, 'Cloud'),
                       Icons.cloud_outlined,
                       Colors.white,
                       isDarkMode,
@@ -561,7 +720,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     _buildExploreCard(
                       'Web3',
-                      '45 events',
+                      _countEventsForTopic(scheduleEvents, 'Web3'),
                       Icons.currency_bitcoin_outlined,
                       isDarkMode
                           ? const Color(0xFF293342)
@@ -571,7 +730,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     _buildExploreCard(
                       'Design',
-                      '78 events',
+                      _countEventsForTopic(scheduleEvents, 'Design'),
                       Icons.design_services_outlined,
                       Colors.white,
                       isDarkMode,
@@ -579,7 +738,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     ),
                     _buildExploreCard(
                       'Marketing',
-                      '63 events',
+                      _countEventsForTopic(scheduleEvents, 'Marketing'),
                       Icons.campaign_outlined,
                       isDarkMode
                           ? const Color(0xFF293329)
@@ -633,8 +792,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       )
                     : Column(
                         children: displayedUpcomingEvents.map((event) {
-                          final d = DateFormat('d').format(event.startDate);
-                          final m = DateFormat('MMM').format(event.startDate);
+                          final d = event.isDateTba ? '--' : DateFormat('d').format(event.startDate);
+                          final m = event.isDateTba ? 'TBA' : DateFormat('MMM').format(event.startDate);
                           return UpcomingEventTile(
                             day: d,
                             month: m,
@@ -643,7 +802,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 ? 'Online'
                                 : event.location,
                             onTap: () {
-                              unawaited(context.push('/events/${event.id}'));
+                              unawaited(context.push('/events/${Uri.encodeComponent(event.id)}'));
                             },
                           );
                         }).toList(),
@@ -656,6 +815,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         ),
       ),
     );
+  }
+
+  String _countEventsForTopic(List<EventModel> events, String topic) {
+    final t = topic.toLowerCase();
+    final count = events.where((e) {
+      return e.tags.any((tag) => tag.toLowerCase().contains(t)) ||
+          e.title.toLowerCase().contains(t) ||
+          e.description.toLowerCase().contains(t);
+    }).length;
+    return '$count ${count == 1 ? 'event' : 'events'}';
   }
 
   Widget _buildExploreCard(

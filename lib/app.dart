@@ -25,9 +25,14 @@ class App extends ConsumerWidget {
       // Dark theme
       darkTheme: AppTheme.darkTheme,
 
-      // IMPORTANT:
-      // This tells Flutter which theme to display.
+      // IMPORTANT: This tells Flutter which theme to display.
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+
+      // Disable the built-in AnimatedTheme transition (~200ms by default).
+      // Without this, MaterialApp animates theme changes via AnimatedTheme,
+      // causing different widgets to visually update at different speeds and
+      // creating an unsynchronized appearance.
+      themeAnimationDuration: Duration.zero,
 
       routerConfig: router,
 

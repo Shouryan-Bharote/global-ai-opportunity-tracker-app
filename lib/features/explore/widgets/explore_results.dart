@@ -46,9 +46,11 @@ class ExploreResults extends ConsumerWidget {
       // DATA
       // ============================================================
       data: (filteredEvents) {
-        final displayEvents = isExpanded || filteredEvents.length <= 2
+        final displayEvents = isExpanded
             ? filteredEvents
-            : filteredEvents.take(2).toList();
+            : (filteredEvents.length > 6
+                ? filteredEvents.take(6).toList()
+                : filteredEvents);
 
         return Column(
           children: [
@@ -63,7 +65,7 @@ class ExploreResults extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Result',
+                    'Result (${filteredEvents.length})',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -76,34 +78,19 @@ class ExploreResults extends ConsumerWidget {
                       // ==================================================
                       // MAP BUTTON
                       // ==================================================
-                      IconButton(
-                        onPressed: () {
-                          final isDark =
-                              Theme.of(context).brightness == Brightness.dark;
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Map View is coming soon!',
-                                style: TextStyle(
-                                  color: isDark ? Colors.white : Colors.black87,
-                                ),
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: isDark
-                                  ? const Color(0xFF2A2A2A)
-                                  : Colors.white,
-                            ),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.map_outlined,
-                          color: Colors.blue,
-                        ),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        style: IconButton.styleFrom(
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      Tooltip(
+                        message: 'Map View (Coming soon)',
+                        child: IconButton(
+                          onPressed: null,
+                          icon: Icon(
+                            Icons.map_outlined,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                          ),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          style: IconButton.styleFrom(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                         ),
                       ),
 
@@ -112,7 +99,7 @@ class ExploreResults extends ConsumerWidget {
                       // ==================================================
                       // SEE ALL / SHOW LESS
                       // ==================================================
-                      if (filteredEvents.length > 2)
+                      if (filteredEvents.length > 6)
                         TextButton(
                           onPressed: () {
                             ref
@@ -128,7 +115,7 @@ class ExploreResults extends ConsumerWidget {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           child: Text(
-                            isExpanded ? 'Show less' : 'See all',
+                            isExpanded ? 'Show less' : 'See all (${filteredEvents.length})',
                             style: const TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.w600,
@@ -174,19 +161,24 @@ class ExploreResults extends ConsumerWidget {
                                 bottom: 12,
                               ),
                               child: _ResultCardItem(
-                                day: DateFormat('dd').format(event.startDate),
-                                month: DateFormat(
-                                  'MMM',
-                                ).format(event.startDate).toUpperCase(),
+                                day: event.isDateTba
+                                    ? '--'
+                                    : DateFormat('dd').format(event.startDate),
+                                month: event.isDateTba
+                                    ? 'TBA'
+                                    : DateFormat(
+                                        'MMM',
+                                      ).format(event.startDate).toUpperCase(),
                                 title: event.title,
-                                subtitle:
-                                    '${DateFormat('EEE').format(event.startDate)} • '
-                                    '${event.isOnline ? 'Online' : 'Offline'} • '
-                                    '${event.location}',
+                                subtitle: event.isDateTba
+                                    ? 'Date TBA • ${event.isOnline ? 'Online' : 'Offline'} • ${event.location}'
+                                    : '${DateFormat('EEE').format(event.startDate)} • '
+                                        '${event.isOnline ? 'Online' : 'Offline'} • '
+                                        '${event.location}',
                                 onTap: () {
                                   unawaited(
                                     context.push(
-                                      '/events/${event.id}',
+                                      '/events/${Uri.encodeComponent(event.id)}',
                                     ),
                                   );
                                 },

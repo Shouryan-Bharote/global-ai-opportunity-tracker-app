@@ -7,6 +7,7 @@ import 'package:ai_nexus/features/events/providers/events_provider.dart';
 import 'package:ai_nexus/features/schedule/widgets/schedule_event_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ScheduleScreen extends ConsumerStatefulWidget {
   const ScheduleScreen({super.key});
@@ -184,13 +185,23 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
       now.day,
     );
 
-    final startOfTomorrow = startOfToday.add(
-      const Duration(days: 1),
+    final endOfToday = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      23,
+      59,
+      59,
     );
 
     return events.where((event) {
-      return !event.startDate.isBefore(startOfToday) &&
-          event.startDate.isBefore(startOfTomorrow);
+      if (event.isDateTba) return false;
+      // Either starts today OR is actively running/ongoing today (started on/before today & ends on/after start of today)
+      final startsToday = !event.startDate.isBefore(startOfToday) &&
+          !event.startDate.isAfter(endOfToday);
+      final activeToday = !event.startDate.isAfter(endOfToday) &&
+          !event.endDate.isBefore(startOfToday);
+      return startsToday || activeToday;
     }).toList()
       ..sort((a, b) => a.startDate.compareTo(b.startDate));
   }
@@ -205,9 +216,14 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
     final now = DateTime.now();
 
     return events.where((event) {
-      return event.startDate.isAfter(now);
+      if (event.isDateTba) return true;
+      return event.endDate.isAfter(now) || event.startDate.isAfter(now);
     }).toList()
-      ..sort((a, b) => a.startDate.compareTo(b.startDate));
+      ..sort((a, b) {
+        if (a.isDateTba && !b.isDateTba) return 1;
+        if (!a.isDateTba && b.isDateTba) return -1;
+        return a.startDate.compareTo(b.startDate);
+      });
   }
 
   // ============================================================
@@ -331,23 +347,32 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              isSaved
-                  ? Icons.bookmark_border_rounded
-                  : Icons.event_busy_rounded,
-              size: 64,
-              color: isDark ? Colors.white38 : Colors.grey.shade400,
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.grey.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                isSaved
+                    ? Icons.bookmark_border_rounded
+                    : Icons.event_available_rounded,
+                size: 52,
+                color: isDark ? Colors.white54 : Colors.grey.shade500,
+              ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
 
             Text(
-              'No $tab events',
+              'No $tab Events',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                color: theme.colorScheme.onSurface,
               ),
             ),
 
@@ -355,12 +380,32 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
 
             Text(
               isSaved
-                  ? 'Save events to see them here!'
-                  : 'Check out Explore to find more events.',
+                  ? 'Bookmark opportunities from Explore or Home to track your personal schedule.'
+                  : 'Check out Explore to discover open hackathons, AI challenges, and competitions.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 15,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                fontSize: 14,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                height: 1.4,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton.icon(
+              onPressed: () => context.go('/explore'),
+              icon: const Icon(Icons.explore_outlined, size: 18),
+              label: const Text('Explore Opportunities'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
               ),
             ),
           ],

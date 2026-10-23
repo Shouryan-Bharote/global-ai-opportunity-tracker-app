@@ -1,9 +1,14 @@
+import 'dart:async';
+
+import 'package:ai_nexus/core/constants/ai_interest_catalog.dart';
 import 'package:ai_nexus/core/providers/theme_provider.dart';
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/widgets/bounceable.dart';
 import 'package:ai_nexus/features/auth/providers/auth_provider.dart';
+import 'package:ai_nexus/features/auth/providers/onboarding_provider.dart';
 import 'package:ai_nexus/features/events/providers/events_provider.dart';
+import 'package:ai_nexus/features/home/providers/home_provider.dart';
 import 'package:ai_nexus/features/profile/providers/profile_provider.dart';
 import 'package:ai_nexus/features/profile/widgets/profile_header.dart';
 import 'package:ai_nexus/features/schedule/providers/schedule_provider.dart';
@@ -20,22 +25,286 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  // Selected interest for visual state toggle, matching the mockup
-  final Set<String> _selectedInterests = {'Generative AI'};
-
-  final List<String> _interests = [
-    'Generative AI',
-    'NLP',
-    'Hackathons',
-    'Computer vision',
-    'Machine learning',
-    'Agents',
-  ];
-
   @override
   void initState() {
     super.initState();
     // profileProvider is auto-initialized by Riverpod — no manual .build() call needed.
+  }
+
+  Future<void> _showInterestsBottomSheet() async {
+    final isDarkMode = ref.read(isDarkModeProvider);
+    var searchQuery = '';
+    var activeCategory = 'All';
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) {
+          final activeInterests = ref.watch(userInterestsNotifierProvider);
+          final filtered = AiInterestCatalog.allInterests.where((item) {
+            final matchesCat =
+                activeCategory == 'All' || item.category == activeCategory;
+            final matchesSearch = searchQuery.isEmpty ||
+                item.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                item.description
+                    .toLowerCase()
+                    .contains(searchQuery.toLowerCase()) ||
+                item.tags
+                    .any((t) => t.toLowerCase().contains(searchQuery.toLowerCase()));
+            return matchesCat && matchesSearch;
+          }).toList();
+
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.85,
+            decoration: BoxDecoration(
+              color: isDarkMode ? const Color(0xFF16152B) : Colors.white,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(28)),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Customize Interests',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '${activeInterests.length} Topics Tuning Your Feed',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Done',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  child: Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isDarkMode
+                          ? const Color(0xFF231E3D)
+                          : const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.search, size: 18, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            onChanged: (val) {
+                              setModalState(() {
+                                searchQuery = val;
+                              });
+                            },
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: isDarkMode ? Colors.white : Colors.black87,
+                            ),
+                            decoration: const InputDecoration(
+                              hintText:
+                                  'Search topics (e.g. LLMs, Vision, Hackathons)...',
+                              hintStyle:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                              border: InputBorder.none,
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 32,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: AiInterestCatalog.categories.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
+                    itemBuilder: (context, idx) {
+                      final cat = AiInterestCatalog.categories[idx];
+                      final isCatActive = activeCategory == cat;
+                      return GestureDetector(
+                        onTap: () {
+                          setModalState(() {
+                            activeCategory = cat;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: isCatActive
+                                ? AppColors.primary
+                                : (isDarkMode
+                                    ? const Color(0xFF231E3D)
+                                    : Colors.grey.shade200),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Center(
+                            child: Text(
+                              cat,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: isCatActive
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
+                                color: isCatActive
+                                    ? Colors.white
+                                    : (isDarkMode
+                                        ? Colors.white70
+                                        : Colors.black87),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Divider(height: 1),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(20),
+                    itemCount: filtered.length,
+                    itemBuilder: (context, idx) {
+                      final item = filtered[idx];
+                      final isSelected = activeInterests.any(
+                        (i) => i.toLowerCase() == item.name.toLowerCase(),
+                      );
+                      return GestureDetector(
+                        onTap: () {
+                          unawaited(
+                            ref
+                                .read(userInterestsNotifierProvider.notifier)
+                                .toggleInterest(item.name),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? (isDarkMode
+                                    ? const Color(0xFF261F42)
+                                    : const Color(0xFFF0F3FF))
+                                : (isDarkMode
+                                    ? const Color(0xFF1E1B33)
+                                    : Colors.white),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : (isDarkMode
+                                      ? Colors.white10
+                                      : Colors.grey.shade200),
+                              width: isSelected ? 1.6 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color:
+                                      item.accentColor.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(item.icon,
+                                    color: item.accentColor, size: 20),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.name,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black87,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      item.description,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: isDarkMode
+                                            ? Colors.white60
+                                            : Colors.grey.shade600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                isSelected
+                                    ? Icons.check_circle_rounded
+                                    : Icons.add_circle_outline_rounded,
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : Colors.grey.shade400,
+                                size: 22,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Future<void> _showEditProfileSheet(
@@ -434,7 +703,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             .toList();
 
                         final savedCount = savedEvents.length;
-                        final interestsCount = _selectedInterests.length;
+                        final activeInterests = ref.watch(userInterestsProvider);
+                        final interestsCount = activeInterests.length;
 
                         final totalHours = savedEvents.fold<int>(0, (
                           sum,
@@ -472,83 +742,281 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ],
             ),
 
-            const SizedBox(height: 56),
+            const SizedBox(height: 40),
 
-            // Interests Section
+            // Interests Section (Ultra-Premium Card)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
-              child: Text(
-                'Interests',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: isDarkMode
-                      ? Colors.white
-                      : const Color(0xFF1D273F),
-                  letterSpacing: -0.5,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: isDarkMode ? const Color(0xFF16152B) : Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: isDarkMode
+                        ? const Color(0x3D3E63F5)
+                        : Colors.grey.shade200,
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isDarkMode
+                          ? Colors.black.withValues(alpha: 0.25)
+                          : const Color(0xFF6366F1).withValues(alpha: 0.06),
+                      blurRadius: 18,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.primary.withValues(alpha: 0.2),
+                                    const Color(0xFFC084FC).withValues(alpha: 0.2),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.auto_awesome_rounded,
+                                color: AppColors.primary,
+                                size: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'AI Interests',
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : const Color(0xFF1D273F),
+                                  ),
+                                ),
+                                Text(
+                                  'Tunes your recommendations',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: isDarkMode
+                                        ? Colors.white54
+                                        : Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        GestureDetector(
+                          onTap: _showInterestsBottomSheet,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.edit_rounded,
+                                  size: 13,
+                                  color: AppColors.primary,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Wrap of catalog interests with custom icons
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 10,
+                      children: [
+                        ...AiInterestCatalog.allInterests.map((interest) {
+                          final activeInterests = ref.watch(userInterestsNotifierProvider);
+                          final isSelected = activeInterests.any(
+                            (i) => i.toLowerCase() == interest.name.toLowerCase(),
+                          );
+                          return GestureDetector(
+                            onTap: () async {
+                              await ref.read(userInterestsNotifierProvider.notifier).toggleInterest(interest.name);
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: isSelected
+                                    ? const LinearGradient(
+                                        colors: [
+                                          Color(0xFF6366F1),
+                                          Color(0xFF8B5CF6),
+                                        ],
+                                      )
+                                    : null,
+                                color: isSelected
+                                    ? null
+                                    : (isDarkMode
+                                        ? const Color(0xFF1E1B33)
+                                        : const Color(0xFFF1F5F9)),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : (isDarkMode
+                                          ? Colors.white12
+                                          : Colors.grey.shade300),
+                                ),
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                          color: const Color(0xFF6366F1).withValues(alpha: 0.3),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    interest.icon,
+                                    size: 14,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : (isDarkMode
+                                            ? Colors.white70
+                                            : Colors.grey.shade700),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    interest.name,
+                                    style: TextStyle(
+                                      color: isSelected
+                                          ? Colors.white
+                                          : (isDarkMode
+                                              ? Colors.white70
+                                              : const Color(0xFF334155)),
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.w500,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  if (isSelected) ...[
+                                    const SizedBox(width: 4),
+                                    const Icon(
+                                      Icons.check,
+                                      size: 13,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                        // Explore All Chip
+                        GestureDetector(
+                          onTap: _showInterestsBottomSheet,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isDarkMode
+                                  ? const Color(0xFF201D38)
+                                  : const Color(0xFFEEF2FF),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.4),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add_rounded,
+                                  size: 15,
+                                  color: AppColors.primary,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Explore All',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    const Divider(height: 1),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.radar_rounded,
+                          size: 14,
+                          color: Color(0xFF10B981),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'Your Home Feed and Recommended events are dynamically tuned to your selected topics.',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDarkMode
+                                  ? Colors.white54
+                                  : Colors.grey.shade600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 10,
-                children: _interests.map((interest) {
-                  final isSelected = _selectedInterests.contains(interest);
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          _selectedInterests.remove(interest);
-                        } else {
-                          _selectedInterests.add(interest);
-                        }
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color.fromRGBO(62, 99, 245, 1)
-                            : (isDarkMode
-                                ? const Color(0xFF16152B)
-                                : Colors.white),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.transparent
-                              : (isDarkMode
-                                  ? const Color(0x3D3E63F5)
-                                  : Colors.grey.shade300),
-                          width: 1.2,
-                        ),
-                      ),
-                      child: Text(
-                        interest,
-                        style: TextStyle(
-                          color: isSelected
-                              ? Colors.white
-                              : (isDarkMode
-                                  ? Colors.white70
-                                  : const Color(0xFF4A5568)),
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.w500,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
 
-            const SizedBox(height: 36),
+            const SizedBox(height: 32),
 
             // Menu Items List matching the mockup layout
             Padding(
@@ -582,19 +1050,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     },
                   ),
                   _buildMenuItem(
-                    icon: Icons.pie_chart_outline,
+                    icon: Icons.tune_rounded,
                     title: 'Interests settings',
                     isDarkMode: isDarkMode,
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Customize interests in the next release!',
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    },
+                    onTap: _showInterestsBottomSheet,
                   ),
                   _buildMenuItem(
                     icon: Icons.notifications_none_outlined,

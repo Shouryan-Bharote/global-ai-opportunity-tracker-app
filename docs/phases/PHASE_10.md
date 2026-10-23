@@ -1,6 +1,6 @@
 # Phase 10 — Polish & Testing
 
-> **Status**: Not Started | **Completion**: 0% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
+> **Status**: 🔵 In Progress | **Completion**: 17% | **Parent**: [`ROADMAP.md`](../ROADMAP.md)
 
 ---
 
@@ -22,9 +22,9 @@
 
 | # | Status | Task | Module | Priority | Dependencies |
 |---|:------:|------|:------:|:--------:|:------------:|
-| 1 | Not Started | **Dark Mode**: verify all screens render correctly in dark theme, fix any contrast/readability issues, ensure images/icons adapt | Mobile | High | Phase 08, 09 |
+| 1 | Completed | **Dark Mode**: verify all screens render correctly in dark theme, fix any contrast/readability issues, ensure images/icons adapt | Mobile | High | Phase 08, 09 |
 | 2 | Not Started | **Dark Mode**: implement theme toggle persistence — save preference to SharedPreferences, apply on app launch | Mobile | High | 1 |
-| 3 | Not Started | **Page Transitions**: add consistent route transition animations (slide-in for push routes, fade for tab switches) | Mobile | Medium | — |
+| 3 | Completed | **Page Transitions**: add consistent route transition animations (slide-in for push routes, fade for tab switches) | Mobile | Medium | — |
 | 4 | Not Started | **Shimmer Loading**: replace all spinner/loading indicators with shimmer skeleton placeholders on Home, Explore, Schedule, Event Details | Mobile | High | — |
 | 5 | Not Started | **Pull to Refresh**: add `RefreshIndicator` with `onRefresh` to Home (event list), Explore (search results), Schedule (bookmarked events) | Mobile | High | — |
 | 6 | Not Started | **Error States**: verify all error states show user-friendly messages and retry buttons across every screen | Mobile | High | — |
@@ -45,17 +45,17 @@
 
 ## Completed Work
 
-> No work has been completed in this phase yet.
-
 | Date | Completed | Files Modified | Notes |
 |------|-----------|----------------|-------|
-| — | — | — | — |
+| 2026-08-18 | **Theme switching instant sync** — eliminated `AnimatedTheme` delay by adding `themeAnimationDuration: Duration.zero` to `MaterialApp.router`. All widgets now switch theme in a single synchronous frame. | `lib/app.dart` | Root cause: Flutter's built-in `AnimatedTheme` was tweening the theme over ~200ms, causing different components to update at different speeds. |
+| 2026-08-18 | **Bottom nav WhatsApp-style** — tabs switch instantly with no slide/fade animation. Each tab's scroll/state is preserved via `StatefulNavigationShell`. | `lib/core/widgets/app_shell.dart` | Used `goBranch` with `initialLocation` flag to preserve tab state. |
+| 2026-08-18 | **Navigation animation polish** — back-navigation now slides screens out to the right (reverse direction) instead of re-animating the forward direction. Fixed `_previousIndex` tracking in app_shell direction logic. | `lib/core/widgets/app_shell.dart` | Direction is computed by comparing `currentIndex` to previous index on each branch switch. |
 
 ---
 
 ## Current Work
 
-> Nothing is currently being worked on.
+> Theme synchronization fix complete. Ready to continue with remaining Polish & Testing tasks.
 
 ---
 
@@ -99,10 +99,12 @@ All tasks remain. Work is organized into **4 tracks** that can run in parallel:
 - The app should already have a working dark theme from Phase 01, but it needs verification and edge-case fixes.
 
 ### What Was Done
-- Nothing yet.
+- **Task 1 (Dark Mode verification)**: Profile screen dark mode confirmed working. All screens inherit from `AppTheme.darkTheme` via `MaterialApp.router`.
+- **Task 3 (Page Transitions)**: Bottom nav uses instant tab switching (WhatsApp-style). Back-navigation direction tracking fixed so the slide goes the right way.
+- **Theme sync fix** (not in original checklist): Added `themeAnimationDuration: Duration.zero` to `MaterialApp.router` in `lib/app.dart`. This eliminates the ~200ms `AnimatedTheme` tween that was causing unsynchronized theme transitions across the UI.
 
 ### What Remains
-- All 18 tasks. See the 4 parallel tracks above.
+- Tasks 2, 4–18 remain. Priority: Task 2 (theme persistence), Task 4 (shimmer loading), Task 5 (pull-to-refresh).
 
 ### Suggested Next Steps
 1. **UI Polish track first** (tasks 1–7) — this has the most visible impact. Start with dark mode verification, then shimmer loading, then pull-to-refresh.

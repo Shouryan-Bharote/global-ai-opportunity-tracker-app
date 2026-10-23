@@ -50,19 +50,18 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBiohVLkRuX_l0s1FAI7PMGnVxiHjBOhwg',
-    appId: '1:863632203296:android:b37dda4eb431227089e645',
-    messagingSenderId: '863632203296',
-    projectId: 'ai-nexus-c344b',
-    storageBucket: 'ai-nexus-c344b.firebasestorage.app',
+    apiKey: 'AIzaSyD58IwLonQwVWpHtOdibD5udRtwrObqHqo',
+    appId: '1:125958590832:android:541516c60555c7c99fbfb5',
+    messagingSenderId: '125958590832',
+    projectId: 'ai-events-tracker',
+    storageBucket: 'ai-events-tracker.firebasestorage.app',
   );
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDEx84pyg4Lh6BcJbye0xpiP1XO0ZYE9Qk',
-    appId: '1:863632203296:web:af42bee40da1549589e645',
-    messagingSenderId: '863632203296',
-    projectId: 'ai-nexus-c344b',
-    authDomain: 'ai-nexus-c344b.firebaseapp.com',
-    storageBucket: 'ai-nexus-c344b.firebasestorage.app',
-    measurementId: 'G-BY8M0GF9KF',
+    apiKey: 'AIzaSyD58IwLonQwVWpHtOdibD5udRtwrObqHqo',
+    appId: '1:125958590832:android:541516c60555c7c99fbfb5',
+    messagingSenderId: '125958590832',
+    projectId: 'ai-events-tracker',
+    authDomain: 'ai-events-tracker.firebaseapp.com',
+    storageBucket: 'ai-events-tracker.firebasestorage.app',
   );
 }

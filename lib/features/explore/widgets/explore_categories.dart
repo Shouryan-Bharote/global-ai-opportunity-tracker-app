@@ -1,20 +1,21 @@
 import 'package:ai_nexus/core/theme/app_colors.dart';
 import 'package:ai_nexus/core/theme/app_spacing.dart';
+import 'package:ai_nexus/features/events/providers/events_provider.dart';
 import 'package:ai_nexus/features/explore/providers/explore_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class _CategoryData {
-  const _CategoryData({
+class _CategoryConfig {
+  const _CategoryConfig({
     required this.title,
-    required this.events,
+    required this.keywords,
     required this.icon,
     required this.iconBgColor,
     required this.iconColor,
   });
 
   final String title;
-  final String events;
+  final List<String> keywords;
   final IconData icon;
   final Color iconBgColor;
   final Color iconColor;
@@ -23,47 +24,48 @@ class _CategoryData {
 class ExploreCategories extends ConsumerWidget {
   const ExploreCategories({super.key});
 
-  static const List<_CategoryData> _categories = [
-    _CategoryData(
+  static const List<_CategoryConfig> _categories = [
+    _CategoryConfig(
       title: 'Conferences',
-      events: '315 Events',
+      keywords: ['conference', 'summit', 'symposium'],
       icon: Icons.groups_outlined,
-      iconBgColor: Color(0xFFFCE4EC), // Colors.pink.shade100
+      iconBgColor: Color(0xFFFCE4EC),
       iconColor: Colors.pink,
     ),
-    _CategoryData(
-      title: 'Workshop',
-      events: '215 events',
-      icon: Icons.auto_awesome_outlined,
-      iconBgColor: Color(0xE0E0F7FA), // Colors.cyan.shade100
-      iconColor: Colors.cyan,
-    ),
-    _CategoryData(
+    _CategoryConfig(
       title: 'Hackathons',
-      events: '154 events',
+      keywords: ['hackathon', 'hack'],
       icon: Icons.hourglass_empty_outlined,
-      iconBgColor: Color(0xFFFFE0B2), // Colors.orange.shade100
+      iconBgColor: Color(0xFFFFE0B2),
       iconColor: Colors.orange,
     ),
-    _CategoryData(
-      title: 'Webinars',
-      events: '123 events',
-      icon: Icons.record_voice_over_outlined,
-      iconBgColor: Color(0xFFE1BEE7), // Colors.purple.shade100
-      iconColor: Colors.purple,
+    _CategoryConfig(
+      title: 'Competitions',
+      keywords: ['competition', 'challenge', 'contest', 'quiz'],
+      icon: Icons.emoji_events_outlined,
+      iconBgColor: Color(0xFFEDE7F6),
+      iconColor: Colors.deepPurple,
     ),
-    _CategoryData(
-      title: 'Networking',
-      events: '21 events',
-      icon: Icons.handshake_outlined,
-      iconBgColor: Color(0xFFC8E6C9), // Colors.green.shade100
-      iconColor: Colors.green,
+    _CategoryConfig(
+      title: 'Workshops',
+      keywords: ['workshop', 'bootcamp', 'training'],
+      icon: Icons.auto_awesome_outlined,
+      iconBgColor: Color(0xE0E0F7FA),
+      iconColor: Colors.cyan,
+    ),
+    _CategoryConfig(
+      title: 'Webinars',
+      keywords: ['webinar', 'online', 'talk'],
+      icon: Icons.record_voice_over_outlined,
+      iconBgColor: Color(0xFFE1BEE7),
+      iconColor: Colors.purple,
     ),
   ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategory = ref.watch(exploreCategoryProvider);
+    final allEvents = ref.watch(eventsProvider).valueOrNull ?? [];
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -98,9 +100,19 @@ class ExploreCategories extends ConsumerWidget {
               final cat = _categories[index];
               final isSelected = selectedCategory == cat.title;
 
+              final count = allEvents.where((e) {
+                return cat.keywords.any((kw) =>
+                  e.tags.any((t) => t.toLowerCase().contains(kw)) ||
+                  e.title.toLowerCase().contains(kw) ||
+                  e.description.toLowerCase().contains(kw),
+                );
+              }).length;
+
+              final eventsText = '$count ${count == 1 ? 'Event' : 'Events'}';
+
               return _CategoryCardItem(
                 title: cat.title,
-                events: cat.events,
+                events: eventsText,
                 icon: cat.icon,
                 iconBgColor: cat.iconBgColor,
                 iconColor: cat.iconColor,

@@ -23,9 +23,9 @@ class EventModel with _$EventModel {
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
       id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      host: json['host'] as String,
+      title: cleanHtml(json['title'] as String?),
+      description: cleanHtml(json['description'] as String?),
+      host: cleanHtml(json['host'] as String?),
       startDate: DateTime.parse(json['startDate'] as String),
       endDate: DateTime.parse(json['endDate'] as String),
       location: json['location'] as String,
@@ -36,6 +36,40 @@ class EventModel with _$EventModel {
       isBookmarked: json['isBookmarked'] as bool? ?? false,
     );
   }
+
+  static String cleanHtml(String? raw) {
+    if (raw == null || raw.trim().isEmpty) return '';
+    var text = raw;
+
+    // Convert block-level tags to line breaks
+    text = text.replaceAll(RegExp('</?(?:div|p|h[1-6]|li|tr|section|article)[^>]*>', caseSensitive: false), '\n');
+    text = text.replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n');
+    text = text.replaceAll(RegExp('</?(?:td|th|span|strong|b|em|i|a)[^>]*>', caseSensitive: false), ' ');
+
+    // Strip any remaining HTML tags
+    text = text.replaceAll(RegExp('<[^>]*>'), '');
+
+    // Unescape common HTML entities
+    text = text
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'")
+        .replaceAll('&apos;', "'")
+        .replaceAll('&#8217;', "'")
+        .replaceAll('&#8220;', '"')
+        .replaceAll('&#8221;', '"')
+        .replaceAll('&#8211;', '-');
+
+    // Clean up excessive whitespace
+    text = text.replaceAll(RegExp(r'[ \t]+'), ' ');
+    text = text.replaceAll(RegExp(r'\n\s*\n\s*\n+'), '\n\n');
+    return text.trim();
+  }
+
+  bool get isDateTba => startDate.millisecondsSinceEpoch <= 0;
 
   Map<String, dynamic> toJson() {
     return {

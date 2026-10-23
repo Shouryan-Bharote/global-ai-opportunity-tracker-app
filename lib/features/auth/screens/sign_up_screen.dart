@@ -4,6 +4,7 @@ import 'package:ai_nexus/core/theme/app_spacing.dart';
 import 'package:ai_nexus/core/theme/app_typography.dart';
 import 'package:ai_nexus/features/auth/providers/auth_provider.dart';
 import 'package:ai_nexus/features/auth/widgets/custom_text_field.dart';
+import 'package:ai_nexus/features/auth/widgets/google_sign_in_button.dart';
 import 'package:ai_nexus/features/auth/widgets/password_field.dart';
 import 'package:ai_nexus/features/auth/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,39 @@ class SignUpScreen extends HookConsumerWidget {
                         ),
                       );
                     }
+                  },
+                ),
+                const SizedBox(height: AppSpacing.s20),
+                
+                // OR DIVIDER
+                Row(
+                  children: [
+                    const Expanded(child: Divider(color: AppColors.border)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.s16,
+                      ),
+                      child: Text(
+                        'OR',
+                        style: AppTypography.textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const Expanded(child: Divider(color: AppColors.border)),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.s20),
+
+                // GOOGLE SIGN UP
+                GoogleSignInButton(
+                  text: 'Sign up with Google',
+                  isLoading: authState.isLoading,
+                  onPressed: () {
+                    unawaited(
+                      ref.read(authProvider.notifier).signInWithGoogle(),
+                    );
                   },
                 ),
                 const SizedBox(height: AppSpacing.s24),

@@ -12,6 +12,7 @@ class RecommendedEventCard extends StatefulWidget {
     required this.gradientColors,
     required this.onTap,
     this.imageUrl,
+    this.isInterestMatch = false,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class RecommendedEventCard extends StatefulWidget {
   final List<Color> gradientColors;
   final VoidCallback onTap;
   final String? imageUrl;
+  final bool isInterestMatch;
 
   @override
   State<RecommendedEventCard> createState() => _RecommendedEventCardState();
@@ -132,25 +134,59 @@ class _RecommendedEventCardState extends State<RecommendedEventCard>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: isDarkMode
-                              ? const Color(0xFF231E3D)
-                              : Colors.white,
+                          gradient: widget.isInterestMatch
+                              ? const LinearGradient(
+                                  colors: [Color(0xFF8B5CF6), Color(0xFF6366F1)],
+                                )
+                              : null,
+                          color: widget.isInterestMatch
+                              ? null
+                              : (isDarkMode
+                                  ? const Color(0xFF231E3D)
+                                  : Colors.white),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isDarkMode
-                                ? AppColors.primary.withValues(alpha: 0.3)
-                                : Colors.transparent,
+                            color: widget.isInterestMatch
+                                ? Colors.transparent
+                                : (isDarkMode
+                                    ? AppColors.primary.withValues(alpha: 0.3)
+                                    : Colors.transparent),
                           ),
+                          boxShadow: widget.isInterestMatch
+                              ? [
+                                  BoxShadow(
+                                    color: const Color(0xFF6366F1).withValues(alpha: 0.35),
+                                    blurRadius: 6,
+                                  ),
+                                ]
+                              : null,
                         ),
-                        child: Text(
-                          widget.tag,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: isDarkMode
-                                ? const Color(0xFFC084FC)
-                                : Colors.black,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.isInterestMatch) ...[
+                              const Icon(
+                                Icons.auto_awesome_rounded,
+                                size: 11,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                            Text(
+                              widget.isInterestMatch
+                                  ? 'For You • ${widget.tag}'
+                                  : widget.tag,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: widget.isInterestMatch
+                                    ? Colors.white
+                                    : (isDarkMode
+                                        ? const Color(0xFFC084FC)
+                                        : Colors.black),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

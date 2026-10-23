@@ -1,6 +1,10 @@
+import 'package:ai_nexus/core/constants/ai_interest_catalog.dart';
+import 'package:ai_nexus/core/storage/secure_storage.dart';
 import 'package:ai_nexus/features/auth/models/user_model.dart';
+import 'package:ai_nexus/features/auth/providers/onboarding_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
   return FirebaseAuth.instance;
@@ -37,6 +41,23 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final userEmail = currentUser.email ?? '';
+      final userName =
+          currentUser.displayName != null &&
+                  currentUser.displayName!.trim().isNotEmpty
+              ? currentUser.displayName!.trim()
+              : _nameFromEmail(userEmail);
+      return AuthState(
+        user: UserModel(
+          id: currentUser.uid,
+          email: userEmail,
+          name: userName,
+          avatarUrl: currentUser.photoURL,
+        ),
+      );
+    }
     return const AuthState();
   }
 
@@ -97,6 +118,28 @@ class AuthNotifier extends Notifier<AuthState> {
         avatarUrl: currentUser.photoURL,
       );
 
+      final storage = SecureStorage();
+      final isOnboarded = await storage.isOnboardingComplete(userId: currentUser.uid);
+      ref.read(onboardingProvider.notifier).onboarded = isOnboarded;
+      if (isOnboarded) {
+        final savedInterests = await storage.getUserInterests(userId: currentUser.uid);
+        if (savedInterests != null && savedInterests.isNotEmpty) {
+          await ref.read(userInterestsNotifierProvider.notifier).setInterests(savedInterests);
+        }
+        final savedRole = await storage.getUserRole(userId: currentUser.uid);
+        if (savedRole != null && savedRole.isNotEmpty) {
+          ref.read(userRoleProvider.notifier).state = savedRole;
+        }
+        final savedMode = await storage.getUserEventMode(userId: currentUser.uid);
+        if (savedMode != null && savedMode.isNotEmpty) {
+          ref.read(userEventModeProvider.notifier).state = savedMode;
+        }
+      } else {
+        await ref.read(userInterestsNotifierProvider.notifier).setInterests(
+          AiInterestCatalog.defaultSelectedNames,
+        );
+      }
+
       state = AuthState(
         user: user,
       );
@@ -109,6 +152,101 @@ class AuthNotifier extends Notifier<AuthState> {
       state = state.copyWith(
         isLoading: false,
         error: 'Something went wrong. Please try again.',
+      );
+    }
+  }
+
+  // ============================================================
+  // GOOGLE SIGN IN
+  // ============================================================
+
+  Future<void> signInWithGoogle() async {
+    state = state.copyWith(
+      isLoading: true,
+      clearError: true,
+    );
+
+    try {
+      final googleSignIn = GoogleSignIn();
+      final googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User cancelled the sign-in flow
+        state = state.copyWith(isLoading: false);
+        return;
+      }
+
+      final googleAuth = await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser == null) {
+        state = state.copyWith(
+          isLoading: false,
+          error: 'Google sign-in failed. Please try again.',
+        );
+        return;
+      }
+
+      // Check whether this specific Google user has completed onboarding.
+      // If not, onboardingProvider is set to false so the router sends them
+      // to the Nickname + Interests questionnaire screens.
+      final storage = SecureStorage();
+      final isOnboarded = await storage.isOnboardingComplete(userId: firebaseUser.uid);
+      ref.read(onboardingProvider.notifier).onboarded = isOnboarded;
+
+      if (isOnboarded) {
+        final savedInterests = await storage.getUserInterests(userId: firebaseUser.uid);
+        if (savedInterests != null && savedInterests.isNotEmpty) {
+          await ref.read(userInterestsNotifierProvider.notifier).setInterests(savedInterests);
+        }
+        final savedRole = await storage.getUserRole(userId: firebaseUser.uid);
+        if (savedRole != null && savedRole.isNotEmpty) {
+          ref.read(userRoleProvider.notifier).state = savedRole;
+        }
+        final savedMode = await storage.getUserEventMode(userId: firebaseUser.uid);
+        if (savedMode != null && savedMode.isNotEmpty) {
+          ref.read(userEventModeProvider.notifier).state = savedMode;
+        }
+      } else {
+        await ref.read(userInterestsNotifierProvider.notifier).setInterests(
+          AiInterestCatalog.defaultSelectedNames,
+        );
+      }
+
+      final userEmail = firebaseUser.email ?? googleUser.email;
+      final userName =
+          firebaseUser.displayName?.trim().isNotEmpty == true
+              ? firebaseUser.displayName!.trim()
+              : (googleUser.displayName?.trim().isNotEmpty == true
+                  ? googleUser.displayName!.trim()
+                  : _nameFromEmail(userEmail));
+
+      final user = UserModel(
+        id: firebaseUser.uid,
+        email: userEmail,
+        name: userName,
+        avatarUrl: firebaseUser.photoURL ?? googleUser.photoUrl,
+      );
+
+      state = AuthState(user: user);
+    } on FirebaseAuthException catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.message ?? 'Google sign-in failed.',
+      );
+    } on Object catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Google sign-in error: $e',
       );
     }
   }
@@ -199,6 +337,12 @@ class AuthNotifier extends Notifier<AuthState> {
         avatarUrl: currentUser.photoURL,
       );
 
+      // New registrations must complete the onboarding questionnaire
+      ref.read(onboardingProvider.notifier).onboarded = false;
+      await ref.read(userInterestsNotifierProvider.notifier).setInterests(
+        AiInterestCatalog.defaultSelectedNames,
+      );
+
       state = AuthState(
         user: user,
       );
@@ -258,9 +402,13 @@ class AuthNotifier extends Notifier<AuthState> {
     );
 
     try {
+      try {
+        await GoogleSignIn().signOut();
+      } on Object catch (_) {}
       await FirebaseAuth.instance.signOut();
 
-      // Clear local authentication state.
+      // Clear local authentication state and reset in-memory onboarding state.
+      ref.read(onboardingProvider.notifier).onboarded = false;
       state = const AuthState();
     } on Object catch (_) {
       state = state.copyWith(

@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "863632203296",
-    "project_id": "ai-nexus-c344b",
-    "storage_bucket": "ai-nexus-c344b.firebasestorage.app"
+    "project_number": "125958590832",
+    "project_id": "ai-events-tracker",
+    "storage_bucket": "ai-events-tracker.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:863632203296:android:b37dda4eb431227089e645",
+        "mobilesdk_app_id": "1:125958590832:android:541516c60555c7c99fbfb5",
         "android_client_info": {
-          "package_name": "com.example.ai_nexus"
+          "package_name": "com.aieventstracker.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "125958590832-r6jrt94trjb66v1mhvfprvqcs49ckhv2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aieventstracker.app",
+            "certificate_hash": "e8bcbac2a90582b43a930c53c16a1f2400fa8ef7"
+          }
+        },
+        {
+          "client_id": "125958590832-k31pklnsdh5vbaa28865i40347nhkcfe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBiohVLkRuX_l0s1FAI7PMGnVxiHjBOhwg"
+          "current_key": "AIzaSyD58IwLonQwVWpHtOdibD5udRtwrObqHqo"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125958590832-k31pklnsdh5vbaa28865i40347nhkcfe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

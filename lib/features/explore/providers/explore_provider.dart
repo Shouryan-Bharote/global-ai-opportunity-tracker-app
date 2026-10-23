@@ -127,10 +127,14 @@ final exploreFilteredEventsProvider = Provider<AsyncValue<List<EventModel>>>((
 
       if (activeCategory != null && activeCategory.trim().isNotEmpty) {
         final selectedCategory = activeCategory.trim().toLowerCase();
+        final singular = selectedCategory.endsWith('s')
+            ? selectedCategory.substring(0, selectedCategory.length - 1)
+            : selectedCategory;
 
-        final hasCategory = event.tags.any(
-          (tag) => tag.trim().toLowerCase() == selectedCategory,
-        );
+        final hasCategory = event.tags.any((tag) {
+          final t = tag.trim().toLowerCase();
+          return t == selectedCategory || t == singular || t.contains(singular);
+        }) || event.title.toLowerCase().contains(singular);
 
         if (!hasCategory) {
           return false;
@@ -144,10 +148,18 @@ final exploreFilteredEventsProvider = Provider<AsyncValue<List<EventModel>>>((
       if (activeCity != null && activeCity.trim().isNotEmpty) {
         final selectedCity = activeCity.trim().toLowerCase();
 
-        final eventLocation = event.location.trim().toLowerCase();
-
-        if (!eventLocation.contains(selectedCity)) {
-          return false;
+        if (selectedCity == 'online' || selectedCity == 'remote') {
+          if (!event.isOnline) return false;
+        } else if (selectedCity == 'global') {
+          final loc = event.location.trim().toLowerCase();
+          if (!event.isOnline && !loc.contains('global') && !loc.contains('worldwide')) {
+            return false;
+          }
+        } else {
+          final eventLocation = event.location.trim().toLowerCase();
+          if (!eventLocation.contains(selectedCity)) {
+            return false;
+          }
         }
       }
 

@@ -8,13 +8,10 @@ class EventsNotifier extends AsyncNotifier<List<EventModel>> {
   Future<List<EventModel>> build() async {
     final repository = ref.watch(eventRepositoryProvider);
     
-    // Watch location state. This will automatically rebuild the events 
-    // when location is fetched.
-    final locationAsync = ref.watch(locationProvider);
-    
-    // If location is loading, we can still fetch events without location,
-    // or wait. Progressive loading means we can fetch with location if available.
-    final position = locationAsync.valueOrNull;
+    // Read initial location if available, but do not watch.
+    // Downstream providers (home_provider, etc.) watch locationProvider
+    // to rank/filter events in memory without wasteful network re-fetches.
+    final position = ref.read(locationProvider).valueOrNull;
 
     return repository.getEvents(
       latitude: position?.latitude,

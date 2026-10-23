@@ -1,4 +1,6 @@
+import 'package:ai_nexus/core/constants/ai_interest_catalog.dart';
 import 'package:ai_nexus/core/providers/location_provider.dart';
+import 'package:ai_nexus/features/auth/providers/onboarding_provider.dart';
 import 'package:ai_nexus/features/events/models/event_model.dart';
 import 'package:ai_nexus/features/events/providers/events_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,38 +25,70 @@ final filteredEventsProvider = Provider<List<EventModel>>((ref) {
   final allEvents = eventsAsyncValue.valueOrNull ?? [];
   if (allEvents.isEmpty) return [];
 
-  // When location is ON, prefer nearby (in-person) events.
-  // When location is OFF, use all events.
-  final pool = hasLocation
-      ? allEvents.where((e) => !e.isOnline || category == 'Online').toList()
-      : allEvents;
+  // Keep all events in pool; ranking below prioritizes user interests and location
+  final pool = allEvents;
 
   // Filter by selected category chip
-  final categoryFiltered = pool.where((event) {
+  var categoryFiltered = pool.where((event) {
     switch (category) {
       case "Today's Events":
+        if (event.isDateTba) return false;
         final now = DateTime.now();
-        return event.startDate.year == now.year &&
+        final isToday = event.startDate.year == now.year &&
             event.startDate.month == now.month &&
             event.startDate.day == now.day;
+        final isOngoing = now.isAfter(event.startDate) && now.isBefore(event.endDate);
+        return isToday || isOngoing;
       case 'Meetings':
-        return event.tags.contains('Meeting');
+        return event.tags.any((t) {
+          final l = t.toLowerCase();
+          return l.contains('meet') ||
+              l.contains('conference') ||
+              l.contains('summit') ||
+              l.contains('webinar');
+        });
       case 'Hackathons':
-        return event.tags.contains('Hackathon');
+        return event.tags.any((t) {
+          final l = t.toLowerCase();
+          return l.contains('hack') ||
+              l.contains('challenge');
+        });
+      case 'Competitions':
+        return event.tags.any((t) {
+          final l = t.toLowerCase();
+          return l.contains('competition') ||
+              l.contains('quiz') ||
+              l.contains('contest') ||
+              l.contains('challenge');
+        });
       case 'Online':
         return event.isOnline;
       case 'Near me':
-        return !event.isOnline || event.tags.contains('Near me');
+        return !event.isOnline;
       default:
         return true;
     }
   }).toList();
+
+  // If no events match "Today's Events" specifically, fall back to showing all upcoming events
+  if (categoryFiltered.isEmpty && category == "Today's Events") {
+    categoryFiltered = List<EventModel>.from(pool);
+  }
 
   // Rank by matching user interests
   return categoryFiltered
     ..sort((a, b) {
       var scoreA = 0;
       var scoreB = 0;
+
+      // Smart catalog matching boost
+      if (AiInterestCatalog.eventMatchesInterests(a.tags, userInterests)) {
+        scoreA += 4;
+      }
+      if (AiInterestCatalog.eventMatchesInterests(b.tags, userInterests)) {
+        scoreB += 4;
+      }
+
       for (final tag in a.tags) {
         if (userInterests.any((i) =>
             tag.toLowerCase().contains(i.toLowerCase()) ||
@@ -69,6 +103,10 @@ final filteredEventsProvider = Provider<List<EventModel>>((ref) {
           scoreB += 2;
         }
       }
+      if (hasLocation) {
+        if (!a.isOnline) scoreA += 1;
+        if (!b.isOnline) scoreB += 1;
+      }
       return scoreB.compareTo(scoreA);
     });
 });
@@ -76,10 +114,10 @@ final filteredEventsProvider = Provider<List<EventModel>>((ref) {
 // StateProvider for the Continue Exploring section
 final selectedExploreCategoryProvider = StateProvider<String?>((ref) => null);
 
-// User interests provider (defaults to key AI & Tech topics)
-final userInterestsProvider = StateProvider<List<String>>(
-  (ref) => ['AI', 'Data Science', 'Web3', 'Cybersecurity', 'Hackathon', 'Meeting'],
-);
+// User interests provider (delegates to persistent userInterestsNotifierProvider)
+final userInterestsProvider = Provider<List<String>>((ref) {
+  return ref.watch(userInterestsNotifierProvider);
+});
 
 // Recommended Events Provider: Ranks by user interests and boosts nearby events
 final recommendedEventsProvider = Provider<List<EventModel>>((ref) {
@@ -93,6 +131,15 @@ final recommendedEventsProvider = Provider<List<EventModel>>((ref) {
     ..sort((a, b) {
       var scoreA = 0;
       var scoreB = 0;
+
+      // Smart catalog matching boost (+6 points)
+      if (AiInterestCatalog.eventMatchesInterests(a.tags, userInterests)) {
+        scoreA += 6;
+      }
+      if (AiInterestCatalog.eventMatchesInterests(b.tags, userInterests)) {
+        scoreB += 6;
+      }
+
       for (final tag in a.tags) {
         if (userInterests.any((i) =>
             tag.toLowerCase().contains(i.toLowerCase()) ||
@@ -121,5 +168,5 @@ final upcomingFilteredEventsProvider = Provider<List<EventModel>>((ref) {
   final category = ref.watch(selectedExploreCategoryProvider);
   final allEvents = ref.watch(eventsProvider).valueOrNull ?? [];
   if (category == null) return allEvents;
-  return allEvents.where((event) => event.tags.contains(category)).toList();
+  return allEvents.where((event) => event.tags.any((t) => t.toLowerCase().contains(category.toLowerCase()))).toList();
 });

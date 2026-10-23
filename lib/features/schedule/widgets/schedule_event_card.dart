@@ -65,7 +65,7 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
 
     unawaited(
       context.push(
-        '/events/${widget.event.id}',
+        '/events/${Uri.encodeComponent(widget.event.id)}',
       ),
     );
   }
@@ -97,34 +97,32 @@ class _ScheduleEventCardState extends ConsumerState<ScheduleEventCard>
     // DATE
     // ==========================================================
 
-    final day = widget.event.startDate.day;
+    final String dateString;
+    if (widget.event.isDateTba) {
+      dateString = 'SCHEDULE / DATE TBA';
+    } else {
+      final now = DateTime.now();
+      final isToday = widget.event.startDate.year == now.year &&
+          widget.event.startDate.month == now.month &&
+          widget.event.startDate.day == now.day;
+      final tomorrow = now.add(const Duration(days: 1));
+      final isTomorrow = widget.event.startDate.year == tomorrow.year &&
+          widget.event.startDate.month == tomorrow.month &&
+          widget.event.startDate.day == tomorrow.day;
 
-    final month =
-        DateFormat(
-              'MMM',
-            )
-            .format(
-              widget.event.startDate,
-            )
-            .toUpperCase();
+      final time = DateFormat('h:mm a').format(widget.event.startDate);
 
-    final dayOfWeek =
-        DateFormat(
-              'EEE',
-            )
-            .format(
-              widget.event.startDate,
-            )
-            .toUpperCase();
-
-    final time =
-        DateFormat(
-          'h:mm a',
-        ).format(
-          widget.event.startDate,
-        );
-
-    final dateString = '${_getOrdinal(day)} $month - $dayOfWeek - $time';
+      if (isToday) {
+        dateString = 'TODAY - $time';
+      } else if (isTomorrow) {
+        dateString = 'TOMORROW - $time';
+      } else {
+        final day = widget.event.startDate.day;
+        final month = DateFormat('MMM').format(widget.event.startDate).toUpperCase();
+        final dayOfWeek = DateFormat('EEE').format(widget.event.startDate).toUpperCase();
+        dateString = '${_getOrdinal(day)} $month - $dayOfWeek - $time';
+      }
+    }
 
     // ==========================================================
     // COLORS

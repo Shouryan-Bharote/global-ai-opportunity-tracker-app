@@ -25,8 +25,8 @@
 | D13 | Profile metric shift & My Tickets removal | Removed the confusing "My Tickets" barcode/passes layout and changed the "Attended" metric to "Interests" count. The app aggregates third-party listings where tickets are not issued internally. | 2026-07-16 | 07 | Phase 07 |
 | D14 | Pinned AppHeader inside AppShell viewport | Migrated AppHeader into AppShell so that it is fixed globally at the top of the viewport. Sub-screen layouts can scroll underneath without duplicating headers. | 2026-07-16 | 07 | Phase 07 |
 | D15 | Native image picker and system share sheet integration | Integrated `image_picker` for custom avatar selection and `share_plus` to invoke Android/iOS system-level share dialogs with dynamic event info. | 2026-07-16 | 07 | Phase 07 |
-| D16 | Disable Kotlin incremental compilation & upgrade compileSdk | Set `kotlin.incremental=false` to fix Windows relative path cross-drive conflicts, and set `compileSdk=36` to satisfy package dependencies. | 2026-07-16 | 07 | All phases |
-| D17 | Dynamic index-based transition direction & 150ms duration | `SharedAxisTransition` in `AppShell` evaluates `currentIndex < previousIndex` for slide direction (forward/reverse), tuned to 150ms for snappy responsiveness. | 2026-08-18 | 04 | AppShell navigation |
+| D17 | WhatsApp-style instant IndexedStack tab navigation | Switched from `ShellRoute` with transition animations to `StatefulShellRoute.indexedStack` to achieve 0ms instant tab switching and 100% preservation of widget state/scroll positions across tabs. | 2026-08-18 | 04 | AppShell & Navigation |
+| D18 | Docker Compose local deployment & wireless LAN discovery | Dockerized backend (`trackit-api` + `trackit-scheduler`) with auto-restart on Windows startup and local volume mounts. Enabled wireless testing without tethered USB cable over LAN subnet. | 2026-10-23 | Ops | Backend & Mobile Dev |
 
 
 ---

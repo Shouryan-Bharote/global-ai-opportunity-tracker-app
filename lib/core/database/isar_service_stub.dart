@@ -1,3 +1,5 @@
+import 'package:ai_nexus/features/events/models/event_model.dart';
+
 class IsarService {
   factory IsarService() {
     return _instance;
@@ -7,10 +9,13 @@ class IsarService {
 
   static final IsarService _instance = IsarService._internal();
 
-  // Dummy db getter on web since Isar is not initialized
   dynamic get db => null;
 
-  Future<void> init() async {
-    // Do nothing on web
-  }
+  Future<void> init() async {}
+
+  Future<void> cacheEvents(List<EventModel> events) async {}
+
+  Future<List<EventModel>> getCachedEvents() async => [];
+
+  Future<EventModel?> getCachedEventById(String eventId) async => null;
 }
