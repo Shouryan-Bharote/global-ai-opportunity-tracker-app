@@ -50,7 +50,9 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
-graphify-out/cache/
+graphify-out/
+docs/
+.state/
 linux/flutter/ephemeral/
 windows/flutter/ephemeral/
 macos/Flutter/ephemeral/
