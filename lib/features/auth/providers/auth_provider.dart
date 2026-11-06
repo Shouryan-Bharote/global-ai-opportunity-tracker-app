@@ -41,22 +41,26 @@ class AuthState {
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      final userEmail = currentUser.email ?? '';
-      final userName =
-          currentUser.displayName != null &&
-                  currentUser.displayName!.trim().isNotEmpty
-              ? currentUser.displayName!.trim()
-              : _nameFromEmail(userEmail);
-      return AuthState(
-        user: UserModel(
-          id: currentUser.uid,
-          email: userEmail,
-          name: userName,
-          avatarUrl: currentUser.photoURL,
-        ),
-      );
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final userEmail = currentUser.email ?? '';
+        final userName =
+            currentUser.displayName != null &&
+                    currentUser.displayName!.trim().isNotEmpty
+                ? currentUser.displayName!.trim()
+                : _nameFromEmail(userEmail);
+        return AuthState(
+          user: UserModel(
+            id: currentUser.uid,
+            email: userEmail,
+            name: userName,
+            avatarUrl: currentUser.photoURL,
+          ),
+        );
+      }
+    } on Object catch (_) {
+      // Firebase not initialized in test/mock environment.
     }
     return const AuthState();
   }

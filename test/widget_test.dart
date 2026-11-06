@@ -6,6 +6,8 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:ai_nexus/app.dart';
+import 'package:ai_nexus/features/auth/screens/splash_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,8 +21,9 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 500));
 
-    // Verify that the splash screen shows 'AI'.
-    expect(find.text('AI'), findsOneWidget);
+    // Verify that the splash screen renders cleanly with the brand hub icon.
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.byIcon(Icons.hub_rounded), findsOneWidget);
 
     // Advance timer to complete splash screen navigation delay
     await tester.pump(const Duration(seconds: 2));

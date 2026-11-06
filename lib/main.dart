@@ -1,10 +1,12 @@
 import 'package:ai_nexus/app.dart';
 import 'package:ai_nexus/core/config/env_config.dart';
 import 'package:ai_nexus/core/database/isar_service.dart';
+import 'package:ai_nexus/core/security/session_manager.dart';
 import 'package:ai_nexus/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
@@ -24,6 +26,21 @@ void main() async {
   if (!kIsWeb) {
     await IsarService().init();
   }
+
+  // ── Security hardening ────────────────────────────────────────────────────
+
+  // Prevent the OS from capturing the app's UI in recent-apps thumbnails,
+  // screenshots, and screen recordings. This protects sensitive content such
+  // as personal event data, tokens, and profile information.
+  await ScreenProtection.enable();
+
+  // Lock the app to portrait orientation to prevent unintended UI exposure.
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // ─────────────────────────────────────────────────────────────────────────
 
   runApp(
     const ProviderScope(

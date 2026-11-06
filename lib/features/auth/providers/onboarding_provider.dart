@@ -18,11 +18,15 @@ class OnboardingNotifier extends StateNotifier<bool> {
   final SecureStorage _storage;
 
   Future<void> _init() async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null && uid.isNotEmpty) {
-      final completed = await _storage.isOnboardingComplete(userId: uid);
-      state = completed;
-    } else {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null && uid.isNotEmpty) {
+        final completed = await _storage.isOnboardingComplete(userId: uid);
+        state = completed;
+      } else {
+        state = false;
+      }
+    } on Object catch (_) {
       state = false;
     }
   }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android Network Security Configuration
+  =======================================
+  This file controls which network connections are permitted by the app.
+
+  Key rules:
+  - cleartext (HTTP) traffic is BLOCKED for all domains in release builds.
+  - Only TLS/HTTPS connections are allowed to production hosts.
+  - The debug build variant may relax restrictions for local development
+    (see android/app/src/debug/AndroidManifest.xml).
+  - Pins are NOT declared here (we handle pinning in Dart via DioClient) because
+    Android's native pinning would brick the app on cert rotation for users who
+    haven't updated. Dart-side pinning is updated via OTA app releases.
+
+  Reference: https://developer.android.com/training/articles/security-config
+-->
+<network-security-config>
+
+  <!-- Default policy: trust only system CAs (no cleartext) -->
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </base-config>
+
+  <!-- Production backend: enforce TLS, trust system CAs only -->
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">global-ai-opportunity-tracker-backend.onrender.com</domain>
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </domain-config>
+
+  <!--
+    Firebase services: trust system CAs.
+    These domains are reached by the Firebase SDK, not by our Dio client.
+  -->
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">googleapis.com</domain>
+    <domain includeSubdomains="true">firebase.com</domain>
+    <domain includeSubdomains="true">firebaseapp.com</domain>
+    <domain includeSubdomains="true">gstatic.com</domain>
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </domain-config>
+
+</network-security-config>

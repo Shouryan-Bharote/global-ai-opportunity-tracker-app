@@ -12,6 +12,7 @@ import 'package:ai_nexus/features/events/screens/event_details_screen.dart';
 import 'package:ai_nexus/features/explore/screens/explore_screen.dart';
 import 'package:ai_nexus/features/home/screens/home_screen.dart';
 import 'package:ai_nexus/features/onboarding/screens/onboarding_questionnaire_screen.dart';
+import 'package:ai_nexus/features/profile/screens/privacy_policy_screen.dart';
 import 'package:ai_nexus/features/profile/screens/profile_screen.dart';
 import 'package:ai_nexus/features/schedule/screens/schedule_screen.dart';
 import 'package:flutter/material.dart';
@@ -50,9 +51,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: notifier,
 
     redirect: (context, state) {
-      // Always allow the splash screen to present its entrance experience.
-      // SplashScreen handles navigating to /home, /onboarding, or /auth when finished.
-      if (state.matchedLocation == '/splash') {
+      // Always allow the splash screen and privacy policy screen.
+      if (state.matchedLocation == '/splash' ||
+          state.matchedLocation == '/privacy-policy') {
         return null;
       }
 
@@ -127,6 +128,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingQuestionnaireScreen(),
+      ),
+
+      GoRoute(
+        path: '/privacy-policy',
+        builder: (context, state) => const PrivacyPolicyScreen(),
       ),
 
       GoRoute(

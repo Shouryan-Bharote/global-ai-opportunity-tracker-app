@@ -1071,6 +1071,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     },
                   ),
                   _buildMenuItem(
+                    icon: Icons.shield_outlined,
+                    title: 'Privacy & Security',
+                    isDarkMode: isDarkMode,
+                    onTap: () async {
+                      await context.push('/privacy-policy');
+                    },
+                  ),
+                  _buildMenuItem(
                     icon: Icons.info_outline,
                     title: 'About AI events',
                     isDarkMode: isDarkMode,
